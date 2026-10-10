@@ -2,6 +2,11 @@
 
 /* ---------- hero ---------- */
 
+/* The hero photo ends in the real outline of the peaks (Ridgeline), pulled up over it. */
+.heroWrap {
+  --ridge-h: clamp(110px, 14vw, 220px);
+}
+
 .hero {
   position: relative;
   display: flex;
@@ -28,17 +33,22 @@
 .heroShade {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background:
-    linear-gradient(0deg, rgba(6, 26, 29, 0.7) 0%, rgba(6, 26, 29, 0.25) 40%, rgba(6, 26, 29, 0) 62%),
+    linear-gradient(180deg, rgba(6, 26, 29, 0.38) 0%, rgba(6, 26, 29, 0) 20%),
+    linear-gradient(0deg, rgba(6, 26, 29, 0.72) 0%, rgba(6, 26, 29, 0.3) 42%, rgba(6, 26, 29, 0) 66%),
     linear-gradient(90deg, rgba(6, 26, 29, 0.45) 0%, rgba(6, 26, 29, 0) 55%);
 }
 
 .heroInner {
   position: relative;
+  z-index: 2;
   width: 100%;
   max-width: var(--max);
   margin: 0 auto;
-  padding: 48px var(--gutter-tight) clamp(56px, 9vh, 110px);
+  /* Clear of the peaks' names, which stand up to ~40px above the drawing. */
+  padding: 140px var(--gutter-tight) calc(var(--ridge-h) + clamp(44px, 6vh, 72px));
   color: #fff;
   --focus-ring: var(--gold-light);
 }
@@ -49,6 +59,38 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold-light);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .heroRegion,
+  .heroTitle,
+  .heroText,
+  .heroInner > :last-child {
+    animation: rise 1s var(--ease-soft) both;
+  }
+
+  .heroTitle {
+    animation-delay: 0.12s;
+  }
+
+  .heroText {
+    animation-delay: 0.24s;
+  }
+
+  .heroInner > :last-child {
+    animation-delay: 0.36s;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .heroTitle {
@@ -96,13 +138,128 @@
   background: rgba(6, 26, 29, 0.5);
 }
 
-.heroCredit {
-  position: absolute;
-  right: var(--gutter-tight);
-  bottom: 14px;
+
+/* ---------- how long do you have: the four plans on one line ---------- */
+
+.times {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 2.4vw, 36px);
   margin: 0;
-  max-width: calc(100% - 2 * var(--gutter-tight));
-  text-align: right;
+  padding: 0;
+  list-style: none;
+}
+
+/* The line the steps sit on. */
+.times::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-light), var(--teal-2));
+  opacity: 0.6;
+}
+
+.time {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeStep {
+  display: block;
+  height: 20px;
+  margin-bottom: 10px;
+}
+
+.timeDot {
+  display: block;
+  width: calc(14px + var(--step) * 2px);
+  height: calc(14px + var(--step) * 2px);
+  margin-top: calc(3px - var(--step) * 1px);
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--gold);
+}
+
+.time:last-child .timeDot {
+  border-color: var(--teal-2);
+  background: var(--teal-2);
+}
+
+.timeLength {
+  margin: 0;
+  font: 700 12.5px/1.2 var(--font-text);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bronze);
+}
+
+.timeTitle {
+  margin: 0;
+  font: 500 clamp(21px, 1.9vw, 26px) / 1.18 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.timeText {
+  margin: 0;
+  color: var(--text-soft);
+  font: 400 15px/1.55 var(--font-text);
+}
+
+.timeActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.timeFly {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  background: var(--teal);
+  color: #fff;
+  font: 700 14px/1 var(--font-text);
+}
+
+.timeFly:hover {
+  background: var(--teal-2);
+  color: #fff;
+}
+
+/* Phones and tablets: swipe along the line. */
+@media (max-width: 900px) {
+  .times {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 320px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--gutter-tight);
+    margin: 0 calc(-1 * var(--gutter-tight));
+    padding: 0 var(--gutter-tight) 8px;
+    overscroll-behavior-x: contain;
+  }
+
+  .times::before {
+    left: var(--gutter-tight);
+    right: auto;
+    width: calc(4 * min(78vw, 320px) + 3 * clamp(20px, 2.4vw, 36px));
+  }
+
+  .time {
+    scroll-snap-align: start;
+  }
 }
 
 /* ---------- intro statement ---------- */
@@ -110,7 +267,7 @@
 .intro {
   max-width: 1040px;
   margin: 0 auto;
-  padding: clamp(72px, 10vw, 150px) var(--gutter-tight) clamp(24px, 4vw, 48px);
+  padding: clamp(48px, 7vw, 110px) var(--gutter-tight) clamp(8px, 2vw, 24px);
 }
 
 .introText {

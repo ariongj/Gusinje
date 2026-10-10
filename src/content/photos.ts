@@ -411,6 +411,49 @@ export const commonsPhotos = {
       "https://creativecommons.org/licenses/by-sa/4.0/",
     ),
   },
+  vusanjeView: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Prokletije3.jpg/1280px-Prokletije3.jpg",
+    alt: "The Prokletije peaks seen near Vusanje",
+    altLocalized: {
+      sq: "Majat e Bjeshkëve të Nemuna parë pranë Vuthajve",
+      cnr: "Vrhovi Prokletija viđeni kod Vusanja",
+    },
+    width: 3264,
+    height: 2448,
+    ...commons("Ivan25", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Prokletije3.jpg", "https://creativecommons.org/licenses/by-sa/3.0/"),
+  },
+  grbajaFromTalijanka: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Peaks_of_the_Balkans_-_156_%2838175766684%29.jpg/1280px-Peaks_of_the_Balkans_-_156_%2838175766684%29.jpg",
+    alt: "The upper Grbaja valley from the east ridge of Talijanka, with Karanfili's southern summit and the Ropojana pass",
+    altLocalized: {
+      sq: "Lugina e sipërme e Gërbajës nga kreshta lindore e Talijankës, me majën jugore të Karanfilit dhe qafën e Ropojanës",
+      cnr: "Gornja dolina Grbaje s istočnog grebena Talijanke, s Južnim vrhom Karanfila i Ropojanskim vratima",
+    },
+    width: 3264,
+    height: 2448,
+    ...commons(
+      "Bruno Rijsman",
+      "CC BY 2.0",
+      "https://commons.wikimedia.org/wiki/File:Peaks_of_the_Balkans_-_156_(38175766684).jpg",
+      "https://creativecommons.org/licenses/by/2.0/",
+    ),
+  },
+  hridskoLake: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Peaks_of_the_Balkans_-_Hridsko_Lake%2C_Montenegro.jpg/1280px-Peaks_of_the_Balkans_-_Hridsko_Lake%2C_Montenegro.jpg",
+    alt: "Hridsko Lake among pines and rocky slopes",
+    altLocalized: {
+      sq: "Liqeni i Hridit mes pishave dhe shpateve shkëmbore",
+      cnr: "Hridsko jezero među borovima i stjenovitim padinama",
+    },
+    width: 3264,
+    height: 2448,
+    ...commons(
+      "Bruno Rijsman",
+      "CC BY 2.0",
+      "https://commons.wikimedia.org/wiki/File:Peaks_of_the_Balkans_-_Hridsko_Lake,_Montenegro.jpg",
+      "https://creativecommons.org/licenses/by/2.0/",
+    ),
+  },
 } satisfies Record<string, Photo>;
 
 export const rosiPhotos = {

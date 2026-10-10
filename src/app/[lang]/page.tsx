@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PlaceCard } from "@/components/content/cards";
+import { HeroSlides, type HeroSlide } from "@/components/home/HeroSlides";
+import { Ridgeline } from "@/components/home/Ridgeline";
 import { ValleyShowcase } from "@/components/home/ValleyShowcase";
 import { Photo } from "@/components/ui/Photo";
 import { photoAlt } from "@/components/ui/PhotoFigure";
@@ -9,7 +11,7 @@ import { PhotoCredit } from "@/components/ui/PhotoCredit";
 import { brand } from "@/config/brand";
 import { businesses, guides, inSection, itineraries, places, recordPath, routes, tours } from "@/content";
 import { commonsPhotos } from "@/content/photos";
-import type { Photo as PhotoRecord } from "@/content/types";
+import type { Photo as PhotoRecord, Place } from "@/content/types";
 import { getMessages, resolveLocale } from "@/i18n";
 import { href } from "@/i18n/config";
 import { loc, plural } from "@/i18n/localize";
@@ -32,6 +34,26 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const featured = ["grlja", "ali-pashas-springs", "ropojana", "oko-skakavice", "grbaja"].map((s) => places.find((p) => p.slug === s)!);
   const gems = places.filter((p) => p.gem);
   const heritage = commonsPhotos.gusinjeHouses;
+  const place = (slug: string) => places.find((p) => p.slug === slug)!;
+
+  // The hero: one place per photo, each named and linked.
+  const slideOf = (photo: PhotoRecord, p: Place): HeroSlide => ({
+    src: photo.src,
+    alt: photoAlt(photo, lang),
+    position: photo.position,
+    label: p.slug === p.area ? loc(p.name, lang) : `${loc(p.name, lang)} · ${t.area[p.area]}`,
+    href: href(lang, recordPath("place", p.slug)),
+    credit: photo.credit,
+  });
+  const heroSlides: [PhotoRecord, Place][] = [
+    [HERO, place("gusinje")],
+    [commonsPhotos.grlja, place("grlja")],
+    [commonsPhotos.vusanjeView, place("vusanje")],
+    [commonsPhotos.vusanjeGuesthouses, place("vusanje")],
+    [commonsPhotos.blueEye, place("oko-skakavice")],
+    [commonsPhotos.ropojanaMeadow, place("ropojana")],
+    [commonsPhotos.karanfilWest, place("karanfili")],
+  ];
   const tips = ["getting-here", "seasons-and-packing", "responsible-travel", "safety-and-emergencies"].map((s) => guides.find((g) => g.slug === s)!);
   const count = (section: Parameters<typeof inSection>[1]) => businesses.filter((b) => inSection(b, section)).length;
 
@@ -44,7 +66,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     { label: t.nav.guides, meta: plural(lang, count("guides-experiences"), t.common.results), path: "/guides-experiences", photo: commonsPhotos.karanfilWest },
     { label: t.footer.itineraries, meta: plural(lang, itineraries.length, t.common.results), path: "/plan", photo: commonsPhotos.vusanjePeaks },
   ];
-  const shown = [HERO, ...featured.map((p) => p.photos[0]), ...things.map((x) => x.photo), heritage, ...gems.map((p) => p.photos[0])].filter(Boolean) as PhotoRecord[];
+  const shown = [...heroSlides.map(([photo]) => photo), ...featured.map((p) => p.photos[0]), ...things.map((x) => x.photo), heritage, ...gems.map((p) => p.photos[0])].filter(Boolean) as PhotoRecord[];
   const credited = shown.filter((photo, i) => shown.findIndex((other) => other.src === photo.src) === i);
 
   const website = {
@@ -61,30 +83,64 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(website)} />
 
       {/* ---------------------------------------------------------- hero */}
-      <section className={styles.hero}>
-        <div className={styles.heroMedia}>
-          <Photo src={HERO.src} alt={photoAlt(HERO, lang)} eager sizes="100vw" position="50% 60%" />
-        </div>
-        <div className={styles.heroShade} aria-hidden="true" />
-        <div className={styles.heroInner}>
-          <p className={styles.heroRegion}>{brand.region}</p>
-          <h1 className={styles.heroTitle}>{t.home.heroTitle}</h1>
-          <p className={styles.heroText}>{t.meta.tagline}</p>
-          <div className={ui.actions}>
-            <Link href={href(lang, "/explore")} className={styles.heroPrimary}>
-              {t.home.exploreCta}
-            </Link>
-            <Link href={href(lang, "/places")} className={styles.heroSecondary}>
-              {t.home.placesCta}
-            </Link>
+      <div className={styles.heroWrap}>
+        <section className={styles.hero} aria-labelledby="hero-title">
+          <HeroSlides slides={heroSlides.map(([photo, p]) => slideOf(photo, p))} />
+          <div className={styles.heroShade} aria-hidden="true" />
+          <div className={styles.heroInner}>
+            <p className={styles.heroRegion}>{brand.region}</p>
+            <h1 id="hero-title" className={styles.heroTitle}>
+              {t.home.heroTitle}
+            </h1>
+            <p className={styles.heroText}>{t.meta.tagline}</p>
+            <div className={ui.actions}>
+              <Link href={href(lang, "/explore")} className={styles.heroPrimary}>
+                {t.home.exploreCta}
+              </Link>
+              <Link href={href(lang, "/places")} className={styles.heroSecondary}>
+                {t.home.placesCta}
+              </Link>
+            </div>
           </div>
-        </div>
-        <PhotoCredit credit={HERO.credit} t={t} tone="light" className={styles.heroCredit} />
-      </section>
+        </section>
+        <Ridgeline centre={place("vusanje")} labels={[place("zla-kolata"), place("ropojana"), place("karanfili")]} lang={lang} t={t} />
+      </div>
 
       {/* --------------------------------------------------------- intro */}
       <section className={styles.intro} aria-label={brand.region}>
         <p className={styles.introText}>{t.home.intro}</p>
+      </section>
+
+      {/* ---------------------------------------------- how long do you have */}
+      <section className={styles.block} aria-labelledby="time">
+        <div className={styles.head}>
+          <div>
+            <h2 id="time" className={styles.h2}>
+              {t.home.timeTitle}
+            </h2>
+            <p className={styles.lede}>{t.home.timeIntro}</p>
+          </div>
+        </div>
+        <ol className={styles.times}>
+          {itineraries.map((it, i) => (
+            <li key={it.slug} className={styles.time}>
+              <span className={styles.timeStep} aria-hidden="true">
+                <span className={styles.timeDot} style={{ ["--step" as string]: i }} />
+              </span>
+              <p className={styles.timeLength}>{t.plan.length[it.length]}</p>
+              <h3 className={styles.timeTitle}>{loc(it.title, lang)}</h3>
+              <p className={styles.timeText}>{loc(it.summary, lang)}</p>
+              <div className={styles.timeActions}>
+                <Link href={`${href(lang, "/explore")}/?tour=${it.slug}`} className={styles.timeFly} prefetch={false}>
+                  {t.explore.flyJourney}
+                </Link>
+                <Link href={href(lang, recordPath("itinerary", it.slug))} className={ui.textLink} prefetch={false}>
+                  {t.home.openPlan}
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* -------------------------------------------------------- places */}

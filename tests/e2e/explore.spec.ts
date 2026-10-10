@@ -2,6 +2,10 @@ import type { Locator } from "@playwright/test";
 
 import { expect, test } from "./fixtures";
 
+// The 3D map draws with software WebGL on CI runners, where one of these tests
+// can take 40 seconds; they get twice the usual time.
+test.describe.configure({ timeout: 90_000 });
+
 /**
  * Pause a running tour and go back to its first stop. The tour moves on by
  * itself, and on a slow machine it can do so before the pause lands.
@@ -197,6 +201,41 @@ test.describe("Journeys", () => {
     await expect(card.getByText(/Stop 2 of \d+/)).toBeVisible();
     await expect(card.getByText("Day 1", { exact: false }).first()).toBeVisible();
     await expect(card.getByRole("heading", { name: "Gusinje" })).toBeVisible();
+  });
+});
+
+// A flat terrain tile at 1,000 m (terrarium encoding: red 131, green 232).
+const FLAT_1000M = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAB/klEQVR42u3TQQ0AAAgDsXnHLDL2xwJNquCSy2zgLQkwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADIABVMAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABMIAEGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAbAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHgKAqmFUbhKHd7AAAAAElFTkSuQmCC",
+  "base64",
+);
+
+test.describe("Map tools", () => {
+  test("photo card on hover, compass and orbit, and the ground's height from elevation data", async ({ page, errors }) => {
+    void errors;
+    await page.route(/elevation-tiles-prod/, (route) => route.fulfill({ status: 200, contentType: "image/png", body: FLAT_1000M }));
+    await page.goto("/en/explore/");
+    const marker = page.locator('button[data-key="place:ali-pashas-springs"]');
+    await expect(marker).toBeVisible();
+
+    // A photo card on hover.
+    await marker.hover();
+    await expect(marker.locator('[data-part="preview"]')).toBeVisible();
+    await expect(marker.locator('[data-part="preview"]')).toContainText("Spring");
+
+    // Orbit on, then any touch of the map turns it off; the compass faces north.
+    const orbit = page.getByRole("button", { name: "Circle around this view" });
+    await orbit.click();
+    await expect(orbit).toHaveAttribute("aria-pressed", "true");
+    await page.getByRole("button", { name: "Face north" }).click();
+    await expect(orbit).toHaveAttribute("aria-pressed", "false");
+
+    // Tap the ground: about 1,000 m here (the drawing's ×1.35 height is taken out).
+    const stage = page.getByTestId("explore-stage");
+    const box = (await stage.boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.55, box.y + box.height * 0.3);
+    await page.mouse.click(box.x + box.width * 0.55, box.y + box.height * 0.3);
+    await expect(page.locator(".maplibregl-popup")).toContainText("≈ 1,000 m above sea level");
   });
 });
 

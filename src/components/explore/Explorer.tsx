@@ -102,6 +102,8 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
   const railRef = useRef<HTMLElement>(null);
   const railListRef = useRef<HTMLOListElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const sheetDrag = useRef<{ y: number; dy: number } | null>(null);
+  const [sheetTall, setSheetTall] = useState(false);
   const legendRef = useRef<HTMLDivElement>(null);
   const tourButtonRef = useRef<HTMLButtonElement>(null);
   const viewRef = useRef(view);
@@ -522,7 +524,7 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
         )}
 
         {/* ----------------------------------------------------------- stage */}
-        <div ref={stageRef} data-testid="explore-stage" className={cx(styles.stage, view === "list" && styles.stageList, touring && styles.touring, showPanel && styles.panelOpen)} style={stageVars}>
+        <div ref={stageRef} data-testid="explore-stage" data-map-stage="" className={cx(styles.stage, view === "list" && styles.stageList, touring && styles.touring, showPanel && styles.panelOpen)} style={stageVars}>
           {/* The real valley: 3D terrain, or the same map laid flat. Without WebGL, a simple tiled map. */}
           {mounted && webgl !== "unknown" && (
             <div className={styles.layer} hidden={view === "list"}>
@@ -593,9 +595,36 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
             </div>
           )}
 
-          {/* The selected place, with previous / next. */}
+          {/* The selected place, with previous / next. On phones a sheet: swipe it down to close, up to see more. */}
           {showPanel && (
-            <div ref={panelRef} className={styles.panelSlot}>
+            <div
+              ref={panelRef}
+              className={cx(styles.panelSlot, sheetTall && styles.sheetTall)}
+              onTouchStart={(e) => {
+                const el = panelRef.current;
+                if (!el || !window.matchMedia("(max-width: 899.98px)").matches) return;
+                sheetDrag.current = el.scrollTop <= 0 ? { y: e.touches[0].clientY, dy: 0 } : null;
+              }}
+              onTouchMove={(e) => {
+                const drag = sheetDrag.current;
+                const el = panelRef.current;
+                if (!drag || !el) return;
+                drag.dy = e.touches[0].clientY - drag.y;
+                if (drag.dy > 0) el.style.transform = `translateY(${drag.dy}px)`;
+              }}
+              onTouchEnd={() => {
+                const drag = sheetDrag.current;
+                const el = panelRef.current;
+                sheetDrag.current = null;
+                if (!drag || !el) return;
+                el.style.transform = "";
+                if (drag.dy > 90) {
+                  setSheetTall(false);
+                  setSelectedKey(null);
+                } else if (drag.dy < -50) setSheetTall(true);
+              }}
+            >
+              <span className={styles.sheetHandle} aria-hidden="true" />
               {infoPanel}
             </div>
           )}

@@ -2,12 +2,14 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import type { Map as MLMap, Marker, StyleSpecification } from "maplibre-gl";
+import type { Map as MLMap, Marker, Popup, StyleSpecification } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 
 import type { CameraTarget, ExploreItem } from "@/components/explore/types";
 import { useI18n } from "@/i18n/client";
+import { fill } from "@/i18n/localize";
 import { cx } from "@/lib/cx";
+import imageLoader from "@/lib/image-loader";
 
 import { BASE_STYLE_URL, demSources, EXAGGERATION, HILLSHADE_LAYER, hillshadeLayer, MAX_BOUNDS, reliefStyle, SKY, TERRAIN_SOURCE } from "./mapStyle";
 import styles from "./TerrainMap.module.css";
@@ -178,6 +180,14 @@ export function TerrainMap({
   const onFailedRef = useRef(onFailed);
   const [status, setStatus] = useState<"loading" | "ready" | "failed">("loading");
   const [tilesFailed, setTilesFailed] = useState(false);
+  const [orbiting, setOrbiting] = useState(false);
+  const orbitingRef = useRef(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [canFullscreen, setCanFullscreen] = useState(false);
+  const [hint, setHint] = useState(false);
+  const needleRef = useRef<SVGSVGElement>(null);
+  const popupRef = useRef<Popup | null>(null);
+  const tRef = useRef(t);
   const [detail, setDetail] = useState(false);
   const detailRef = useRef(false);
   const selectedRef = useRef<string | null>(null);
@@ -187,6 +197,7 @@ export function TerrainMap({
     onSelectRef.current = onSelect;
     onFailedRef.current = onFailed;
     insetsRef.current = insets;
+    tRef.current = t;
   });
 
   // Create the map once.
@@ -291,7 +302,7 @@ export function TerrainMap({
                 el.classList.remove(styles.crowded, styles.labelled);
                 continue;
               }
-              const label = el.lastElementChild as HTMLElement | null;
+              const label = el.querySelector<HTMLElement>('[data-part="label"]');
               let w = widths.get(el);
               if (w === undefined) {
                 w = label?.offsetWidth || 110;
@@ -313,13 +324,46 @@ export function TerrainMap({
             declutter();
           });
           m.on("moveend", declutter);
-          // The visitor takes the controls: stop any flight.
+          // The visitor takes the controls: stop any flight or orbit.
           for (const type of ["mousedown", "touchstart", "wheel"] as const) {
             m.on(type, () => {
               flightRef.current?.();
               flightRef.current = null;
+              if (orbitingRef.current) {
+                orbitingRef.current = false;
+                setOrbiting(false);
+              }
+              setHint(false);
             });
           }
+          // The compass needle follows the bearing.
+          m.on("rotate", () => {
+            if (needleRef.current) needleRef.current.style.transform = `rotate(${-m.getBearing()}deg)`;
+          });
+          // Keep circling while the orbit is on.
+          m.on("moveend", () => {
+            if (orbitingRef.current) m.rotateTo(m.getBearing() - 60, { duration: 20000, easing: (x) => x });
+          });
+          // Tap the ground in 3D: its height, from the elevation data.
+          m.on("click", (e) => {
+            if (modeRef.current !== "3d") return;
+            const raw = m.queryTerrainElevation(e.lngLat);
+            if (raw === null || raw === undefined) return;
+            const metres = Math.round(raw / EXAGGERATION / 10) * 10;
+            const box = document.createElement("div");
+            box.className = styles.heightBox;
+            const value = document.createElement("strong");
+            value.textContent = fill(tRef.current.explore.heightHere, { m: metres.toLocaleString(document.documentElement.lang || undefined) });
+            const note = document.createElement("span");
+            note.textContent = tRef.current.explore.heightNote;
+            box.append(value, note);
+            popupRef.current?.remove();
+            popupRef.current = new lib.Popup({ closeButton: true, closeOnClick: true, className: styles.heightPopup, maxWidth: "240px", offset: 10 })
+              .setLngLat(e.lngLat)
+              .setDOMContent(box)
+              .addTo(m);
+            setHint(false);
+          });
         } else if (!reducedMotion()) {
           // A slow turn around the valley while it's on screen.
           let turning = false;
@@ -374,6 +418,59 @@ export function TerrainMap({
     return { center: [c.lng, c.lat], zoom: map.getZoom(), bearing: map.getBearing(), pitch: map.getPitch(), padding: paddingOf(map) };
   };
 
+  const stopOrbit = () => {
+    orbitingRef.current = false;
+    setOrbiting(false);
+    mapRef.current?.stop();
+  };
+
+  const toggleOrbit = () => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (orbitingRef.current) {
+      stopOrbit();
+      return;
+    }
+    flightRef.current?.();
+    flightRef.current = null;
+    orbitingRef.current = true;
+    setOrbiting(true);
+    map.rotateTo(map.getBearing() - 60, { duration: 20000, easing: (x) => x });
+  };
+
+  const faceNorth = () => {
+    const map = mapRef.current;
+    if (!map) return;
+    stopOrbit();
+    moveCamera(map, { ...currentShot(map), bearing: 0 }, 700);
+  };
+
+  // Full screen: the whole stage (map, legend, card and strip), where the browser allows it.
+  const stageOf = () => (hostRef.current?.closest("[data-map-stage]") as HTMLElement | null) ?? hostRef.current?.parentElement ?? null;
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void stageOf()?.requestFullscreen?.().catch(() => undefined);
+  };
+  useEffect(() => {
+    if (showcase) return;
+    // Only known in the browser.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCanFullscreen(!!document.fullscreenEnabled);
+    const sync = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, [showcase]);
+
+  // A short tip on what the map can do, until the visitor touches it.
+  useEffect(() => {
+    if (showcase || status !== "ready" || mode !== "3d") return;
+    // Shown once the map is ready.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHint(true);
+    const timer = window.setTimeout(() => setHint(false), 9000);
+    return () => window.clearTimeout(timer);
+  }, [showcase, status, mode]);
+
   // 3D or flat.
   useEffect(() => {
     modeRef.current = mode;
@@ -415,9 +512,33 @@ export function TerrainMap({
       dot.setAttribute("aria-hidden", "true");
       const label = document.createElement("span");
       label.className = styles.label;
+      label.dataset.part = "label";
       label.textContent = item.name;
       label.setAttribute("aria-hidden", "true");
       el.append(dot, label);
+      // A photo card on hover (mouse only); the photo loads on the first hover.
+      if (item.photo) {
+        const photo = item.photo;
+        el.classList.add(styles.hasPreview);
+        const preview = document.createElement("span");
+        preview.className = styles.preview;
+        preview.dataset.part = "preview";
+        preview.setAttribute("aria-hidden", "true");
+        const img = document.createElement("img");
+        img.alt = "";
+        img.decoding = "async";
+        const name = document.createElement("span");
+        name.className = styles.previewName;
+        name.textContent = item.name;
+        const meta = document.createElement("span");
+        meta.className = styles.previewMeta;
+        meta.textContent = item.categoryLabel;
+        preview.append(img, name, meta);
+        el.append(preview);
+        el.addEventListener("pointerenter", (e) => {
+          if (e.pointerType === "mouse" && !img.src) img.src = imageLoader({ src: photo.src, width: 330 });
+        });
+      }
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         onSelectRef.current?.(item.key);
@@ -457,6 +578,7 @@ export function TerrainMap({
     // A moment's delay: picking a place also opens its card, and the flight
     // should aim for the space the card leaves (measured on the next frame).
     const timer = window.setTimeout(() => {
+      if (orbitingRef.current) stopOrbit();
       const camera = cameraFor(target, modeRef.current);
       // Summits are seen from further back than valley floors, so the whole massif is in view.
       if (target.kind === "point" && target.zoom === undefined && map.getTerrain()) {
@@ -499,7 +621,45 @@ export function TerrainMap({
           <button type="button" className={styles.control} aria-label={t.explore.zoomOut} onClick={() => mapRef.current?.zoomOut()}>
             &minus;
           </button>
+          <button type="button" className={styles.control} aria-label={t.explore.faceNorth} title={t.explore.faceNorth} onClick={faceNorth}>
+            <svg ref={needleRef} className={styles.needle} width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M10 2l3.2 8H6.8z" fill="#c0412b" />
+              <path d="M10 18l-3.2-8h6.4z" fill="currentColor" opacity="0.45" />
+            </svg>
+          </button>
+          {mode === "3d" && (
+            <button type="button" className={cx(styles.control, styles.orbit)} aria-label={t.explore.orbit} title={t.explore.orbit} aria-pressed={orbiting} onClick={toggleOrbit}>
+              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+                <ellipse cx="10" cy="11" rx="7.5" ry="3.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                <path d="M15.6 7.2l2.4 1.4-2.6 1" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M7 10.5l3-5.5 3 5.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+          {canFullscreen && (
+            <button
+              type="button"
+              className={styles.control}
+              aria-label={fullscreen ? t.explore.exitFullscreen : t.explore.fullscreen}
+              title={fullscreen ? t.explore.exitFullscreen : t.explore.fullscreen}
+              aria-pressed={fullscreen}
+              onClick={toggleFullscreen}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                {fullscreen ? (
+                  <path d="M6 2v4H2M12 2v4h4M6 16v-4H2M12 16v-4h4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                ) : (
+                  <path d="M2 6V2h4M16 6V2h-4M2 12v4h4M16 12v4h-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                )}
+              </svg>
+            </button>
+          )}
         </div>
+      )}
+      {!showcase && hint && status === "ready" && (
+        <p className={styles.hint} role="status">
+          {t.explore.mapTip}
+        </p>
       )}
       {!showcase && status === "loading" && <div className={styles.notice}>{t.common.loading}</div>}
       {!showcase && status === "failed" && (

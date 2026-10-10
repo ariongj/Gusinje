@@ -170,10 +170,11 @@
   right: var(--inset-right, 0px);
 }
 
+/* Beside the map's own buttons (zoom, compass, orbit, full screen). */
 .mapReset {
   position: absolute;
-  top: 110px;
-  right: calc(var(--inset-right, 0px) + 12px);
+  top: 14px;
+  right: calc(var(--inset-right, 0px) + 12px + 44px + 10px);
   z-index: 500;
   min-height: 40px;
   padding: 0 14px;
@@ -282,6 +283,10 @@
   overscroll-behavior: contain;
   border-radius: var(--r-xl);
   box-shadow: var(--shadow-lift);
+}
+
+.sheetHandle {
+  display: none;
 }
 
 .panelSlot > section {
@@ -435,11 +440,32 @@
     width: auto;
     max-height: 52%;
     border-radius: 22px 22px 0 0;
+    transition:
+      transform 0.25s var(--ease-soft),
+      max-height 0.3s var(--ease-soft);
+  }
+
+  .sheetTall {
+    max-height: calc(100% - 64px);
   }
 
   .panelSlot > section {
-    padding: 14px 16px 18px;
+    padding: 22px 16px 18px;
     border-radius: 22px 22px 0 0;
+  }
+
+  /* Grab handle: swipe down to close, up for more. */
+  .sheetHandle {
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    z-index: 1;
+    width: 40px;
+    height: 5px;
+    margin-left: -20px;
+    border-radius: 3px;
+    background: var(--line-chip);
   }
 
   /* Previous / next live in the sheet while it's open. */
@@ -464,12 +490,18 @@
     flex-basis: 100%;
   }
 
+  /* Phones: the map gets the room — title on one line, the lead for screen readers only. */
+  .title {
+    font-size: 21px;
+  }
+
   .lead {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    position: absolute;
+    width: 1px;
+    height: 1px;
     overflow: hidden;
-    font-size: 13px;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .bar {

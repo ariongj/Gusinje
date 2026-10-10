@@ -1,0 +1,244 @@
+/* No stacking context of its own: the photos sit under the hero's shade, the controls above it. */
+.slides {
+  position: absolute;
+  inset: 0;
+}
+
+.stack {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 1.4s ease,
+    visibility 0s linear 1.4s;
+}
+
+.current {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 1.4s ease,
+    visibility 0s;
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+}
+
+/* A slow drift on the photo in view. */
+@media (prefers-reduced-motion: no-preference) {
+  .current .photo {
+    animation: drift 16s ease-out both;
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* ---------- place, controls and credit ---------- */
+
+.bar {
+  position: absolute;
+  z-index: 3;
+  right: var(--gutter-tight);
+  bottom: calc(var(--ridge-h, 140px) + 20px);
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  max-width: min(440px, calc(100% - 2 * var(--gutter-tight)));
+  color: #fff;
+  --focus-ring: var(--gold-light);
+}
+
+.place {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  background: rgba(6, 26, 29, 0.5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font: 600 14px/1.2 var(--font-text);
+}
+
+.place:hover {
+  background: rgba(6, 26, 29, 0.72);
+  color: #fff;
+}
+
+.placeName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: rgba(6, 26, 29, 0.42);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.round {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font: 400 24px/1 var(--font-text);
+  cursor: pointer;
+}
+
+.round:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+}
+
+/* A thin bar per photo; the one on screen is wider and fills while it plays. */
+.dot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.dot::before {
+  content: "";
+  width: 8px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  transition:
+    width 0.3s var(--ease-soft),
+    background-color 0.3s;
+}
+
+.dotOn {
+  width: 40px;
+}
+
+.dotOn::before {
+  width: 30px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.timer {
+  position: absolute;
+  left: 5px;
+  top: 16px;
+  width: 30px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--gold-light);
+  transform-origin: left center;
+  animation: fill 7s linear both;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.credit {
+  margin: 0;
+  text-align: right;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Phones: everything at the top of the photo, clear of the title. */
+@media (max-width: 760px) {
+  .bar {
+    top: 14px;
+    bottom: auto;
+    left: var(--gutter-tight);
+    right: var(--gutter-tight);
+    max-width: none;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: stretch;
+  }
+
+  .place {
+    justify-self: start;
+    max-width: 100%;
+    font-size: 13px;
+  }
+
+  .credit {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+
+  /* Swipe or tap a bar instead. */
+  .step {
+    display: none;
+  }
+
+  .dotOn {
+    width: 36px;
+  }
+
+  .dotOn::before,
+  .timer {
+    width: 26px;
+  }
+}
+
+/* Finger-sized on touch screens. */
+@media (pointer: coarse) {
+  .round,
+  .place {
+    min-height: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .dot {
+    height: 44px;
+  }
+
+  .timer {
+    top: 20px;
+  }
+}

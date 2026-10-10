@@ -118,7 +118,7 @@ export const places: Place[] = [
       cnr: ["Vodopad Grlja na rubu sela", "Izvor Oko Skakavice, oko 1,5 km dalje", "Početak etape Vrhova Balkana do Teta"],
     },
     location: { lat: 42.52944, lng: 19.84028, precision: "area", status: "desk-verified", sources: ["wiki-vusanje", "wikidata-vusanje"] },
-    photos: [C.vusanjeVillage, C.vusanjeGuesthouses, C.vusanjeStoneHouse, C.vusanjePeaks],
+    photos: [C.vusanjeVillage, C.vusanjeView, C.vusanjeGuesthouses, C.vusanjeStoneHouse, C.vusanjePeaks],
     warnings: [
       {
         en: "Crossing into Albania on foot is only allowed with permission requested in advance — see the Vusanje–Theth route page.",
@@ -388,7 +388,7 @@ export const places: Place[] = [
       cnr: ["Pogled na zidove Karanfila", "Početak ture na Volušnicu", "U Nacionalnom parku Prokletije"],
     },
     location: { lat: 42.5106, lng: 19.7926, precision: "area", status: "desk-verified", sources: ["summitpost-grbaja", "reliefmaps-grebaje"] },
-    photos: [C.grbajaUpper, C.grbajaEvening],
+    photos: [C.grbajaUpper, C.grbajaEvening, C.grbajaFromTalijanka],
     fees: PARK_FEES,
     officialLinks: ["np-montenegro", "np-prokletije-active"],
     routes: ["volusnica-from-grbaja"],
@@ -636,7 +636,7 @@ export const places: Place[] = [
       ],
     },
     location: null,
-    photos: [],
+    photos: [C.hridskoLake],
     warnings: [
       {
         en: "Camping is not allowed at the lake: it lies in a strict reserve.",

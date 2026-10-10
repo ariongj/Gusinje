@@ -119,6 +119,8 @@ test("preview forms validate but never send anything", async ({ page, errors }) 
 
 test("accessibility: no serious axe violations on key pages", async ({ page, errors }) => {
   void errors;
+  // Settled colours: entrance fades would be measured half-way through.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   for (const path of ["/en/", "/en/places/grlja/", "/en/directory/eko-katun-rosi/", "/en/hikes/zla-kolata-from-vusanje/", "/en/plan/", "/sq/travel-tips/getting-here/", "/en/explore/?view=list", "/en/services/", "/cnr/about/history/"]) {
     await page.goto(path);
     const results = await new AxeBuilder({ page }).exclude(".leaflet-container").analyze();

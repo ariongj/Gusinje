@@ -96,6 +96,14 @@ To edit content: change the record, run `npm run check:content`, open a pull req
 
 ### Design
 
+The home page opens on a full-screen photo hero that moves through the valley one place at a
+time (each photo names its place and author; pause, swipe, dots; still with reduced motion). It
+ends in the real outline of the peaks around Vusanje: `scripts/skyline.mjs` reads the same
+elevation tiles as the 3D map and writes `src/content/skyline.ts` — for each compass direction,
+the highest ground (crest behind, nearer ridges in front), with Zla Kolata, Ropojana and
+Karanfili named and linked. Below it, "How long do you have?" puts the four trip plans on one
+line, each one tap from flying it in 3D.
+
 Open, photo-led pages: a full-screen hero, an intro statement, a photo mosaic of places, a
 full-width band where the 3D valley drifts behind the invitation to explore (it loads only
 when scrolled near, and never on data saver), "things to do" photo tiles, tours and practical
@@ -112,6 +120,12 @@ The camera keeps the place centred in the part of the screen the panels leave op
 overlap: towns and villages win, then the selected place, and a crowded label shows on hover or
 focus. Virtual tours and **journeys** (each trip plan, stop by stop) fly the same camera with a
 narrator card; `?tour=<slug>` opens either.
+
+**Map tools**: a photo card when hovering a marker, a compass (tap to face north), an orbit
+button that circles the view, full screen (where the browser allows it) and, in 3D, a tap on the
+ground shows its height from the elevation data (approximate; the ×1.35 drawing exaggeration is
+taken out). On phones the place card is a sheet — swipe down to close, up for more — and the
+title bar shrinks so the map gets the room.
 
 **Useful services** (`/services`) and **History & culture** (`/about/history`) are sourced pages
 like the rest: every entry shows its sources and check date, contested history is marked as such,
