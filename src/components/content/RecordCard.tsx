@@ -46,7 +46,7 @@ export function RecordCard({ href, title, kicker, text, photo, lang, badges, foo
       <div className={styles.body}>
         {kicker && <p className={styles.kicker}>{kicker}</p>}
         <Heading className={styles.title}>
-          <Link href={href} className={styles.link}>
+          <Link href={href} className={styles.link} prefetch={false}>
             {title}
           </Link>
         </Heading>

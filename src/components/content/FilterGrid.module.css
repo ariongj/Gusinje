@@ -86,3 +86,10 @@
   border: 1px dashed var(--line-4);
   color: var(--text);
 }
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .viewButton {
+    min-height: 44px;
+  }
+}

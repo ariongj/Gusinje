@@ -307,3 +307,11 @@
     animation: none;
   }
 }
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .control {
+    width: 44px;
+    height: 44px;
+  }
+}

@@ -137,3 +137,10 @@
   border-color: var(--teal-2);
   color: var(--ink);
 }
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .secondary {
+    min-height: 44px;
+  }
+}

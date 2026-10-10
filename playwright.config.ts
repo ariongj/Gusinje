@@ -15,6 +15,9 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:4173",
     trace: "off",
+    // The offline service worker would answer requests before the test fixtures
+    // see them; only offline.spec.ts turns it on.
+    serviceWorkers: "block",
     launchOptions: {
       // Software WebGL so the 3D view can be tested headless.
       args: ["--enable-unsafe-swiftshader", "--use-angle=swiftshader"],
@@ -29,6 +32,6 @@ export default defineConfig({
   projects: [
     { name: "content", testMatch: /content\.spec\.ts/ },
     { name: "desktop", testMatch: /e2e\/.*\.spec\.ts/, use: { ...devices["Desktop Chrome"], viewport: { width: 1366, height: 900 } } },
-    { name: "mobile", testMatch: /e2e\/(mobile|planner|navigation)\.spec\.ts/, use: { ...devices["Pixel 7"] } },
+    { name: "mobile", testMatch: /e2e\/(mobile|planner|navigation|offline)\.spec\.ts/, use: { ...devices["Pixel 7"] } },
   ],
 });

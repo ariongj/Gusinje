@@ -23,6 +23,8 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  /* The whole bar height is tappable, not just the words. */
+  min-height: 44px;
   color: var(--ink);
   flex: 0 1 auto;
   min-width: 0;
@@ -105,8 +107,8 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-width: 42px;
-  height: 42px;
+  min-width: 44px;
+  height: 44px;
   padding: 0 10px;
   border-radius: var(--r-pill);
   border: 1px solid var(--line-3);
@@ -230,8 +232,6 @@
   .tool,
   .langButton,
   .burger {
-    min-width: 40px;
-    height: 40px;
     padding: 0 8px;
   }
 }

@@ -32,7 +32,9 @@ export function PageIntro({ lang, t, title, kicker, lead, photo, crumbs, childre
             <ol>
               {crumbs.map(([label, path]) => (
                 <li key={path}>
-                  <Link href={path}>{label}</Link>
+                  <Link href={path} prefetch={false}>
+                    {label}
+                  </Link>
                 </li>
               ))}
             </ol>

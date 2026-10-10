@@ -3,7 +3,9 @@
 Status on 10 October 2026: **not ready for public launch.** The platform works
 end to end as a preview, but its content has only been checked against
 published sources, translations are unreviewed, and no backend or partnership
-exists. Nothing has been deployed or announced.
+exists. A `noindex` preview is published on GitHub Pages
+(<https://ariongj.github.io/Gusinje/>, approved by the owner on 10 October 2026);
+it has not been announced or submitted anywhere.
 
 ## What works now
 
@@ -12,7 +14,8 @@ exists. Nothing has been deployed or announced.
 - 11 place pages, 11 listings, 6 walk/hike pages, 9 travel guides, 4 itinerary templates, 4 tours and 80 cited sources — each page with sources, check dates, share link and QR code.
 - My Trip planner (local only), search across languages, editorial dashboard.
 - Reviews, submissions, claims, corrections and moderation **in preview mode** (nothing is sent or stored); backend schema ready and tested.
-- Tests: content integrity, desktop and phone end-to-end, no-WebGL, axe accessibility scan, schema permissions.
+- Phones: responsive photo sizes, trimmed fonts, limited prefetching, map-first Explore on data saver / 2G, 44 px touch targets, add-to-home-screen, offline copies of visited pages.
+- Tests: content integrity, desktop and phone end-to-end, no-WebGL, offline, touch targets, axe accessibility scan, schema permissions.
 
 ## Blocking before a public launch
 
@@ -45,7 +48,8 @@ exists. Nothing has been deployed or announced.
 
 ### Approvals and services (yours to decide)
 
-- [ ] **Public deployment**: domain, hosting (GitHub Pages works), and when to drop `noindex`. The Pages workflow is manual-only.
+- [x] **Preview deployment** on GitHub Pages with `noindex` (manual workflow only).
+- [ ] **Public launch**: domain, and when to drop `noindex` (remove `NEXT_PUBLIC_NOINDEX` from `pages.yml`).
 - [ ] **Map tiles**: OpenStreetMap's tile servers are acceptable for a small pilot; for public traffic choose a provider (set `NEXT_PUBLIC_MAP_TILES` / `NEXT_PUBLIC_MAP_ATTRIBUTION`).
 - [ ] **Backend** for reviews, submissions and enquiries (see `backend/README.md`): approve a provider, create the account, appoint moderators.
 - [ ] **Privacy notice and moderation policy**: publish final versions with a named data controller.
@@ -55,5 +59,7 @@ exists. Nothing has been deployed or announced.
 ## Performance and accessibility notes
 
 - Home and content pages are static HTML; three.js (~600 KB) loads only on the Explore page, and not at all where WebGL is unavailable. Leaflet loads only when the map is shown.
-- Photos are 1280px Wikimedia thumbnails, lazy-loaded below the fold; the build does not optimise images (static hosting). Consider self-hosting resized copies for slow connections.
-- Automated axe checks pass on the key pages; a manual screen-reader pass (NVDA/VoiceOver) and testing on real phones are still to do — they were not performed.
+- Photos are Wikimedia thumbnails at the width each screen needs (500/960/1280 px), lazy-loaded below the fold. ROSI's Booking.com photos are still hot-linked at their single size until original files are supplied.
+- Page weight on a phone profile (uncompressed, photos excluded): home 1044 KB (was 1488 KB), Explore 1538 KB (was 2013 KB; 1077 KB with data saver). Fonts 163 KB (was 532 KB).
+- The service worker stores only this site's public pages and build files on the visitor's device (mentioned in the privacy section of "About this guide"). Bump `VERSION` in `public/sw.js` if a release must drop old copies.
+- Automated axe checks pass on the key pages; a manual screen-reader pass (NVDA/VoiceOver) and testing on real phones (iPhone Safari, a budget Android) are still to do — they were not performed. Phone behaviour was tested in emulation (Pixel 7 profile, 320–412 px widths).

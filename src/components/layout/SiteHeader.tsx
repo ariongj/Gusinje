@@ -56,7 +56,8 @@ export function SiteHeader() {
         </nav>
 
         <div className={styles.tools}>
-          <Link href={href(lang, "/search")} className={styles.tool} aria-label={t.nav.search} title={t.nav.search}>
+          {/* No prefetch: the search page carries the whole search index. */}
+          <Link href={href(lang, "/search")} className={styles.tool} aria-label={t.nav.search} title={t.nav.search} prefetch={false}>
             <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true">
               <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.8" fill="none" />
               <path d="M13 13l4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -64,6 +65,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href={href(lang, "/plan")}
+            prefetch={false}
             className={cx(styles.tool, styles.trip)}
             aria-label={count ? `${t.nav.myTrip} (${count})` : t.nav.myTrip}
             title={t.nav.myTrip}

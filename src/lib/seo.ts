@@ -37,7 +37,9 @@ export function pageMetadata({ lang, path, title, description, image, noindex }:
       images: image ? [{ url: image.src, width: image.width, height: image.height, alt: image.alt }] : undefined,
     },
     twitter: { card: image ? "summary_large_image" : "summary", title, description },
-    robots: noindex ? { index: false, follow: false } : undefined,
+    // Set only when needed: an explicit `undefined` would replace the
+    // layout's preview-wide noindex. Previews (NEXT_PUBLIC_NOINDEX) hide every page.
+    ...(noindex || process.env.NEXT_PUBLIC_NOINDEX === "true" ? { robots: { index: false, follow: false } } : {}),
   };
 }
 

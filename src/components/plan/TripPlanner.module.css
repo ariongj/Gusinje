@@ -155,3 +155,10 @@
     border-color: #999;
   }
 }
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .moveTo select {
+    min-height: 44px;
+  }
+}

@@ -320,3 +320,11 @@ select.input {
     display: none !important;
   }
 }
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .buttonSmall,
+  .chip {
+    min-height: 44px;
+  }
+}

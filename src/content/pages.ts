@@ -163,15 +163,15 @@ export const aboutPlatform: { lead: Localized; sections: ProseSection[] } = {
       heading: { en: "Privacy", sq: "Privatësia", cnr: "Privatnost" },
       body: {
         en: [
-          "This site sets no cookies and runs no analytics. My Trip is stored only in your browser; a shared trip link carries the trip itself, after the # sign, which browsers don't send to servers.",
+          "This site sets no cookies and runs no analytics. My Trip is stored only in your browser; a shared trip link carries the trip itself, after the # sign, which browsers don't send to servers. Pages you open are also saved in your browser so they work without signal; clearing this site's data removes them.",
           "The map loads tiles from OpenStreetMap, and photos load from Wikimedia Commons and, for ROSI's listings, from Booking.com. Those services receive your IP address when your browser fetches them. “Send enquiry” opens your own email app; nothing passes through this site.",
         ],
         sq: [
-          "Kjo faqe nuk vendos cookies dhe nuk përdor analitikë. Udhëtimi im ruhet vetëm në shfletuesin tuaj; një lidhje e ndarë udhëtimi mbart vetë udhëtimin, pas shenjës #, të cilën shfletuesit nuk ua dërgojnë serverëve.",
+          "Kjo faqe nuk vendos cookies dhe nuk përdor analitikë. Udhëtimi im ruhet vetëm në shfletuesin tuaj; një lidhje e ndarë udhëtimi mbart vetë udhëtimin, pas shenjës #, të cilën shfletuesit nuk ua dërgojnë serverëve. Faqet që hapni ruhen gjithashtu në shfletuesin tuaj, që të punojnë edhe pa sinjal; fshirja e të dhënave të kësaj faqeje i heq ato.",
           "Harta ngarkon pllaka nga OpenStreetMap, dhe fotot ngarkohen nga Wikimedia Commons dhe, për listimet e ROSI-t, nga Booking.com. Këto shërbime marrin adresën tuaj IP kur shfletuesi juaj i shkarkon. “Dërgo pyetje” hap aplikacionin tuaj të emailit; asgjë nuk kalon përmes kësaj faqeje.",
         ],
         cnr: [
-          "Ovaj sajt ne postavlja kolačiće i ne koristi analitiku. Moje putovanje čuva se samo u vašem pregledaču; podijeljeni link putovanja nosi samo putovanje, iza znaka #, koji pregledači ne šalju serverima.",
+          "Ovaj sajt ne postavlja kolačiće i ne koristi analitiku. Moje putovanje čuva se samo u vašem pregledaču; podijeljeni link putovanja nosi samo putovanje, iza znaka #, koji pregledači ne šalju serverima. Stranice koje otvorite čuvaju se i u vašem pregledaču, da bi radile i bez signala; brisanje podataka ovog sajta ih uklanja.",
           "Karta učitava pločice s OpenStreetMap-a, a fotografije s Wikimedia Commons i, za ROSI-jeve oglase, s Booking.com-a. Ti servisi primaju vašu IP adresu kada ih vaš pregledač preuzme. „Pošalji upit” otvara vašu email aplikaciju; ništa ne prolazi kroz ovaj sajt.",
         ],
       },

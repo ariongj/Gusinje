@@ -55,7 +55,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
             <ul className={styles.list}>
               {column.links.map((link) => (
                 <li key={link.path}>
-                  <Link href={href(lang, link.path)} className={styles.link}>
+                  <Link href={href(lang, link.path)} className={styles.link} prefetch={false}>
                     {link.label}
                   </Link>
                 </li>
@@ -75,7 +75,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
         <p>{t.footer.mapData}</p>
         <p>
           © {brand.copyrightYear} ROSI ·{" "}
-          <Link href={href(lang, "/admin")} className={styles.inline}>
+          <Link href={href(lang, "/admin")} className={styles.inline} prefetch={false}>
             {t.footer.admin}
           </Link>
         </p>

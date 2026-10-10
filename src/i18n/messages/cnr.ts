@@ -205,6 +205,7 @@ export const cnr: Messages = {
     loading3d: "Gradimo dolinu…",
     webglFailed: "3D nije dostupan u ovom pregledaču (WebGL je isključen ili nije podržan). Karta i spisak prikazuju ista mjesta.",
     switchedToMap: "3D ovdje nije dostupan, pa vidite kartu.",
+    savingData: "Da biste uštedjeli podatke, prvo se prikazuje karta. 3D prikaz je na jedan dodir.",
     mapFailed: "Karta se nije učitala. Spisak prikazuje sva mjesta.",
     tilesFailed: "Pozadina karte se nije učitala (da li ste bez interneta?). Oznake su i dalje prikazane.",
     filterLabel: "Filtriraj po nazivu",

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 
+import { OfflineSupport } from "@/components/layout/OfflineSupport";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { RevealObserver } from "@/components/ui/RevealObserver";
@@ -11,10 +12,12 @@ import { locales } from "@/i18n/config";
 
 import "../globals.css";
 
+// Only what the design uses: upright Fraunces with optical sizing (no italic,
+// no SOFT axis) keeps the font download small on phones.
 const fraunces = Fraunces({
   subsets: ["latin", "latin-ext"],
-  style: ["normal", "italic"],
-  axes: ["opsz", "SOFT"],
+  style: ["normal"],
+  axes: ["opsz"],
   variable: "--font-fraunces",
   display: "swap",
 });
@@ -41,7 +44,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     applicationName: brand.name[lang],
     formatDetection: { telephone: false },
     // Previews (e.g. GitHub Pages) stay out of search results until launch.
-    robots: process.env.NEXT_PUBLIC_NOINDEX === "true" ? { index: false, follow: false } : undefined,
+    ...(process.env.NEXT_PUBLIC_NOINDEX === "true" ? { robots: { index: false, follow: false } } : {}),
   };
 }
 
@@ -66,6 +69,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           <SiteFooter lang={lang} />
         </I18nProvider>
         <RevealObserver />
+        <OfflineSupport />
       </body>
     </html>
   );

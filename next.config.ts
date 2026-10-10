@@ -14,9 +14,13 @@ const nextConfig: NextConfig = {
   // Pages export as places/index.html — static hosts resolve /places/ to that folder.
   trailingSlash: true,
   images: {
-    // Static hosting can't optimise images on request; photos come pre-sized
-    // from Wikimedia Commons thumbnails.
-    unoptimized: true,
+    // No image server on static hosting: src/lib/image-loader.ts picks the
+    // right Wikimedia Commons thumbnail width for each screen instead.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    // Widths that match Commons' standard thumbnail sizes.
+    deviceSizes: [500, 960, 1280],
+    imageSizes: [250, 330],
   },
   experimental: {
     // One 404 page for the whole site: the root layout sits under [lang].

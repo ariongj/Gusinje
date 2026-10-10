@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(`${brand.url}/`),
   title: brand.name.en,
   description: "Gusinje · Vusanje · Prokletije — choose your language.",
-  robots: process.env.NEXT_PUBLIC_NOINDEX === "true" ? { index: false, follow: false } : undefined,
+  ...(process.env.NEXT_PUBLIC_NOINDEX === "true" ? { robots: { index: false, follow: false } } : {}),
 };
 
 /** The bare site root only picks a language. */

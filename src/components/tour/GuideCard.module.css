@@ -361,3 +361,15 @@
     animation: none;
   }
 }
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .exit {
+    width: 44px;
+    height: 44px;
+  }
+
+  .link {
+    min-height: 44px;
+  }
+}

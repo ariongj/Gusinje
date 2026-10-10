@@ -10,7 +10,9 @@ separate and unchanged: <https://ariongj.github.io/hotelplav/>.
 
 > **Status:** preview. Content has been checked against published sources but not on the ground,
 > Albanian and Montenegrin are unreviewed drafts, and reviews/submissions run in preview mode
-> (nothing is sent or stored). See [docs/LAUNCH.md](docs/LAUNCH.md). Nothing has been deployed.
+> (nothing is sent or stored). See [docs/LAUNCH.md](docs/LAUNCH.md).
+> A preview is published at <https://ariongj.github.io/Gusinje/> — hidden from search engines
+> (`noindex`) and not announced.
 
 ## Quick start
 
@@ -23,6 +25,9 @@ npm run build        # static export → out/
 npm run serve        # serve out/ on http://localhost:4173
 ```
 
+To try the GitHub Pages layout locally: build with `NEXT_PUBLIC_BASE_PATH=/Gusinje`, then
+`BASE_PATH=/Gusinje npm run serve` and open <http://localhost:4173/Gusinje/en/>.
+
 | Script | What it does |
 | --- | --- |
 | `npm run dev` | Development server |
@@ -30,7 +35,7 @@ npm run serve        # serve out/ on http://localhost:4173
 | `npm run lint` / `npm run typecheck` | ESLint / TypeScript |
 | `npm run check:content` | Content integrity: sources exist, references resolve, coordinates in the region, directory rules, translations complete |
 | `npm run test:schema` | Backend schema permission checks in PGlite |
-| `npm run test:e2e` | Playwright against the built site (desktop, phone, no-WebGL, axe) — run `npm run build` first |
+| `npm run test:e2e` | Playwright against the built site (desktop, phone, no-WebGL, offline, axe) — run `npm run build` first |
 | `npm test` | All of the above |
 
 ## How it is built
@@ -87,6 +92,31 @@ To edit content: change the record, run `npm run check:content`, open a pull req
    work without it).
 4. Write all three languages; mark translations `unreviewed`.
 
+### Phones, slow connections and no signal
+
+- **Photos** come in the width the screen needs: `src/lib/image-loader.ts` asks Wikimedia Commons
+  for one of its standard thumbnail sizes (500, 960 or 1280 px) instead of always 1280 px.
+- **Fonts**: only the styles in use (upright Fraunces, Manrope) — 163 KB instead of 532 KB.
+- **Prefetching**: only the main navigation and calls to action load ahead; cards, footer,
+  breadcrumbs, search and My Trip load when tapped.
+- **Explore** opens on the map instead of 3D when the phone has data saver on, a 2G connection
+  or very little memory (3D is one tap away). The legend becomes chips under the model.
+- **Touch targets** are at least 44 px on touch screens (tested).
+- **Add to home screen**: `src/app/manifest.ts`, icons in `public/icons/` and
+  `src/app/apple-icon.png` (regenerate with `node scripts/icons.mjs`).
+- **Offline**: `public/sw.js` keeps the pages a visitor has opened (and the files they need)
+  so they work without signal; anything else shows `public/offline.html`, which lists the saved
+  pages. Only this site's public pages are stored — never photos, map tiles or anything typed.
+  Bump `VERSION` in `sw.js` to drop old copies.
+- `node scripts/measure.mjs [paths]` reports page weight on a phone profile (`SAVE_DATA=1` for
+  data saver).
+
+| Page (phone, uncompressed, photos excluded) | Before | Now |
+| --- | --- | --- |
+| Home `/en/` | 1488 KB | 1044 KB |
+| Explore `/en/explore/` | 2013 KB | 1538 KB (1077 KB with data saver) |
+| Place `/en/places/grlja/` | — | 907 KB |
+
 ### Environment variables
 
 See `.env.example`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_BASE_PATH` (GitHub Pages: `/<repo>`),
@@ -95,7 +125,8 @@ See `.env.example`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_BASE_PATH` (GitHub Page
 ## Deploying (only when approved)
 
 `.github/workflows/pages.yml` builds and publishes to GitHub Pages **only when started by hand**
-(Actions → "Deploy preview to GitHub Pages" → Run workflow), with `noindex`. `ci.yml` lints,
+(Actions → "Deploy preview to GitHub Pages" → Run workflow), with `noindex` on every page.
+The repository's Pages source must be set to "GitHub Actions" (Settings → Pages). `ci.yml` lints,
 type-checks, builds and tests every push without publishing anything.
 
 ## Credits

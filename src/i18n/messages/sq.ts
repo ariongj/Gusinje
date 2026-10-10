@@ -197,6 +197,7 @@ export const sq: Messages = {
     loading3d: "Duke ndërtuar luginën…",
     webglFailed: "3D nuk është i disponueshëm në këtë shfletues (WebGL është i fikur ose nuk mbështetet). Harta dhe lista tregojnë të njëjtat vende.",
     switchedToMap: "3D nuk është i disponueshëm këtu, ndaj po shihni hartën.",
+    savingData: "Për të kursyer të dhënat, fillimisht shfaqet harta. Pamja 3D është vetëm një prekje larg.",
     mapFailed: "Harta nuk u ngarkua. Lista tregon çdo vend.",
     tilesFailed: "Sfondi i hartës nuk u ngarkua (jeni pa internet?). Shënjuesit shfaqen gjithsesi.",
     filterLabel: "Filtro sipas emrit",

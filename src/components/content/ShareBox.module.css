@@ -76,3 +76,10 @@
     display: none;
   }
 }
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .copy {
+    min-height: 44px;
+  }
+}

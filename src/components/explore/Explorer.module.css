@@ -97,6 +97,8 @@
 .stage {
   position: relative;
   height: clamp(420px, 72vh, 760px);
+  /* The visible viewport on phones, whatever the browser bars are doing. */
+  height: clamp(420px, 72svh, 760px);
   border-radius: var(--r-xl);
   overflow: hidden;
   background: linear-gradient(180deg, #cfe0e6, #e9efe8);
@@ -107,6 +109,7 @@
 @media (max-width: 599.98px) {
   .stage {
     height: clamp(380px, 64vh, 560px);
+    height: clamp(360px, 62svh, 560px);
     border-radius: var(--r-lg);
   }
 
@@ -121,6 +124,7 @@
   .touring .layer {
     position: relative;
     height: clamp(320px, 52vh, 480px);
+    height: clamp(300px, 50svh, 480px);
     border-radius: var(--r-lg);
     overflow: hidden;
     border: 1px solid var(--line-3);
@@ -510,4 +514,44 @@
   margin: 14px 0 0;
   font: 500 13.5px/1.55 var(--font-text);
   color: var(--text-soft);
+}
+
+/* Under the model on phones and tablets: the legend becomes a row of chips. */
+@media (max-width: 899.98px) {
+  .legendList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .legendItem {
+    width: auto;
+    gap: 8px;
+    padding: 0 6px 0 12px;
+    border: 1px solid var(--line-3);
+    border-radius: var(--r-pill);
+    background: var(--lighter);
+  }
+
+  .legendItem[aria-pressed="true"] {
+    border-color: var(--teal-2);
+  }
+
+  .legendItem[aria-pressed="true"]::after {
+    content: none;
+  }
+
+  .legendLabel {
+    flex: 0 1 auto;
+  }
+}
+
+/* Finger-sized targets (44px) on touch screens. */
+@media (pointer: coarse) {
+  .viewButton,
+  .clear,
+  .mapReset,
+  .legendItem {
+    min-height: 44px;
+  }
 }

@@ -196,6 +196,7 @@ export const en = {
     loading3d: "Building the valley…",
     webglFailed: "3D isn't available in this browser (WebGL is switched off or unsupported). The map and the list show the same places.",
     switchedToMap: "3D isn't available here, so you're seeing the map instead.",
+    savingData: "To save data, the map is shown first. The 3D view is one tap away.",
     mapFailed: "The map couldn't load. The list shows every place.",
     tilesFailed: "The map background couldn't load (are you offline?). Markers are still shown.",
     filterLabel: "Filter by name",

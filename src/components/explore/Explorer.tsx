@@ -39,6 +39,18 @@ function webglSupported(): boolean {
   }
 }
 
+/**
+ * Data saver on, a very slow connection or a low-memory phone: start with the
+ * map rather than downloading the 3D engine. Visitors can still switch.
+ */
+function preferLightweight(): boolean {
+  const nav = navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string }; deviceMemory?: number };
+  if (nav.connection?.saveData) return true;
+  if (nav.connection?.effectiveType?.endsWith("2g")) return true;
+  if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 1) return true;
+  return window.matchMedia?.("(prefers-reduced-data: reduce)").matches ?? false;
+}
+
 const VIEWS: ExploreView[] = ["3d", "map", "list"];
 
 export function Explorer({ items, tours }: Props) {
@@ -189,6 +201,9 @@ export function Explorer({ items, tours }: Props) {
     if (initialView === "3d" && !supported) {
       initialView = "map";
       setNotice(t.explore.switchedToMap);
+    } else if (initialView === "3d" && !params.has("view") && preferLightweight()) {
+      initialView = "map";
+      setNotice(t.explore.savingData);
     }
     setView(initialView);
     if (initialView === "3d") setMounted3d(true);

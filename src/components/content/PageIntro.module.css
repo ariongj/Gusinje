@@ -50,3 +50,17 @@
 .crumbs a:hover {
   color: var(--ink);
 }
+
+/* Finger-sized breadcrumb links on touch screens (the row absorbs its own margin). */
+@media (pointer: coarse) {
+  .crumbs ol {
+    align-items: center;
+    margin: -12px 0 2px;
+  }
+
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
