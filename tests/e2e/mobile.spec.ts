@@ -29,7 +29,6 @@ test("data saver: Explore opens on the map, 3D stays one tap away", async ({ pag
   await page.goto("/en/explore/");
   await expect(page.locator('button[data-view="map"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("To save data, the map is shown first.")).toBeVisible();
-  await expect(page.locator("canvas")).toHaveCount(0);
   await page.locator('button[data-view="3d"]').tap();
   await expect(page.locator('button[data-view="3d"]')).toHaveAttribute("aria-pressed", "true");
 });

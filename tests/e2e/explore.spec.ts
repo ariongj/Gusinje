@@ -1,10 +1,12 @@
 import { expect, test } from "./fixtures";
 
 test.describe("Explore: 3D, map and list share the same records", () => {
-  test("3D view renders markers; selecting one opens the info panel", async ({ page, errors }) => {
+  test("3D map renders markers at sourced positions; selecting one opens the info panel", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/explore/");
-    await expect(page.getByText("Illustrative 3D model — not to scale")).toBeVisible();
+    await expect(page.getByRole("region", { name: "Map of places and listings" })).toBeVisible();
+    // Places without a verified location are listed, never placed on the map.
+    await expect(page.locator('button[data-key="place:volusnica"]')).toHaveCount(0);
     const pin = page.locator('button[data-key="place:grlja"]');
     await expect(pin).toBeAttached({ timeout: 20_000 });
     // Pins are buttons: keyboard activation must work.
@@ -13,7 +15,7 @@ test.describe("Explore: 3D, map and list share the same records", () => {
     const panel = page.getByTestId("info-panel");
     await expect(panel.getByRole("heading", { name: "Grlja waterfall" })).toBeVisible();
     await expect(pin).toHaveAttribute("aria-pressed", "true");
-    await expect(panel.getByText("Location not yet verified")).toBeVisible();
+    await expect(panel.getByText("Mapped point")).toBeVisible();
     await expect(page).toHaveURL(/place=grlja/);
     await panel.getByRole("link", { name: "Open page" }).click();
     await expect(page).toHaveURL(/\/en\/places\/grlja\/$/);
@@ -33,12 +35,14 @@ test.describe("Explore: 3D, map and list share the same records", () => {
     const panel = page.getByTestId("info-panel");
     await expect(panel.getByRole("heading", { name: "Gusinje" })).toBeVisible();
     await expect(gusinje).toHaveAttribute("aria-current", "true");
-    await expect(panel.getByText("2 of 11")).toBeVisible();
+    const order = await rail.locator("[data-rail]").evaluateAll((els) => els.map((el) => el.getAttribute("data-rail")));
+    const index = order.indexOf("place:gusinje");
+    await expect(panel.getByText(`${index + 1} of ${order.length}`)).toBeVisible();
     await expect(page.locator('button[data-key="place:gusinje"]')).toHaveAttribute("aria-pressed", "true");
 
+    // Next goes to the next place along the strip (further up the valley).
     await panel.getByRole("button", { name: "Next place" }).click();
-    await expect(panel.getByRole("heading", { name: "Ali Pasha's Springs" })).toBeVisible();
-    await expect(page).toHaveURL(/place=ali-pashas-springs/);
+    await expect(rail.locator(`[data-rail="${order[index + 1]}"]`)).toHaveAttribute("aria-current", "true");
     await rail.getByRole("button", { name: "Previous place" }).click();
     await expect(panel.getByRole("heading", { name: "Gusinje" })).toBeVisible();
   });
@@ -70,7 +74,7 @@ test.describe("Explore: 3D, map and list share the same records", () => {
     await page.goto("/en/explore/?view=list");
     await page.locator('li[data-key="place:ali-pashas-springs"]').getByRole("button", { name: "Show on map" }).click();
     await expect(page.locator('[data-view="map"]')).toHaveAttribute("aria-pressed", "true");
-    const marker = page.locator('.leaflet-marker-icon[data-key="place:ali-pashas-springs"]');
+    const marker = page.locator('button[data-key="place:ali-pashas-springs"]');
     await expect(marker).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("info-panel").getByRole("heading", { name: "Ali Pasha's Springs" })).toBeVisible();
     // Map tiles are blocked in tests: the map says so but keeps working.
@@ -90,7 +94,7 @@ test.describe("Explore: 3D, map and list share the same records", () => {
   test("a mouse click on a 3D marker selects that marker, not its neighbour", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/explore/");
-    const dot = page.locator('button[data-key="place:oko-skakavice"] span[aria-hidden="true"]');
+    const dot = page.locator('button[data-key="place:oko-skakavice"] [data-part="dot"]');
     await expect(dot).toBeAttached({ timeout: 20_000 });
     await page.waitForTimeout(1500);
     const box = await dot.boundingBox();
@@ -101,7 +105,7 @@ test.describe("Explore: 3D, map and list share the same records", () => {
   test("map markers are reachable by keyboard", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/explore/?view=map");
-    const marker = page.locator('.leaflet-marker-icon[data-key="place:oko-skakavice"]');
+    const marker = page.locator('button[data-key="place:oko-skakavice"]');
     await expect(marker).toBeVisible();
     await marker.focus();
     await page.keyboard.press("Enter");

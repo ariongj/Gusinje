@@ -1,4 +1,4 @@
-import type { SceneAnchor, VerificationStatus } from "@/content/types";
+import type { VerificationStatus } from "@/content/types";
 
 /** Legend groups: every item on the 3D view, map and list belongs to one. */
 export const legendGroups = ["villages", "water", "nature", "culture", "stay", "food", "services"] as const;
@@ -27,7 +27,6 @@ export type ExploreItem = {
   href: string;
   photo?: { src: string; alt: string; credit: string; creditHref: string };
   location?: { lat: number; lng: number; precision: "point" | "area"; status: VerificationStatus };
-  scene?: SceneAnchor;
   /** Inside another listing (a hotel's restaurant): drawn as that listing's marker. */
   hostKey?: string;
   hostName?: string;
@@ -45,3 +44,12 @@ export const groupColor: Record<LegendGroup, string> = {
   food: "#c0612b",
   services: "#5b5a8f",
 };
+
+/**
+ * Where the camera goes: the whole valley, a low flight towards the peaks, or
+ * a mapped point (with the direction to face and zoom, when a tour sets them).
+ */
+export type CameraTarget =
+  | { kind: "overview" }
+  | { kind: "valley" }
+  | { kind: "point"; lng: number; lat: number; area: boolean; bearing?: number; zoom?: number };

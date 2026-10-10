@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { ResortMap } from "@/components/resort3d/ResortMap";
+import { TerrainMap } from "@/components/map/TerrainMap";
 import { useI18n } from "@/i18n/client";
 import { href } from "@/i18n/config";
 
@@ -18,8 +18,8 @@ function lightweight(): boolean {
 }
 
 /**
- * Full-width band on the home page: the 3D valley drifting behind a short
- * invitation. The model (three.js) only loads when the band comes near the
+ * Full-width band on the home page: the real valley in 3D, turning slowly
+ * behind a short invitation. The map only loads when the band comes near the
  * screen, and never on data saver; until then a painted sky-to-valley backdrop
  * stands in.
  */
@@ -47,7 +47,7 @@ export function ValleyShowcase() {
   return (
     <section ref={ref} className={styles.band} aria-labelledby="showcase-title">
       <div className={styles.backdrop} aria-hidden="true">
-        {live && <ResortMap variant="hero" onFailed={() => setLive(false)} />}
+        {live && <TerrainMap variant="showcase" onFailed={() => setLive(false)} />}
       </div>
       <div className={styles.shade} aria-hidden="true" />
       <div className={styles.inner}>

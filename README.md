@@ -1,7 +1,7 @@
 # Gusinje & Vusanje Valley Guide
 
 An independent, multilingual visitor guide to **Gusinje, Vusanje and the Prokletije** (Montenegro):
-an interactive 3D valley with a map and list of the same places, place pages with sources,
+a real-terrain 3D map of the valley with a flat map and a list of the same places, place pages with sources,
 a local directory, walks and hikes, travel tips, virtual tours and a personal trip planner.
 
 Created and hosted by **ROSI**. It is not an official tourism website and is not endorsed by any
@@ -41,8 +41,8 @@ To try the GitHub Pages layout locally: build with `NEXT_PUBLIC_BASE_PATH=/Gusin
 ## How it is built
 
 **Next.js 16** (App Router, static export), **React 19**, **TypeScript**, **CSS Modules**,
-**three.js** (the 3D valley, reused from the ROSI site), **Leaflet** (the map), **qrcode**
-(build-time QR codes). No server, no database, no cookies, no analytics.
+**MapLibre GL** (the 3D and flat map), **Leaflet** (a simple map for browsers without WebGL),
+**qrcode** (build-time QR codes). No server, no database, no cookies, no analytics.
 
 ```
 src/
@@ -51,8 +51,8 @@ src/
                        itinerary; sources.ts; photos.ts (credits and rights); pages.ts (long text)
   i18n/                languages, UI strings (messages/en|sq|cnr.ts), helpers
   components/
-    explore/           Explorer (3D + map + list), Leaflet map, legend, info panel
-    resort3d/          the illustrative 3D valley engine (three.js) and its React wrapper
+    explore/           Explorer (3D + map + list), legend, info panel, place strip; Leaflet fallback map
+    map/               the real-terrain map (MapLibre): styles, terrain, markers, camera flights
     tour/              guided-tour hook and narrator card
     content/           cards, verification panel, sources, share/QR, filters, reviews preview
     plan/              My Trip planner, shared trips
@@ -72,7 +72,7 @@ map, the lists, the detail pages, search, the sitemap and the planner all read t
 - Every record has a **verification** (`field-verified`, `desk-verified`, `self-reported`,
   `unverified`), a **last-checked date**, an **owner** (who keeps it current) and **sources**.
 - **Coordinates** carry their own status, precision (point or area) and sources. Places without
-  reliable published coordinates (Grlja, Karanfili, Volušnica) are not on the map.
+  reliable published coordinates (today: Volušnica) are listed but never placed on the map.
 - **Practical facts** (fees, hours, durations, distances, prices) are optional: when unknown,
   pages say "Not yet verified" — nothing is guessed.
 - **Routes** show every figure with the source that reported it, have no GPS tracks, and stay
@@ -88,8 +88,7 @@ To edit content: change the record, run `npm run check:content`, open a pull req
 1. Add a record to `src/content/places.ts` with sources from `sources.ts` (add new sources there).
 2. Photos: only free-licence (Wikimedia Commons) or with written permission — add to `photos.ts`
    with author, licence, licence URL and file page.
-3. For the 3D view, add a scene anchor in `src/components/resort3d/` (optional — the map and list
-   work without it).
+3. Give it coordinates with sources to put it on the 3D map; without them it appears in the list only.
 4. Write all three languages; mark translations `unreviewed`.
 
 ### Design
@@ -136,7 +135,9 @@ same). While a place is selected, the other labels step back so it has the stage
 ### Environment variables
 
 See `.env.example`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_BASE_PATH` (GitHub Pages: `/<repo>`),
-`NEXT_PUBLIC_NOINDEX`, `NEXT_PUBLIC_MAP_TILES`, `NEXT_PUBLIC_MAP_ATTRIBUTION`.
+`NEXT_PUBLIC_NOINDEX`, `NEXT_PUBLIC_MAP_STYLE` (base map style URL, default OpenFreeMap "liberty"),
+`NEXT_PUBLIC_MAP_TERRAIN` (terrain tiles, default Mapzen terrarium on AWS), and for the no-WebGL
+fallback `NEXT_PUBLIC_MAP_TILES`, `NEXT_PUBLIC_MAP_ATTRIBUTION`.
 
 ## Deploying (only when approved)
 
@@ -148,4 +149,5 @@ type-checks, builds and tests every push without publishing anything.
 ## Credits
 
 Landscape photos: Wikimedia Commons contributors under CC licences (listed on `/credits`).
-Map data: © OpenStreetMap contributors. 3D model: procedural illustration, not survey data.
+Map data: © OpenStreetMap contributors (via OpenFreeMap). Terrain: Mapzen terrain tiles (SRTM and
+others) via AWS Open Data.

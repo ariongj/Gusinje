@@ -342,7 +342,6 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
               t={t}
               location={location}
               exploreQuery={`listing=${b.slug}`}
-              inScene={!!b.scene}
               hostNote={host ? fill(t.business.partOf, { name: host.name }) : b.address ? loc(b.address, lang) : undefined}
             />
             <ShareBox lang={lang} t={t} path={path} title={b.name} />

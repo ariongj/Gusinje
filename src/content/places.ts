@@ -72,7 +72,6 @@ export const places: Place[] = [
       cnr: ["Vezirova džamija i crkve Svetog Đorđa i Svetog Antona u centru", "Početak puteva ka Vusanju i Grbaji", "Alipašini izvori, oko 2 km južno"],
     },
     location: { lat: 42.56194, lng: 19.83389, precision: "area", status: "desk-verified", sources: ["wiki-gusinje", "geonames-gusinje"] },
-    scene: "gusinje",
     photos: [C.gusinjeValley, C.gusinjeHouses, C.gusinjeHaystacks, C.gusinjeAerial],
     officialLinks: ["gusinje-to"],
     verification: desk(
@@ -119,7 +118,6 @@ export const places: Place[] = [
       cnr: ["Vodopad Grlja na rubu sela", "Izvor Oko Skakavice, oko 1,5 km dalje", "Početak etape Vrhova Balkana do Teta"],
     },
     location: { lat: 42.52944, lng: 19.84028, precision: "area", status: "desk-verified", sources: ["wiki-vusanje", "wikidata-vusanje"] },
-    scene: "vusanje",
     photos: [C.vusanjeVillage, C.vusanjeGuesthouses, C.vusanjeStoneHouse, C.vusanjePeaks],
     warnings: [
       {
@@ -176,7 +174,6 @@ export const places: Place[] = [
       status: "desk-verified",
       sources: ["photomne-alipasa", "komoot-alipasa", "outdooractive-alipasa"],
     },
-    scene: "springs",
     photos: [C.aliPashaSprings],
     access: {
       en: "About 2 km south of Gusinje's centre: roughly five minutes by car, or an easy walk of about 25 minutes (as described by Lonely Planet).",
@@ -230,13 +227,12 @@ export const places: Place[] = [
       sq: ["Ujëvarë rreth 15 m në një kanion të thellë e të ngushtë", "Lehtë për t'u parë nga skaji i Vuthajve", "Zbritja në kanion vetëm për grupe të pajisura e me përvojë"],
       cnr: ["Vodopad od oko 15 m u dubok, uzak kanjon", "Lako se vidi s ruba Vusanja", "Spust kroz kanjon samo za opremljene i iskusne grupe"],
     },
-    location: null,
-    scene: "grlja",
+    location: { lat: 42.52283, lng: 19.84138, precision: "point", status: "desk-verified", sources: ["opencanyon-grlja", "evendo-grlja"] },
     photos: [C.grlja],
     access: {
-      en: "On the outskirts of Vusanje, a short walk from a parking area. The exact position has not yet been verified for this site — follow local signs.",
-      sq: "Në periferi të Vuthajve, në pak hapa nga një parking. Pozicioni i saktë nuk është verifikuar ende për këtë faqe — ndiqni shenjat vendore.",
-      cnr: "Na periferiji Vusanja, nekoliko koraka od parkinga. Tačan položaj još nije provjeren za ovaj sajt — pratite lokalne oznake.",
+      en: "On the outskirts of Vusanje, a short walk from a parking area. The mapped point is the canyon entrance as two canyoning and travel sites give it; it has not been checked on site — follow local signs.",
+      sq: "Në periferi të Vuthajve, në pak hapa nga një parking. Pika në hartë është hyrja e kanionit siç e japin dy faqe kanioningu dhe udhëtimi; nuk është kontrolluar në vend — ndiqni shenjat vendore.",
+      cnr: "Na periferiji Vusanja, nekoliko koraka od parkinga. Tačka na karti je ulaz u kanjon kako ga navode dva sajta o kanjoningu i putovanjima; nije provjerena na licu mjesta — pratite lokalne oznake.",
     },
     warnings: [
       {
@@ -254,7 +250,7 @@ export const places: Place[] = [
     routes: ["grlja-oko-skakavice-walk", "grlja-canyon"],
     verification: desk(
       ["mne-travel-grlja-canyon", "komoot-grlja", "komoot-grlja-loop", "descente-grlja"],
-      "No reliable published coordinates found; position to be recorded on site.",
+      "Position: the canyon entrance as published by OpenCanyon and Evendo (they agree within about 5 m); to be confirmed on site.",
     ),
     translations: DRAFTS,
   },
@@ -288,7 +284,6 @@ export const places: Place[] = [
       ],
     },
     location: { lat: 42.51187, lng: 19.834791, precision: "point", status: "desk-verified", sources: ["photomne-oko", "hikr-oko"] },
-    scene: "blueEye",
     photos: [C.blueEye],
     seasonality: {
       en: "Can be dry in October and November (walkers' reports).",
@@ -339,7 +334,6 @@ export const places: Place[] = [
       cnr: ["Krečnjački zidovi s obje strane", "Sezonsko jezero na čelu doline", "Staza Vrhova Balkana ka Tetu"],
     },
     location: { lat: 42.50194, lng: 19.81583, precision: "area", status: "desk-verified", sources: ["wiki-ropojana"] },
-    scene: "ropojana",
     photos: [C.ropojanaMeadow, C.ropojanaUpper, C.ropojanaRoad, C.ropojanaHiker],
     seasonality: {
       en: "The lake usually holds water in early summer and dries by August–September.",
@@ -394,7 +388,6 @@ export const places: Place[] = [
       cnr: ["Pogled na zidove Karanfila", "Početak ture na Volušnicu", "U Nacionalnom parku Prokletije"],
     },
     location: { lat: 42.5106, lng: 19.7926, precision: "area", status: "desk-verified", sources: ["summitpost-grbaja", "reliefmaps-grebaje"] },
-    scene: "grbaja",
     photos: [C.grbajaUpper, C.grbajaEvening],
     fees: PARK_FEES,
     officialLinks: ["np-montenegro", "np-prokletije-active"],
@@ -432,8 +425,7 @@ export const places: Place[] = [
         "Vrhovi su ozbiljni planinski ciljevi. Ovaj vodič opisuje masiv kao vidik; ne opisuje penjačke smjerove.",
       ],
     },
-    location: null,
-    scene: "karanfili",
+    location: { lat: 42.49639, lng: 19.78694, precision: "point", status: "desk-verified", sources: ["wiki-de-veliki-vrh", "peakvisor-veliki-vrh"] },
     photos: [C.karanfili, C.karanfilWest, C.karanfilWinter],
     warnings: [
       {
@@ -444,7 +436,10 @@ export const places: Place[] = [
     ],
     officialLinks: ["np-montenegro"],
     routes: ["volusnica-from-grbaja"],
-    verification: desk(["summitpost-karanfili"], "No reliable published summit coordinates found; elevations from a single source."),
+    verification: desk(
+      ["summitpost-karanfili", "wiki-de-veliki-vrh", "peakvisor-veliki-vrh"],
+      "The map marks the main summit, Veliki vrh (German Wikipedia and PeakVisor agree within about 75 m). Elevations of the other summits from SummitPost.",
+    ),
     translations: DRAFTS,
   },
   {
@@ -477,7 +472,6 @@ export const places: Place[] = [
       ],
     },
     location: { lat: 42.485, lng: 19.89722, precision: "point", status: "desk-verified", sources: ["wiki-zla-kolata", "summitpost-kolata"] },
-    scene: "zlaKolata",
     photos: [{ ...C.zlaKolataSummit, position: "40% 50%" }],
     warnings: [
       {

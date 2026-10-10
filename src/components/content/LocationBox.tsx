@@ -13,13 +13,12 @@ type Props = {
   location: Coordinates | null;
   /** Explorer query for this record, e.g. "place=grlja". */
   exploreQuery: string;
-  inScene: boolean;
   /** Shown instead of coordinates, e.g. "At Hotel ROSI". */
   hostNote?: string;
 };
 
 /** Where it is: coordinates with their status and precision, or a clear "not yet verified". */
-export function LocationBox({ lang, t, location, exploreQuery, inScene, hostNote }: Props) {
+export function LocationBox({ lang, t, location, exploreQuery, hostNote }: Props) {
   return (
     <section className={styles.box} aria-labelledby="location-title">
       <h2 id="location-title" className={styles.title}>
@@ -45,11 +44,9 @@ export function LocationBox({ lang, t, location, exploreQuery, inScene, hostNote
             <Link href={`${href(lang, "/explore")}?view=map&${exploreQuery}`} className={ui.buttonSmall}>
               {t.common.showOnMap}
             </Link>
-            {inScene && (
-              <Link href={`${href(lang, "/explore")}?${exploreQuery}`} className={ui.buttonSmall}>
-                {t.common.showIn3D}
-              </Link>
-            )}
+            <Link href={`${href(lang, "/explore")}?${exploreQuery}`} className={ui.buttonSmall}>
+              {t.common.showIn3D}
+            </Link>
             <a
               href={`https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`}
               target="_blank"
@@ -69,16 +66,7 @@ export function LocationBox({ lang, t, location, exploreQuery, inScene, hostNote
           </div>
         </>
       ) : (
-        <>
-          <p className={styles.text}>{t.place.noLocation}</p>
-          {inScene && (
-            <div className={ui.actions}>
-              <Link href={`${href(lang, "/explore")}?${exploreQuery}`} className={ui.buttonSmall}>
-                {t.common.showIn3D}
-              </Link>
-            </div>
-          )}
-        </>
+        <p className={styles.text}>{t.place.noLocation}</p>
       )}
     </section>
   );

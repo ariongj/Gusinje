@@ -1,11 +1,11 @@
 import "server-only";
 
 import type { ExploreTour, ExploreTourStop } from "@/components/explore/Explorer";
-import type { ExploreItem } from "@/components/explore/types";
+import type { CameraTarget, ExploreItem } from "@/components/explore/types";
 import { creditText } from "@/components/ui/PhotoCredit";
 import { photoAlt } from "@/components/ui/PhotoFigure";
 import { businesses, businessLegendGroup, getBusiness, getPlace, places, placeGroup, recordPath, tours } from "@/content";
-import type { Business, Photo, Place } from "@/content/types";
+import type { Business, MapCamera, Photo, Place } from "@/content/types";
 import { href, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n";
 import { fold, loc } from "@/i18n/localize";
@@ -32,7 +32,6 @@ export function placeItem(place: Place, lang: Locale): ExploreItem {
     href: href(lang, recordPath("place", place.slug)),
     photo: photoData(place.photos[0], lang),
     location: place.location ? { lat: place.location.lat, lng: place.location.lng, precision: place.location.precision, status: place.location.status } : undefined,
-    scene: place.scene,
   };
 }
 
@@ -53,7 +52,6 @@ export function businessItem(business: Business, lang: Locale): ExploreItem {
     href: href(lang, recordPath("business", business.slug)),
     photo: photoData(business.photos[0], lang),
     location: location ? { lat: location.lat, lng: location.lng, precision: location.precision, status: location.status } : undefined,
-    scene: business.scene,
     hostKey: host ? `business:${host.slug}` : undefined,
     hostName: host?.name,
     disclosure: business.disclosure === "platform-creator" ? t.directory.rosiBadge : undefined,
@@ -65,6 +63,14 @@ export function exploreItems(lang: Locale): ExploreItem[] {
   return [...places.map((p) => placeItem(p, lang)), ...businesses.map((b) => businessItem(b, lang))];
 }
 
+/** A tour stop's camera, resolved to a mapped position (never an invented one). */
+function cameraTarget(view: MapCamera): CameraTarget {
+  if (view === "overview" || view === "valley") return { kind: view };
+  const place = getPlace(view.place);
+  if (!place.location) throw new Error(`Tour camera points at "${view.place}", which has no verified location`);
+  return { kind: "point", lng: place.location.lng, lat: place.location.lat, area: place.location.precision === "area", bearing: view.bearing, zoom: view.zoom };
+}
+
 export function exploreTours(lang: Locale): ExploreTour[] {
   return tours.map((tour) => ({
     slug: tour.slug,
@@ -74,7 +80,7 @@ export function exploreTours(lang: Locale): ExploreTour[] {
     stops: tour.stops.map((stop): ExploreTourStop => {
       const record = stop.ref ? (stop.ref.kind === "place" ? getPlace(stop.ref.slug) : getBusiness(stop.ref.slug)) : undefined;
       return {
-        view: stop.view,
+        camera: cameraTarget(stop.view),
         key: stop.ref ? `${stop.ref.kind}:${stop.ref.slug}` : undefined,
         kicker: loc(stop.kicker, lang),
         title: loc(stop.title, lang),

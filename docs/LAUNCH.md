@@ -10,7 +10,7 @@ it has not been announced or submitted anywhere.
 ## What works now
 
 - Language-prefixed static site (English, Albanian, Montenegrin) — about 200 pages.
-- Explore: illustrative 3D model + map + list on the same records, filters, legend, deep links, four themed virtual tours, map/photo fallback without WebGL.
+- Explore: real-terrain 3D map (elevation data + OpenStreetMap) that also lies flat as a map, plus a list, on the same records, filters, legend, deep links, four themed virtual tours, map/photo fallback without WebGL.
 - 11 place pages, 11 listings, 6 walk/hike pages, 9 travel guides, 4 itinerary templates, 4 tours and 80 cited sources — each page with sources, check dates, share link and QR code.
 - My Trip planner (local only), search across languages, editorial dashboard.
 - Reviews, submissions, claims, corrections and moderation **in preview mode** (nothing is sent or stored); backend schema ready and tested.
@@ -24,7 +24,7 @@ it has not been announced or submitted anywhere.
 
 - [ ] **Open every source** in `src/content/sources.ts` and confirm the cited fact. Desk research was done through web search from a restricted environment — figures and wording were read in search results quoting the pages. Update `accessed`.
 - [ ] **Field-check the pilot places** (positions, access, accessibility, warnings, seasonal notes) and set `status: "field-verified"` with the date and partner.
-- [ ] Record coordinates on site for **Grlja waterfall, Karanfili (main summit), Volušnica** — no reliable published coordinates were found, so they are not on the map.
+- [ ] Record coordinates on site for **Volušnica** — no reliable published coordinates were found, so it is not on the map. Confirm **Grlja** (canyon entrance, from OpenCanyon/Evendo) and **Karanfili** (Veliki vrh, from German Wikipedia/PeakVisor) on site.
 - [ ] Confirm **Vusanje's** centre point (Wikipedia and Wikidata differ by ~570 m) and **Ropojana** (single source).
 - [ ] Confirm **emergency numbers** (112/122/123/124) and the **Mountain Rescue (GSS)** contact against official Montenegrin sources.
 - [ ] Confirm **Peaks of the Balkans border-permit** procedure and lead time with the border police; confirm whether the **Grnčar–Vermosh** crossing is open, to whom and when.
@@ -51,7 +51,7 @@ it has not been announced or submitted anywhere.
 
 - [x] **Preview deployment** on GitHub Pages with `noindex` (manual workflow only).
 - [ ] **Public launch**: domain, and when to drop `noindex` (remove `NEXT_PUBLIC_NOINDEX` from `pages.yml`).
-- [ ] **Map tiles**: OpenStreetMap's tile servers are acceptable for a small pilot; for public traffic choose a provider (set `NEXT_PUBLIC_MAP_TILES` / `NEXT_PUBLIC_MAP_ATTRIBUTION`).
+- [ ] **Map services**: the 3D map uses free, keyless public services — OpenFreeMap (base map, OpenStreetMap data) and Mapzen terrain tiles on AWS Open Data. Both are fine for a pilot; for heavy public traffic, review their terms or pick a provider (`NEXT_PUBLIC_MAP_STYLE`, `NEXT_PUBLIC_MAP_TERRAIN`). The no-WebGL fallback still uses OpenStreetMap's tile servers (`NEXT_PUBLIC_MAP_TILES`).
 - [ ] **Backend** for reviews, submissions and enquiries (see `backend/README.md`): approve a provider, create the account, appoint moderators.
 - [ ] **Privacy notice and moderation policy**: publish final versions with a named data controller.
 - [ ] **Analytics**: none today. If wanted, a cookie-free, aggregate tool — only with a published notice.
@@ -60,7 +60,7 @@ it has not been announced or submitted anywhere.
 
 ## Performance and accessibility notes
 
-- Home and content pages are static HTML; three.js (~600 KB) loads only on the Explore page, and not at all where WebGL is unavailable. Leaflet loads only when the map is shown.
+- Home and content pages are static HTML; the map engine (MapLibre) loads only on the Explore page and when the home page's 3D band scrolls into view (never on data saver). Leaflet loads only where WebGL is unavailable.
 - Photos are Wikimedia thumbnails at the width each screen needs (500/960/1280 px), lazy-loaded below the fold. ROSI's Booking.com photos are still hot-linked at their single size until original files are supplied.
 - Page weight on a phone profile (uncompressed, photos excluded): home 1093 KB (was 1488 KB; the 3D band loads only when scrolled to), Explore 1582 KB (was 2013 KB; 1121 KB with data saver). Fonts 163 KB (was 532 KB).
 - The service worker stores only this site's public pages and build files on the visitor's device (mentioned in the privacy section of "About this guide"). Bump `VERSION` in `public/sw.js` if a release must drop old copies.

@@ -170,27 +170,6 @@
   right: var(--inset-right, 0px);
 }
 
-/* Centred in the area the panels leave open. */
-.illustrative {
-  position: absolute;
-  top: 16px;
-  left: calc(var(--inset-left, 0px) + (100% - var(--inset-left, 0px) - var(--inset-right, 0px)) / 2);
-  transform: translateX(-50%);
-  z-index: 6;
-  width: max-content;
-  max-width: calc(100% - var(--inset-left, 0px) - var(--inset-right, 0px) - 32px);
-  margin: 0;
-  padding: 7px 14px;
-  border-radius: var(--r-pill);
-  background: var(--glass-strong);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  font: 700 12px/1.35 var(--font-text);
-  color: var(--ink);
-  text-align: center;
-  box-shadow: var(--shadow-soft);
-}
-
 .mapReset {
   position: absolute;
   top: 110px;
@@ -429,18 +408,6 @@
     max-height: calc(100% - 24px);
   }
 
-  /* Phones: the note sits low, above the place strip, out of the way of the view. */
-  .illustrative {
-    top: auto;
-    bottom: calc(var(--inset-bottom, 0px) + 64px);
-    left: 12px;
-    transform: none;
-    max-width: calc(100% - 24px);
-    padding: 5px 10px;
-    font-size: 11px;
-    text-align: left;
-  }
-
   .legendToggle {
     padding: 0 14px;
     font-size: 13px;
@@ -455,11 +422,6 @@
   /* While the card is open the view is small: pinch to zoom, no buttons. */
   .panelOpen {
     --controls-display: none;
-  }
-
-  /* The "not to scale" note always stays visible: just above the card. */
-  .panelOpen .illustrative {
-    bottom: calc(var(--inset-bottom, 0px) + 8px);
   }
 
   /* The selected place: a sheet over the bottom of the view. */

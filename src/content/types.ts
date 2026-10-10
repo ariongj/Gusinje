@@ -81,22 +81,13 @@ export type Coordinates = {
 export type AreaId = "gusinje" | "vusanje" | "grbaja" | "ropojana" | "plav" | "high-mountains";
 
 /**
- * Anchors in the illustrative 3D model (src/components/resort3d). The model is
- * not to scale: an anchor places a marker in the picture, while real positions
- * come from Coordinates.
+ * Where the camera looks on the 3D map. "overview": the whole valley;
+ * "valley": a low flight over Gusinje towards the peaks; or a place (by slug)
+ * with a mapped location — optionally with the direction the camera faces
+ * (degrees, 0 = north). Places without verified coordinates are framed through
+ * a mapped neighbour; the camera never points at an invented position.
  */
-export type SceneAnchor =
-  | "gusinje"
-  | "vusanje"
-  | "springs"
-  | "grlja"
-  | "blueEye"
-  | "ropojana"
-  | "grbaja"
-  | "karanfili"
-  | "zlaKolata"
-  | "hotel"
-  | "katun";
+export type MapCamera = "overview" | "valley" | { place: string; bearing?: number; zoom?: number };
 
 /* ----------------------------------------------------------------- media */
 
@@ -153,7 +144,6 @@ export type Place = {
   description: Localized<string[]>;
   highlights?: Localized<string[]>;
   location: Coordinates | null;
-  scene?: SceneAnchor;
   photos: Photo[];
   /** How to get there — only verified information. */
   access?: Localized;
@@ -220,7 +210,6 @@ export type Business = {
   address?: Localized;
   /** Public listings of this business on official sites (source ids). */
   listings?: string[];
-  scene?: SceneAnchor;
   contact: Contact;
   services?: Feature[];
   /** Useful attributes; each says whether it is self-reported or independently checked. */
@@ -257,8 +246,8 @@ export type Business = {
 export type TourTheme = "highlights" | "villages-culture" | "water" | "mountains";
 
 export type TourStop = {
-  /** Camera view in the 3D model: a scene anchor, or the wide views. */
-  view: SceneAnchor | "overview" | "hero";
+  /** What the camera shows on the 3D map. */
+  view: MapCamera;
   /** The place (or listing) this stop is about, for the info panel and photo fallback. */
   ref?: { kind: "place" | "business"; slug: string };
   kicker: Localized;

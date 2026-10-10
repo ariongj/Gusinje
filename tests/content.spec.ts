@@ -83,9 +83,13 @@ test("coordinates are inside the region and carry sources", () => {
   }
 });
 
-test("each 3D anchor shows at most one record", () => {
-  const anchors = [...places, ...businesses].flatMap((r) => (r.scene ? [r.scene] : []));
-  expect(new Set(anchors).size).toBe(anchors.length);
+test("tour cameras point only at mapped places", () => {
+  for (const tour of tours) {
+    for (const stop of tour.stops) {
+      if (typeof stop.view === "string") continue;
+      expect(places.find((p) => p.slug === (stop.view as { place: string }).place)?.location, `${tour.slug} → ${stop.view.place}`).toBeTruthy();
+    }
+  }
 });
 
 test("listings follow the directory rules", () => {

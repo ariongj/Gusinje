@@ -406,6 +406,10 @@ const list: Source[] = [
     accessed: OCT_2026,
   },
   { id: "summitpost-karanfili", title: "Karanfili", publisher: "SummitPost", url: "https://www.summitpost.org/karanfili/154538", kind: "reference", accessed: OCT_2026 },
+  { id: "wiki-de-veliki-vrh", title: "Veliki vrh (Prokletije)", publisher: "Wikipedia (German)", url: "https://de.wikipedia.org/wiki/Veliki_vrh_(Prokletije)", kind: "reference", accessed: OCT_2026 },
+  { id: "peakvisor-veliki-vrh", title: "Veliki Vrh", publisher: "PeakVisor", url: "https://peakvisor.com/peak/veliki-vrh-lyqbr.html", kind: "reference", accessed: OCT_2026 },
+  { id: "opencanyon-grlja", title: "Canyon Grlja in Gusinje", publisher: "OpenCanyon", url: "https://www.opencanyon.org/en/canyon/360d6cc6-4139-472e-b30a-b6cb2ca63d49", kind: "reference", accessed: OCT_2026 },
+  { id: "evendo-grlja", title: "Grlja Canyon", publisher: "Evendo", url: "https://evendo.com/locations/montenegro/prokletije-national-park/landmark/grlja-canyon", kind: "reference", accessed: OCT_2026 },
   { id: "wiki-zla-kolata", title: "Zla Kolata", publisher: "Wikipedia", url: "https://en.wikipedia.org/wiki/Zla_Kolata", kind: "reference", accessed: OCT_2026 },
   {
     id: "summitpost-kolata",

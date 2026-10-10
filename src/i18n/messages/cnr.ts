@@ -176,23 +176,15 @@ export const cnr: Messages = {
   explore: {
     title: "Istraži u 3D",
     intro:
-      "Preletite dolinu, pređite na kartu za stvarne lokacije ili pregledajte ista mjesta kao spisak. Izaberite bilo šta da vidite šta je, pa otvorite njegovu stranicu.",
+      "Preletite stvarnu dolinu u 3D, položite je kao kartu ili pregledajte ista mjesta kao spisak. Izaberite bilo šta da vidite šta je, pa otvorite njegovu stranicu.",
     viewsLabel: "Prikaz",
     views: { "3d": "3D", map: "Karta", list: "Spisak" },
-    sceneLabel:
-      "Ilustrovani 3D model doline od Gusinja do Vusanja i vrhova Prokletija, s oznakama za mjesta i oglase. Prikaz kao spisak ima isti sadržaj u obliku teksta.",
-    illustrative: "Ilustrativni 3D model — nije u razmjeri. Za stvarne lokacije koristite kartu.",
     mapLabel: "Karta mjesta i oglasa",
     mapNote: "Položaji su preuzeti iz objavljenih izvora. Prstenovi označavaju područje (selo ili dolinu); tačke označavaju određeno mjesto.",
     legendTitle: "Legenda i filteri",
     legendHint: "Prikaži ili sakrij kategorije",
     legendArea: "Područje",
     legendPoint: "Tačka",
-    notIn3d: [
-      "{n} stavka nije u 3D modelu — pogledajte kartu ili spisak.",
-      "{n} stavke nijesu u 3D modelu — pogledajte kartu ili spisak.",
-      "{n} stavki nije u 3D modelu — pogledajte kartu ili spisak.",
-    ],
     notOnMap: [
       "{n} stavka još nema provjerenu lokaciju — pogledajte spisak.",
       "{n} stavke još nemaju provjerenu lokaciju — pogledajte spisak.",
@@ -225,7 +217,7 @@ export const cnr: Messages = {
     stops: ["{n} stanica", "{n} stanice", "{n} stanica"],
     startTour: "Pokreni turu",
     tourDisclaimer:
-      "Virtuelna tura je priča. Redosljed stanica nije pješačka ni automobilska ruta, a 3D model nije u razmjeri — prije polaska provjerite stranicu svakog mjesta.",
+      "Virtuelna tura je priča. Redosljed stanica nije pješačka ni automobilska ruta — prije polaska provjerite stranicu svakog mjesta.",
     begin: "Počni",
     cancel: "Ne sada",
     guidedTour: "Vođena tura",
@@ -511,7 +503,7 @@ export const cnr: Messages = {
     intro: "Dvije doline u podnožju Prokletija: stari grad Gusinje, selo Vusanje, hladni izvori i vodopadi, glečerske doline i vrhovi duž granice s Albanijom.",
     showcaseKicker: "Istraži u 3D",
     showcaseTitle: "Cijela dolina, u tri dimenzije",
-    showcaseText: "Preletite od Gusinja do Vusanja i vrhova, otvorite bilo koje mjesto ili pustite da vas vođena tura provede. Model je ilustracija — karta prikazuje stvarne lokacije.",
+    showcaseText: "Preletite stvarni teren od Gusinja do Vusanja i vrhova, otvorite bilo koje mjesto ili pustite da vas vođena tura provede.",
     showcaseCta: "Otvori 3D dolinu",
     showcaseTours: "Krenite na virtuelnu turu",
     thingsTitle: "Šta raditi",
@@ -531,7 +523,7 @@ export const cnr: Messages = {
     honestyTitle: "Kako funkcioniše ovaj vodič",
     honesty: [
       "Svako mjesto prikazuje izvore i kada je posljednji put provjereno. Ono što nedostaje ostaje prazno — ništa se ne nagađa.",
-      "3D dolina je ilustracija; karta koristi stvarne koordinate iz objavljenih izvora.",
+      "3D karta je napravljena od podataka o visinama i OpenStreetMap-a; svaka oznaka stoji na koordinatama iz objavljenih izvora.",
       "Oglasi su poređani abecedno i niko ne plaća poziciju. ROSI, koji održava ovaj vodič, to navodi na svojim oglasima.",
       "Albanski i crnogorski prevodi su nacrti koji čekaju pregled urednika koji tečno govore jezik.",
     ],
@@ -548,8 +540,8 @@ export const cnr: Messages = {
     usedOn: "Korišćeno na",
     mapData: "Podaci karte",
     sourcesTitle: "Izvori",
-    model: "3D model",
-    modelText: "3D dolina je proceduralna ilustracija napravljena za ovaj vodič — nije geodetski snimak i nije u razmjeri. Ne koristi satelitske snimke ni snimke terena.",
+    model: "3D karta",
+    modelText: "3D karta je nacrtana iz javnih podataka o visinama (Mapzen pločice terena, iz SRTM-a i drugih mjerenja), s putevima, stazama, rijekama i nazivima iz OpenStreetMap-a. Visine su nacrtane malo strmije nego što jesu (×1,35) da bi se planine jasno vidjele. Oznake stoje na koordinatama iz objavljenih izvora; mjesta bez njih su navedena, ali nijesu na karti.",
   },
   admin: {
     title: "Urednički pregled",

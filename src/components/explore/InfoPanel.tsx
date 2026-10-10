@@ -110,7 +110,7 @@ export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, autoFocu
             {t.common.showOnMap}
           </button>
         )}
-        {view !== "3d" && item.scene && webgl && (
+        {view !== "3d" && location && webgl && (
           <button type="button" className={styles.secondary} onClick={() => onShowIn("3d")}>
             {t.common.showIn3D}
           </button>

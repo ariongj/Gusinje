@@ -176,19 +176,15 @@ export const sq: Messages = {
   explore: {
     title: "Eksploro në 3D",
     intro:
-      "Fluturoni mbi luginë, kaloni te harta për vendndodhjet e vërteta, ose shfletoni të njëjtat vende si listë. Zgjidhni çfarëdo për të parë çfarë është, pastaj hapni faqen e tij.",
+      "Fluturoni mbi luginën e vërtetë në 3D, shtrijeni si hartë, ose shfletoni të njëjtat vende si listë. Zgjidhni çfarëdo për të parë çfarë është, pastaj hapni faqen e tij.",
     viewsLabel: "Pamja",
     views: { "3d": "3D", map: "Harta", list: "Lista" },
-    sceneLabel:
-      "Model 3D ilustrues i luginës nga Gucia në Vuthaj dhe majat e Bjeshkëve të Nemuna, me shënjues për vendet dhe listimet. Pamja si listë ka të njëjtën përmbajtje si tekst.",
-    illustrative: "Model 3D ilustrues — jo në shkallë. Përdorni hartën për vendndodhjet e vërteta.",
     mapLabel: "Harta e vendeve dhe listimeve",
     mapNote: "Pozicionet vijnë nga burime të publikuara. Rrathët shënojnë një zonë (fshat ose luginë); pikat shënojnë një vend të caktuar.",
     legendTitle: "Legjenda dhe filtrat",
     legendHint: "Shfaq ose fshih kategoritë",
     legendArea: "Zonë",
     legendPoint: "Pikë",
-    notIn3d: ["{n} element nuk është në modelin 3D — shihni hartën ose listën.", "{n} elemente nuk janë në modelin 3D — shihni hartën ose listën."],
     notOnMap: ["{n} element nuk ka ende vendndodhje të verifikuar — shihni listën.", "{n} elemente nuk kanë ende vendndodhje të verifikuar — shihni listën."],
     zoomIn: "Zmadho",
     zoomOut: "Zvogëlo",
@@ -217,7 +213,7 @@ export const sq: Messages = {
     stops: ["{n} ndalesë", "{n} ndalesa"],
     startTour: "Nis turin",
     tourDisclaimer:
-      "Turi virtual është rrëfim. Renditja e ndalesave nuk është itinerar ecjeje apo udhëtimi me makinë, dhe modeli 3D nuk është në shkallë — kontrolloni faqen e çdo vendi para se të shkoni.",
+      "Turi virtual është rrëfim. Renditja e ndalesave nuk është itinerar ecjeje apo udhëtimi me makinë — kontrolloni faqen e çdo vendi para se të shkoni.",
     begin: "Fillo",
     cancel: "Jo tani",
     guidedTour: "Tur me udhërrëfyes",
@@ -502,7 +498,7 @@ export const sq: Messages = {
     intro: "Dy lugina në këmbë të Bjeshkëve të Nemuna: qyteti i vjetër i Gucisë, fshati Vuthaj, burime të ftohta dhe ujëvara, lugina akullnajore dhe majat përgjatë kufirit me Shqipërinë.",
     showcaseKicker: "Eksploro në 3D",
     showcaseTitle: "E gjithë lugina, në tri dimensione",
-    showcaseText: "Fluturoni nga Gucia deri në Vuthaj dhe te majat, hapni çdo vend, ose lini një tur me udhëzues t'ju shoqërojë. Modeli është ilustrim — harta tregon vendndodhjet e vërteta.",
+    showcaseText: "Fluturoni mbi terrenin e vërtetë nga Gucia deri në Vuthaj dhe te majat, hapni çdo vend, ose lini një tur me udhëzues t'ju shoqërojë.",
     showcaseCta: "Hap luginën 3D",
     showcaseTours: "Bëni një tur virtual",
     thingsTitle: "Çfarë të bëni",
@@ -522,7 +518,7 @@ export const sq: Messages = {
     honestyTitle: "Si funksionon ky udhëzues",
     honesty: [
       "Çdo vend tregon burimet dhe kur u kontrollua për herë të fundit. Faktet që mungojnë mbeten të munguara — asgjë nuk hamendësohet.",
-      "Lugina 3D është ilustrim; harta përdor koordinata të vërteta nga burime të publikuara.",
+      "Harta 3D ndërtohet nga të dhënat e lartësisë dhe OpenStreetMap; çdo shënjues qëndron në koordinata nga burime të publikuara.",
       "Listimet janë sipas alfabetit dhe askush nuk paguan për pozicionin. ROSI, që e mban këtë udhëzues, deklarohet në listimet e veta.",
       "Përkthimet shqip dhe malazisht janë drafte në pritje të shqyrtimit nga redaktorë që i flasin rrjedhshëm.",
     ],
@@ -539,8 +535,8 @@ export const sq: Messages = {
     usedOn: "Përdorur në",
     mapData: "Të dhënat e hartës",
     sourcesTitle: "Burimet",
-    model: "Modeli 3D",
-    modelText: "Lugina 3D është ilustrim procedural i vizatuar për këtë udhëzues — jo të dhëna matjeje dhe jo në shkallë. Nuk përdor imazhe satelitore apo terreni.",
+    model: "Harta 3D",
+    modelText: "Harta 3D vizatohet nga të dhëna publike lartësie (pllakat e terrenit Mapzen, nga SRTM dhe matje të tjera), me rrugë, shtigje, lumenj dhe emra nga OpenStreetMap. Lartësitë vizatohen pak më të pjerrëta se në të vërtetë (×1,35) që malet të dallohen qartë. Shënjuesit qëndrojnë në koordinata nga burime të publikuara; vendet pa to renditen, por nuk shfaqen në hartë.",
   },
   admin: {
     title: "Paneli editorial",

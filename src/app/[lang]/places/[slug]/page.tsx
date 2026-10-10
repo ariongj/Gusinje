@@ -210,7 +210,7 @@ export default async function PlacePage({ params }: PageProps<"/[lang]/places/[s
           </div>
 
           <aside className={detail.side}>
-            <LocationBox lang={lang} t={t} location={place.location} exploreQuery={`place=${place.slug}`} inScene={!!place.scene} />
+            <LocationBox lang={lang} t={t} location={place.location} exploreQuery={`place=${place.slug}`} />
             <ShareBox lang={lang} t={t} path={path} title={name} />
             <VerificationPanel verification={place.verification} lang={lang} t={t} path={path} extraSources={place.location?.sources} />
           </aside>

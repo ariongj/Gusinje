@@ -81,7 +81,6 @@ export const businesses: Business[] = [
     location: { lat: 42.531724, lng: 19.8325485, precision: "point", status: "self-reported", sources: ["rosi-website"] },
     address: { en: "Vusanje, 84326 Gusinje", sq: "Vuthaj, 84326 Guci", cnr: "Vusanje, 84326 Gusinje" },
     listings: ["togusinje-katun-rosi"],
-    scene: "katun",
     contact: {
       phones: [ROSI_PHONE],
       email: ROSI_EMAIL,
@@ -149,7 +148,6 @@ export const businesses: Business[] = [
     location: { lat: 42.56766, lng: 19.83351, precision: "point", status: "self-reported", sources: ["rosi-website"] },
     address: { en: "Gusinje b.b., 84326 Gusinje", sq: "Gusinje b.b., 84326 Guci", cnr: "Gusinje b.b., 84326 Gusinje" },
     listings: ["togusinje-hotel-rosi"],
-    scene: "hotel",
     contact: {
       phones: [ROSI_PHONE],
       email: ROSI_EMAIL,

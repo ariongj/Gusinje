@@ -4,9 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 import { TripButton } from "@/components/content/TripButton";
-import type { ViewId } from "@/components/resort3d/resortEngine";
-import type { SceneAnchor } from "@/content/types";
-import { ResortMap, type SceneFocus } from "@/components/resort3d/ResortMap";
+import { TerrainMap, type MapFocus, type MapMode } from "@/components/map/TerrainMap";
 import { GuideCard, type GuideCardStop } from "@/components/tour/GuideCard";
 import { useGuidedTour } from "@/components/tour/useGuidedTour";
 import { useI18n } from "@/i18n/client";
@@ -16,12 +14,12 @@ import ui from "@/styles/ui.module.css";
 
 import styles from "./Explorer.module.css";
 import { InfoPanel } from "./InfoPanel";
-import { LeafletMap, type MapFocus } from "./LeafletMap";
-import { groupColor, legendGroups, type ExploreItem, type LegendGroup } from "./types";
+import { LeafletMap } from "./LeafletMap";
+import { groupColor, legendGroups, type CameraTarget, type ExploreItem, type LegendGroup } from "./types";
 
 export type ExploreView = "3d" | "map" | "list";
 
-export type ExploreTourStop = GuideCardStop & { view: ViewId; key?: string };
+export type ExploreTourStop = GuideCardStop & { camera: CameraTarget; key?: string };
 
 export type ExploreTour = {
   slug: string;
@@ -39,24 +37,9 @@ type Props = {
   tours: ExploreTour[];
 };
 
-/** Places in the 3D model, in the order of a journey up the valley: "next" moves on to the next one. */
-const SCENE_ORDER: SceneAnchor[] = [
-  "hotel",
-  "gusinje",
-  "springs",
-  "grbaja",
-  "katun",
-  "vusanje",
-  "grlja",
-  "blueEye",
-  "ropojana",
-  "karanfili",
-  "zlaKolata",
-];
-
 type Insets = { left: number; right: number; bottom: number };
 
-/** Cheap WebGL probe, without loading three.js. */
+/** Cheap WebGL probe, without loading the map engine. */
 function webglSupported(): boolean {
   try {
     const canvas = document.createElement("canvas");
@@ -87,15 +70,13 @@ export function Explorer({ title, lead, items, tours }: Props) {
   const { lang, t } = useI18n();
   const [view, setView] = useState<ExploreView>("3d");
   const [webgl, setWebgl] = useState<"unknown" | "ok" | "no">("unknown");
-  const [mounted3d, setMounted3d] = useState(false);
-  const [mountedMap, setMountedMap] = useState(false);
+  /** The map engine is created the first time the 3D view or the map is shown, then kept. */
+  const [mounted, setMounted] = useState(false);
+  /** 3D or flat — kept while the list is showing, so going back returns to the same map. */
+  const [mapMode, setMapMode] = useState<MapMode>("3d");
   const [groups, setGroups] = useState<Set<LegendGroup>>(() => new Set(legendGroups));
   const [query, setQuery] = useState("");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [sceneFocus, setSceneFocus] = useState<SceneFocus>({
-    id: "overview",
-    nonce: 0,
-  });
   const [mapFocus, setMapFocus] = useState<MapFocus>({ key: null, nonce: 0 });
   const [notice, setNotice] = useState<string | null>(null);
   const [tour, setTour] = useState<{
@@ -143,41 +124,17 @@ export function Explorer({ title, lead, items, tours }: Props) {
     return c;
   }, [items, matchesQuery]);
 
-  const pins = useMemo(
-    () =>
-      filtered
-        .filter((i) => i.scene)
-        .map((i) => ({
-          key: i.key,
-          anchor: i.scene!,
-          name: i.name,
-          group: i.group,
-        })),
-    [filtered],
-  );
-  const notIn3d = filtered.filter((i) => !i.scene).length;
   const notOnMap = filtered.filter((i) => !i.location).length;
 
-  /** The places along the bottom of the stage: what this view can show, in journey order. */
-  const rail = useMemo(() => {
-    if (view === "3d") return filtered.filter((i) => i.scene).sort((a, b) => SCENE_ORDER.indexOf(a.scene!) - SCENE_ORDER.indexOf(b.scene!));
-    if (view === "map") return filtered.filter((i) => i.location).sort((a, b) => b.location!.lat - a.location!.lat);
-    return [];
-  }, [filtered, view]);
+  /** The places along the bottom of the stage: everything mapped, from Gusinje south into the mountains. */
+  const rail = useMemo(() => (view === "list" ? [] : filtered.filter((i) => i.location).sort((a, b) => b.location!.lat - a.location!.lat)), [filtered, view]);
 
   /* ------------------------------------------------------------ selection */
 
-  const focusItem = useCallback((item: ExploreItem | undefined, inView: ExploreView) => {
-    if (inView === "3d")
-      setSceneFocus((f) => ({
-        id: item?.scene ?? "overview",
-        nonce: f.nonce + 1,
-      }));
-    if (inView === "map")
-      setMapFocus((f) => ({
-        key: item?.location ? (item.hostKey ?? item.key) : null,
-        nonce: f.nonce + 1,
-      }));
+  /** Fly to an item on the map. Items without a verified location stay where the camera is. */
+  const focusItem = useCallback((item: ExploreItem | undefined) => {
+    if (!item?.location) return;
+    setMapFocus((f) => ({ key: item.hostKey ?? item.key, nonce: f.nonce + 1 }));
   }, []);
 
   const select = useCallback(
@@ -186,7 +143,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
       setPicked(true);
       const item = key ? byKey.get(key) : undefined;
       if (item) {
-        focusItem(item, viewRef.current);
+        focusItem(item);
         setAnnounce(fill(t.explore.panelLabel, { name: item.name }));
       }
     },
@@ -210,11 +167,13 @@ export function Explorer({ title, lead, items, tours }: Props) {
       if (next === "3d" && webgl === "no") return;
       setView(next);
       setNotice(null);
-      if (next === "3d") setMounted3d(true);
-      if (next === "map") setMountedMap(true);
-      const item = selectedKey ? byKey.get(selectedKey) : undefined;
-      // Fly to the selection in the new view once it is showing.
-      window.setTimeout(() => focusItem(item, next), 30);
+      if (next !== "list") {
+        setMounted(true);
+        setMapMode(next === "map" ? "2d" : "3d");
+        const item = selectedKey ? byKey.get(selectedKey) : undefined;
+        // Frame the selection again once the map has tilted (or flattened).
+        if (item) window.setTimeout(() => focusItem(item), 950);
+      }
       setAnnounce(`${t.explore.viewsLabel}: ${t.explore.views[next]}`);
     },
     [webgl, selectedKey, byKey, focusItem, t],
@@ -222,19 +181,10 @@ export function Explorer({ title, lead, items, tours }: Props) {
 
   /* ---------------------------------------------------------------- tours */
 
-  const onGuideStop = useCallback(
-    (stop: ExploreTourStop) => {
-      setSelectedKey(stop.key ?? null);
-      const item = stop.key ? byKey.get(stop.key) : undefined;
-      if (viewRef.current === "3d") setSceneFocus((f) => ({ id: stop.view, nonce: f.nonce + 1 }));
-      else
-        setMapFocus((f) => ({
-          key: item?.location ? item.key : null,
-          nonce: f.nonce + 1,
-        }));
-    },
-    [byKey],
-  );
+  const onGuideStop = useCallback((stop: ExploreTourStop) => {
+    setSelectedKey(stop.key ?? null);
+    setMapFocus((f) => ({ key: stop.key ?? null, camera: stop.camera, nonce: f.nonce + 1 }));
+  }, []);
 
   const tourStops = useMemo(() => tour?.data.stops ?? [], [tour]);
   const guide = useGuidedTour(tourStops, onGuideStop, lang);
@@ -267,8 +217,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
     guide.exit();
     setTour(null);
     setSelectedKey(null);
-    if (viewRef.current === "3d") setSceneFocus((f) => ({ id: "overview", nonce: f.nonce + 1 }));
-    else setMapFocus((f) => ({ key: null, nonce: f.nonce + 1 }));
+    setMapFocus((f) => ({ key: null, nonce: f.nonce + 1 }));
   }, [guide]);
 
   // The hook ends itself on the last "Finish" or Escape: tidy up.
@@ -297,8 +246,8 @@ export function Explorer({ title, lead, items, tours }: Props) {
       setNotice(t.explore.savingData);
     }
     setView(initialView);
-    if (initialView === "3d") setMounted3d(true);
-    if (initialView === "map") setMountedMap(true);
+    if (initialView !== "list") setMounted(true);
+    setMapMode(initialView === "map" ? "2d" : "3d");
 
     const g = params.get("groups");
     if (g) {
@@ -312,7 +261,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
     const key = place ? `place:${place}` : listing ? `business:${listing}` : null;
     if (key && byKey.has(key)) {
       setSelectedKey(key);
-      window.setTimeout(() => focusItem(byKey.get(key), initialView), 60);
+      window.setTimeout(() => focusItem(byKey.get(key)), 60);
     }
     const tourSlug = params.get("tour");
     if (tourSlug) {
@@ -444,7 +393,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
           </li>
         ))}
       </ul>
-      {view === "map" && (
+      {view !== "list" && (
         <p className={styles.shapes}>
           <span className={styles.shapeArea} aria-hidden="true" /> {t.explore.legendArea}
           <span className={styles.shapePoint} aria-hidden="true" /> {t.explore.legendPoint}
@@ -452,10 +401,9 @@ export function Explorer({ title, lead, items, tours }: Props) {
       )}
       <p className={styles.counts} aria-live="polite">
         {plural(lang, filtered.length, t.common.results)}
-        {view === "3d" && notIn3d > 0 && <> · {plural(lang, notIn3d, t.explore.notIn3d)}</>}
-        {view === "map" && notOnMap > 0 && <> · {plural(lang, notOnMap, t.explore.notOnMap)}</>}
+        {view !== "list" && notOnMap > 0 && <> · {plural(lang, notOnMap, t.explore.notOnMap)}</>}
       </p>
-      {view === "map" && <p className={styles.mapNote}>{t.explore.mapNote}</p>}
+      {view !== "list" && <p className={styles.mapNote}>{t.explore.mapNote}</p>}
     </section>
   );
 
@@ -531,42 +479,41 @@ export function Explorer({ title, lead, items, tours }: Props) {
 
         {/* ----------------------------------------------------------- stage */}
         <div ref={stageRef} className={cx(styles.stage, view === "list" && styles.stageList, touring && styles.touring, showPanel && styles.panelOpen)} style={stageVars}>
-          {mounted3d && webgl === "ok" && (
-            <div className={styles.layer} hidden={view !== "3d"}>
-              <ResortMap
-                focus={sceneFocus}
-                touring={touring}
-                pins={pins}
-                selectedKey={selectedKey}
-                insets={view === "3d" ? insets : undefined}
-                onSelect={(key) => {
-                  if (touring) guide.pause();
-                  select(key);
-                }}
-                onReset={() => setSelectedKey(null)}
-                onFailed={() => {
-                  setWebgl("no");
-                  setView("map");
-                  setMountedMap(true);
-                  setNotice(t.explore.switchedToMap);
-                }}
-              />
-              <p className={styles.illustrative}>{t.explore.illustrative}</p>
-            </div>
-          )}
-          {mountedMap && (
-            <div className={styles.layer} hidden={view !== "map"}>
-              <LeafletMap
-                items={filtered}
-                selectedKey={selectedKey}
-                touring={touring}
-                insets={view === "map" ? insets : undefined}
-                onSelect={(key) => {
-                  if (touring) guide.pause();
-                  select(key);
-                }}
-                focus={mapFocus}
-              />
+          {/* The real valley: 3D terrain, or the same map laid flat. Without WebGL, a simple tiled map. */}
+          {mounted && webgl !== "unknown" && (
+            <div className={styles.layer} hidden={view === "list"}>
+              {webgl === "ok" ? (
+                <TerrainMap
+                  mode={mapMode}
+                  items={filtered}
+                  selectedKey={selectedKey}
+                  focus={mapFocus}
+                  touring={touring}
+                  insets={view !== "list" ? insets : undefined}
+                  onSelect={(key) => {
+                    if (touring) guide.pause();
+                    select(key);
+                  }}
+                  onFailed={() => {
+                    setWebgl("no");
+                    setView("map");
+                    setMapMode("2d");
+                    setNotice(t.explore.switchedToMap);
+                  }}
+                />
+              ) : (
+                <LeafletMap
+                  items={filtered}
+                  selectedKey={selectedKey}
+                  touring={touring}
+                  insets={view !== "list" ? insets : undefined}
+                  onSelect={(key) => {
+                    if (touring) guide.pause();
+                    select(key);
+                  }}
+                  focus={mapFocus}
+                />
+              )}
               <button
                 type="button"
                 className={styles.mapReset}
@@ -815,12 +762,12 @@ function ExploreList({
                         {t.common.showOnMap}
                       </button>
                     )}
-                    {item.scene && webgl !== "no" && (
+                    {item.location && webgl !== "no" && (
                       <button type="button" className={ui.buttonSmall} onClick={() => onShow(item.key, "3d")}>
                         {t.common.showIn3D}
                       </button>
                     )}
-                    {!item.location && !item.scene && (
+                    {!item.location && (
                       <button type="button" className={ui.buttonSmall} onClick={() => onSelect(item.key)}>
                         {t.common.open}
                       </button>

@@ -431,15 +431,15 @@ export const guides: Guide[] = [
         body: {
           en: [
             "Every figure on a route page is shown with the source that published it, and where sources disagree we give the range. No route has yet been walked or checked for this guide, so all are marked “awaiting verification” and must not be used to navigate.",
-            "There are no GPS tracks on this site. The 3D model and the tours are illustrations, not routes.",
+            "There are no GPS tracks on this site. The tours on the 3D map tell stories; they are not routes.",
           ],
           sq: [
             "Çdo shifër në një faqe itinerari shfaqet me burimin që e ka publikuar, dhe kur burimet nuk pajtohen japim intervalin. Asnjë itinerar nuk është ecur apo kontrolluar ende për këtë udhëzues, prandaj të gjitha janë shënuar “në pritje të verifikimit” dhe nuk duhen përdorur për orientim.",
-            "Në këtë faqe nuk ka gjurmë GPS. Modeli 3D dhe turet janë ilustrime, jo itinerare.",
+            "Në këtë faqe nuk ka gjurmë GPS. Turet në hartën 3D tregojnë histori; nuk janë itinerare.",
           ],
           cnr: [
             "Svaki podatak na stranici rute prikazan je uz izvor koji ga je objavio, a kada se izvori ne slažu navodimo raspon. Nijedna ruta još nije prehodana niti provjerena za ovaj vodič, pa su sve označene kao „čeka provjeru” i ne smiju se koristiti za orijentaciju.",
-            "Na ovom sajtu nema GPS tragova. 3D model i ture su ilustracije, a ne rute.",
+            "Na ovom sajtu nema GPS tragova. Ture na 3D karti pričaju priče; nijesu rute.",
           ],
         },
         sources: [],

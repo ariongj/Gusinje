@@ -175,19 +175,15 @@ export const en = {
   explore: {
     title: "Explore in 3D",
     intro:
-      "Fly over the valley, switch to the map for real locations, or browse the same places as a list. Pick anything to see what it is, then open its page.",
+      "Fly over the real valley in 3D, lay it flat as a map, or browse the same places as a list. Pick anything to see what it is, then open its page.",
     viewsLabel: "View",
     views: { "3d": "3D", map: "Map", list: "List" },
-    sceneLabel:
-      "Illustrated 3D model of the valley from Gusinje to Vusanje and the peaks of the Prokletije, with markers for places and listings. The list view has the same content as text.",
-    illustrative: "Illustrative 3D model — not to scale. Use the map for real locations.",
     mapLabel: "Map of places and listings",
     mapNote: "Positions come from published sources. Rings mark an area (a village or valley); dots mark a specific point.",
     legendTitle: "Legend & filters",
     legendHint: "Show or hide categories",
     legendArea: "Area",
     legendPoint: "Point",
-    notIn3d: ["{n} item isn't in the 3D model — see the map or list.", "{n} items aren't in the 3D model — see the map or list."],
     notOnMap: ["{n} item has no verified location yet — see the list.", "{n} items have no verified location yet — see the list."],
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
@@ -216,7 +212,7 @@ export const en = {
     stops: ["{n} stop", "{n} stops"],
     startTour: "Start tour",
     tourDisclaimer:
-      "A virtual tour is storytelling. The order of stops is not a walking or driving route, and the 3D model is not to scale — check each place's page before you go.",
+      "A virtual tour is storytelling. The order of stops is not a walking or driving route — check each place's page before you go.",
     begin: "Begin",
     cancel: "Not now",
     guidedTour: "Guided tour",
@@ -501,7 +497,7 @@ export const en = {
     intro: "Two valleys at the foot of the Prokletije: the old town of Gusinje, the village of Vusanje, cold springs and waterfalls, glacial valleys and the peaks along the border with Albania.",
     showcaseKicker: "Explore in 3D",
     showcaseTitle: "The whole valley, in three dimensions",
-    showcaseText: "Fly from Gusinje up to Vusanje and the peaks, open any place, or let a guided tour show you around. The model is an illustration — the map shows real locations.",
+    showcaseText: "Fly over the real terrain from Gusinje up to Vusanje and the peaks, open any place, or let a guided tour show you around.",
     showcaseCta: "Open the 3D valley",
     showcaseTours: "Take a virtual tour",
     thingsTitle: "Things to do",
@@ -521,7 +517,7 @@ export const en = {
     honestyTitle: "How this guide works",
     honesty: [
       "Every place shows its sources and when it was last checked. Missing facts stay missing — nothing is guessed.",
-      "The 3D valley is an illustration; the map uses real coordinates from published sources.",
+      "The 3D map is built from elevation data and OpenStreetMap; every marker sits at coordinates from published sources.",
       "Listings are A–Z and nobody pays for position. ROSI, which hosts this guide, is disclosed on its own listings.",
       "Albanian and Montenegrin translations are drafts awaiting review by fluent editors.",
     ],
@@ -538,8 +534,8 @@ export const en = {
     usedOn: "Used on",
     mapData: "Map data",
     sourcesTitle: "Sources",
-    model: "3D model",
-    modelText: "The 3D valley is a procedural illustration drawn for this guide — not survey data, and not to scale. It uses no satellite or terrain imagery.",
+    model: "3D map",
+    modelText: "The 3D map is drawn from public elevation data (Mapzen terrain tiles, from SRTM and other surveys), with roads, trails, rivers and names from OpenStreetMap. Heights are drawn a little steeper than they are (×1.35) so the mountains read clearly. Markers sit at coordinates from published sources; places without them are listed but not mapped.",
   },
   admin: {
     title: "Editorial dashboard",

@@ -1,6 +1,6 @@
 /**
- * Virtual tours: storytelling sequences through the illustrative 3D model
- * (or the map, where 3D is unavailable). The order of stops tells a story —
+ * Virtual tours: storytelling sequences over the 3D map of the valley (or
+ * the flat map, where 3D is unavailable). The order of stops tells a story —
  * it is not a hiking or driving itinerary, and every tour says so.
  * Narration uses only facts already on the place pages.
  */
@@ -22,14 +22,14 @@ const welcome: TourStop = {
   kicker: { en: "Gusinje & Vusanje, Montenegro", sq: "Gucia dhe Vuthaj, Mali i Zi", cnr: "Gusinje i Vusanje, Crna Gora" },
   title: { en: "Welcome to the valley", sq: "Mirë se vini në luginë", cnr: "Dobro došli u dolinu" },
   text: {
-    en: "This is the valley of Gusinje and Vusanje at the foot of the Prokletije. The model is an illustration, not to scale — the map shows real locations.",
-    sq: "Kjo është lugina e Gucisë dhe e Vuthajve, në rrëzë të Bjeshkëve të Nemuna. Modeli është ilustrim, jo në shkallë — harta tregon vendndodhjet e vërteta.",
-    cnr: "Ovo je dolina Gusinja i Vusanja, u podnožju Prokletija. Model je ilustracija, nije u razmjeri — karta prikazuje stvarne lokacije.",
+    en: "This is the valley of Gusinje and Vusanje at the foot of the Prokletije, in 3D from elevation data. The heights are drawn a little steeper than they are, so the mountains read clearly.",
+    sq: "Kjo është lugina e Gucisë dhe e Vuthajve, në rrëzë të Bjeshkëve të Nemuna, në 3D nga të dhënat e lartësisë. Lartësitë vizatohen pak më të pjerrëta se në të vërtetë, që malet të dallohen qartë.",
+    cnr: "Ovo je dolina Gusinja i Vusanja, u podnožju Prokletija, u 3D na osnovu podataka o visinama. Visine su nacrtane malo strmije nego što jesu, da bi se planine jasno vidjele.",
   },
 };
 
 const farewell: TourStop = {
-  view: "hero",
+  view: "valley",
   kicker: { en: "End of the tour", sq: "Fundi i turit", cnr: "Kraj ture" },
   title: { en: "Plan your own visit", sq: "Planifikoni vizitën tuaj", cnr: "Isplanirajte svoju posjetu" },
   text: {
@@ -41,7 +41,7 @@ const farewell: TourStop = {
 
 const stop = {
   gusinje: {
-    view: "gusinje",
+    view: { place: "gusinje" },
     ref: { kind: "place", slug: "gusinje" },
     kicker: { en: "The town", sq: "Qyteti", cnr: "Grad" },
     title: { en: "Gusinje", sq: "Gucia", cnr: "Gusinje" },
@@ -52,7 +52,7 @@ const stop = {
     },
   },
   mosque: {
-    view: "gusinje",
+    view: { place: "viziers-mosque" },
     ref: { kind: "place", slug: "viziers-mosque" },
     kicker: { en: "In the centre of Gusinje", sq: "Në qendër të Gucisë", cnr: "U centru Gusinja" },
     title: { en: "The Vizier's Mosque", sq: "Xhamia e Vezirit", cnr: "Vezirova džamija" },
@@ -63,7 +63,7 @@ const stop = {
     },
   },
   springs: {
-    view: "springs",
+    view: { place: "ali-pashas-springs" },
     ref: { kind: "place", slug: "ali-pashas-springs" },
     kicker: { en: "About 2 km south of town", sq: "Rreth 2 km në jug të qytetit", cnr: "Oko 2 km južno od grada" },
     title: { en: "Ali Pasha's Springs", sq: "Burimet e Ali Pashës", cnr: "Alipašini izvori" },
@@ -74,7 +74,7 @@ const stop = {
     },
   },
   vusanje: {
-    view: "vusanje",
+    view: { place: "vusanje" },
     ref: { kind: "place", slug: "vusanje" },
     kicker: { en: "The village", sq: "Fshati", cnr: "Selo" },
     title: { en: "Vusanje", sq: "Vuthaj", cnr: "Vusanje" },
@@ -85,7 +85,7 @@ const stop = {
     },
   },
   grlja: {
-    view: "grlja",
+    view: { place: "grlja" },
     ref: { kind: "place", slug: "grlja" },
     kicker: { en: "On the edge of Vusanje", sq: "Në skaj të Vuthajve", cnr: "Na rubu Vusanja" },
     title: { en: "Grlja waterfall", sq: "Ujëvara e Grlës", cnr: "Vodopad Grlja" },
@@ -96,7 +96,7 @@ const stop = {
     },
   },
   blueEye: {
-    view: "blueEye",
+    view: { place: "oko-skakavice" },
     ref: { kind: "place", slug: "oko-skakavice" },
     kicker: { en: "About 1.5 km on", sq: "Rreth 1,5 km më tej", cnr: "Oko 1,5 km dalje" },
     title: { en: "Oko Skakavice", sq: "Oko Skakavice", cnr: "Oko Skakavice" },
@@ -107,7 +107,7 @@ const stop = {
     },
   },
   ropojana: {
-    view: "ropojana",
+    view: { place: "ropojana" },
     ref: { kind: "place", slug: "ropojana" },
     kicker: { en: "Prokletije National Park", sq: "Parku Kombëtar i Bjeshkëve të Nemuna", cnr: "Nacionalni park Prokletije" },
     title: { en: "The Ropojana valley", sq: "Lugina e Ropojanës", cnr: "Dolina Ropojane" },
@@ -118,7 +118,7 @@ const stop = {
     },
   },
   grbaja: {
-    view: "grbaja",
+    view: { place: "grbaja" },
     ref: { kind: "place", slug: "grbaja" },
     kicker: { en: "About 7 km from Gusinje", sq: "Rreth 7 km nga Gucia", cnr: "Oko 7 km od Gusinja" },
     title: { en: "The Grbaja valley", sq: "Lugina e Gërbajës", cnr: "Dolina Grbaja" },
@@ -129,7 +129,7 @@ const stop = {
     },
   },
   volusnica: {
-    view: "grbaja",
+    view: { place: "grbaja" },
     ref: { kind: "place", slug: "volusnica" },
     kicker: { en: "Above Grbaja · 1,879 m", sq: "Mbi Gërbajë · 1.879 m", cnr: "Iznad Grbaje · 1.879 m" },
     title: { en: "Volušnica", sq: "Volushnica", cnr: "Volušnica" },
@@ -140,7 +140,7 @@ const stop = {
     },
   },
   karanfili: {
-    view: "karanfili",
+    view: { place: "karanfili", zoom: 13.2 },
     ref: { kind: "place", slug: "karanfili" },
     kicker: { en: "Above Grbaja", sq: "Mbi Gërbajë", cnr: "Iznad Grbaje" },
     title: { en: "Karanfili", sq: "Karanfili", cnr: "Karanfili" },
@@ -151,7 +151,7 @@ const stop = {
     },
   },
   zlaKolata: {
-    view: "zlaKolata",
+    view: { place: "zla-kolata" },
     ref: { kind: "place", slug: "zla-kolata" },
     kicker: { en: "On the border · 2,534 m", sq: "Në kufi · 2.534 m", cnr: "Na granici · 2.534 m" },
     title: { en: "Zla Kolata", sq: "Kollata e Keqe", cnr: "Zla Kolata" },
