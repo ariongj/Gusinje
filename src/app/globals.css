@@ -82,6 +82,8 @@
   --gutter-tight: clamp(16px, 5vw, 96px);
   --section-y: clamp(72px, 9vw, 136px);
   --max: 1280px;
+  /* Height of the sticky site header (min-height 64px + its border). */
+  --header-h: 65px;
   --max-narrow: 1180px;
 
   /* Motion */

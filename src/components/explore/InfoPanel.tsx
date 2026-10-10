@@ -20,10 +20,12 @@ type Props = {
   webgl: boolean;
   onClose: () => void;
   onShowIn: (view: ExploreView) => void;
+  /** Step through the places in this view, one at a time. */
+  step?: { index: number; total: number; onPrevious: () => void; onNext: () => void };
 };
 
 /** What the visitor picked — the same panel for the 3D view, the map and the list. */
-export function InfoPanel({ item, view, webgl, onClose, onShowIn, autoFocus = true }: Props) {
+export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, autoFocus = true }: Props) {
   const { t } = useI18n();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const panelRef = useRef<HTMLElement>(null);
@@ -48,9 +50,26 @@ export function InfoPanel({ item, view, webgl, onClose, onShowIn, autoFocus = tr
 
   return (
     <section ref={panelRef} className={styles.panel} aria-labelledby="panel-title" data-testid="info-panel">
-      <button type="button" className={styles.close} aria-label={t.common.close} onClick={onClose}>
-        &times;
-      </button>
+      <div className={styles.top}>
+        {step && (
+          <div className={styles.stepper}>
+            <button type="button" className={styles.stepButton} aria-label={t.explore.previousPlace} onClick={step.onPrevious}>
+              <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M11 3.5 5.5 9l5.5 5.5" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <span className={styles.stepCount}>{fill(t.explore.placeOf, { i: step.index + 1, n: step.total })}</span>
+            <button type="button" className={styles.stepButton} aria-label={t.explore.nextPlace} onClick={step.onNext}>
+              <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="m7 3.5 5.5 5.5L7 14.5" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+        )}
+        <button type="button" className={styles.close} aria-label={t.common.close} onClick={onClose}>
+          &times;
+        </button>
+      </div>
       {item.photo && (
         <figure className={styles.figure}>
           <div className={styles.frame}>

@@ -1,44 +1,44 @@
+/* Open style: the photo carries the card; the text sits on the page, no box. */
 .card {
   position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  background: var(--lighter);
-  border: 1px solid var(--line);
-  box-shadow: 0 1px 2px rgba(12, 44, 48, 0.04);
-  transition:
-    box-shadow 0.25s var(--ease-soft),
-    transform 0.25s var(--ease-soft);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-soft);
-  transform: translateY(-2px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card,
-  .card:hover {
-    transition: none;
-    transform: none;
-  }
-}
-
-.card:focus-within {
-  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .media {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-xl);
   background: var(--mist);
+  transition: box-shadow 0.25s var(--ease-soft);
 }
 
 .media > div {
   position: absolute;
   inset: 0;
   aspect-ratio: auto;
+  transition: transform 0.8s var(--ease-soft);
+}
+
+.card:hover .media > div {
+  transform: scale(1.04);
+}
+
+.card:hover .media {
+  box-shadow: var(--shadow-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media > div,
+  .card:hover .media > div {
+    transition: none;
+    transform: none;
+  }
+}
+
+.card:focus-within .media {
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .placeholder {
@@ -57,8 +57,8 @@
 
 .body {
   display: grid;
-  gap: 6px;
-  padding: 16px 18px 14px;
+  gap: 8px;
+  padding: 18px 2px 12px;
   flex: 1 1 auto;
   align-content: start;
 }
@@ -73,7 +73,8 @@
 
 .title {
   margin: 0;
-  font: 600 19px/1.25 var(--font-display);
+  font: 500 clamp(21px, 1.7vw, 24px) / 1.2 var(--font-display);
+  letter-spacing: -0.005em;
   color: var(--ink);
 }
 
@@ -105,7 +106,7 @@
 
 .text {
   margin: 2px 0 0;
-  font: 400 14.5px/1.55 var(--font-text);
+  font: 400 15px/1.6 var(--font-text);
   color: var(--text);
 }
 
@@ -115,5 +116,5 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 0 18px 16px;
+  padding: 0 2px 8px;
 }

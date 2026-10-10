@@ -47,7 +47,7 @@ export function PageIntro({ lang, t, title, kicker, lead, photo, crumbs, childre
             {lead && <p className={ui.lead}>{lead}</p>}
             {children && <div className={styles.extra}>{children}</div>}
           </div>
-          {photo && <PhotoFigure photo={photo} lang={lang} t={t} eager sizes="(max-width: 900px) 100vw, 560px" ratio="4 / 3" className={styles.photo} />}
+          {photo && <PhotoFigure photo={photo} lang={lang} t={t} eager sizes="(max-width: 900px) 100vw, 680px" ratio="5 / 4" className={styles.photo} />}
         </div>
       </div>
     </header>

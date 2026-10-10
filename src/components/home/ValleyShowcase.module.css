@@ -1,0 +1,107 @@
+.band {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(520px, 86vh, 820px);
+  min-height: clamp(520px, 86svh, 820px);
+  overflow: hidden;
+  /* Sky to valley floor: the backdrop before (or instead of) the live model. */
+  background: linear-gradient(180deg, #86aec8 0%, #cfdfe4 38%, #a7a59c 56%, #62803f 76%, #2c3d2a 100%);
+  color: #fff;
+  isolation: isolate;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+/* The model is decoration here: clicks go to the buttons, scrolling to the page. */
+.backdrop > * {
+  pointer-events: none;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(6, 26, 29, 0.82) 0%, rgba(6, 26, 29, 0.55) 38%, rgba(6, 26, 29, 0.05) 72%);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 120px) var(--gutter-tight);
+  --focus-ring: var(--gold-light);
+}
+
+.kicker {
+  margin: 0 0 14px;
+  font: 700 12px/1.2 var(--font-text);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+.title {
+  max-width: 14ch;
+  margin: 0;
+  font: 500 clamp(36px, 5vw, 68px) / 1.04 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.text {
+  max-width: 46ch;
+  margin: 20px 0 30px;
+  font: 400 clamp(16px, 1.3vw, 19px) / 1.6 var(--font-text);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 26px;
+  border-radius: var(--r-pill);
+  font: 700 15px/1 var(--font-text);
+}
+
+.primary {
+  background: var(--gold);
+  color: var(--on-gold);
+}
+
+.primary:hover {
+  background: var(--gold-light);
+  color: var(--on-gold);
+}
+
+.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+
+.secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+@media (max-width: 699.98px) {
+  .band {
+    align-items: flex-end;
+    min-height: clamp(520px, 92svh, 760px);
+  }
+
+  .shade {
+    background: linear-gradient(0deg, rgba(6, 26, 29, 0.88) 0%, rgba(6, 26, 29, 0.6) 45%, rgba(6, 26, 29, 0.05) 80%);
+  }
+}

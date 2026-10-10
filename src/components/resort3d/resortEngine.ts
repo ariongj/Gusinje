@@ -517,6 +517,9 @@ export class ResortEngine {
   private lastTime = 0;
   private lastInteract = 0;
   private tourMode = false;
+  /** Screen space covered by overlays (px): the camera's focus is centred in what's left. */
+  private insets = { left: 0, right: 0, bottom: 0 };
+  private insetsNow = { left: 0, right: 0, bottom: 0 };
   private readonly interactive: boolean;
   /** Azimuth range the idle drift swings across, and its current direction. */
   private swing: [number, number] = [-0.9, 0.9];
@@ -662,6 +665,18 @@ export class ResortEngine {
     if (this.snow) this.snow.visible = on;
   }
 
+  /**
+   * Panels covering the edges of the view (px). The picture shifts (smoothly)
+   * so the place in focus sits in the middle of the area left open.
+   */
+  setInsets(insets: { left?: number; right?: number; bottom?: number }) {
+    this.insets = { left: insets.left ?? 0, right: insets.right ?? 0, bottom: insets.bottom ?? 0 };
+    if (this.options.reducedMotion || !this.running) {
+      this.insetsNow = { ...this.insets };
+      this.applyInsets();
+    }
+  }
+
   /** Guided tour: keep the camera gently orbiting the current stop. */
   setTourMode(on: boolean) {
     this.tourMode = on;
@@ -727,6 +742,17 @@ export class ResortEngine {
     // Narrow screens see less of the valley; widen the lens a little.
     this.camera.fov = width / height < 0.8 ? 52 : 40;
     this.camera.updateProjectionMatrix();
+    this.applyInsets();
+  }
+
+  private applyInsets() {
+    const width = Math.max(1, this.container.clientWidth);
+    const height = Math.max(1, this.container.clientHeight);
+    const { left, right, bottom } = this.insetsNow;
+    const dx = clamp((right - left) / 2, -width / 4, width / 4);
+    const dy = clamp(bottom / 2, 0, height / 3);
+    if (Math.abs(dx) < 0.5 && dy < 0.5) this.camera.clearViewOffset();
+    else this.camera.setViewOffset(width, height, dx, dy, width, height);
   }
 
   private tick = (now: number) => {
@@ -758,6 +784,18 @@ export class ResortEngine {
     }
     this.controls.update(dt);
     this.keepAboveGround();
+
+    // Ease the picture towards the space the panels leave open.
+    const target = this.insets;
+    const current = this.insetsNow;
+    if (current.left !== target.left || current.right !== target.right || current.bottom !== target.bottom) {
+      const k = 1 - Math.exp(-dt * 8);
+      for (const side of ["left", "right", "bottom"] as const) {
+        const next = current[side] + (target[side] - current[side]) * k;
+        current[side] = Math.abs(target[side] - next) < 0.5 ? target[side] : next;
+      }
+      this.applyInsets();
+    }
 
     this.sky.position.copy(this.camera.position);
     if (this.falls && !this.options.reducedMotion) this.falls.offset.y += dt * 0.9;

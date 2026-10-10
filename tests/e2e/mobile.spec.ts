@@ -38,7 +38,9 @@ test("touch targets are at least 44px on the Explore page", async ({ page, error
   void errors;
   test.skip(!isMobile, "phone layout");
   await page.goto("/en/explore/");
-  const controls = page.locator('[data-view], [data-group], header a:visible, header button:visible');
+  await page.getByRole("button", { name: "Legend & filters" }).tap();
+  await expect(page.locator("[data-group]").first()).toBeVisible();
+  const controls = page.locator('[data-view], [data-group], [data-rail], nav[aria-label="Places in this view"] button, button[aria-controls="explore-legend"], header a:visible, header button:visible');
   await expect(controls.first()).toBeVisible();
   for (const box of await controls.evaluateAll((els) => els.map((el) => ({ name: el.textContent?.trim() || el.getAttribute("aria-label"), height: el.getBoundingClientRect().height })))) {
     expect(box.height, `${box.name}`).toBeGreaterThanOrEqual(44);

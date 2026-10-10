@@ -92,6 +92,22 @@ To edit content: change the record, run `npm run check:content`, open a pull req
    work without it).
 4. Write all three languages; mark translations `unreviewed`.
 
+### Design
+
+Open, photo-led pages: a full-screen hero, an intro statement, a photo mosaic of places, a
+full-width band where the 3D valley drifts behind the invitation to explore (it loads only
+when scrolled near, and never on data saver), "things to do" photo tiles, tours and practical
+information. Cards are borderless photos with text below; page headers have a large title and
+photo.
+
+**Explore** fills the screen below the header. The legend and filters float top-left (a
+"Legend & filters" button on phones), the selected place opens as a card on the right (a sheet
+on phones), and a strip along the bottom lists every place the view can show, in order up the
+valley. Picking one flies the camera to that place's own view; previous / next (in the strip
+and on the card) step through them one at a time. The camera keeps the place centred in the
+part of the screen the panels leave open (`setInsets` in `resortEngine.ts`; the map does the
+same). While a place is selected, the other labels step back so it has the stage to itself.
+
 ### Phones, slow connections and no signal
 
 - **Photos** come in the width the screen needs: `src/lib/image-loader.ts` asks Wikimedia Commons
@@ -100,7 +116,7 @@ To edit content: change the record, run `npm run check:content`, open a pull req
 - **Prefetching**: only the main navigation and calls to action load ahead; cards, footer,
   breadcrumbs, search and My Trip load when tapped.
 - **Explore** opens on the map instead of 3D when the phone has data saver on, a 2G connection
-  or very little memory (3D is one tap away). The legend becomes chips under the model.
+  or very little memory (3D is one tap away).
 - **Touch targets** are at least 44 px on touch screens (tested).
 - **Add to home screen**: `src/app/manifest.ts`, icons in `public/icons/` and
   `src/app/apple-icon.png` (regenerate with `node scripts/icons.mjs`).
@@ -113,8 +129,8 @@ To edit content: change the record, run `npm run check:content`, open a pull req
 
 | Page (phone, uncompressed, photos excluded) | Before | Now |
 | --- | --- | --- |
-| Home `/en/` | 1488 KB | 1044 KB |
-| Explore `/en/explore/` | 2013 KB | 1538 KB (1077 KB with data saver) |
+| Home `/en/` | 1488 KB | 1093 KB (the 3D band loads only when scrolled to) |
+| Explore `/en/explore/` | 2013 KB | 1582 KB (1121 KB with data saver) |
 | Place `/en/places/grlja/` | — | 907 KB |
 
 ### Environment variables

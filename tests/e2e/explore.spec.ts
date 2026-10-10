@@ -19,6 +19,30 @@ test.describe("Explore: 3D, map and list share the same records", () => {
     await expect(page).toHaveURL(/\/en\/places\/grlja\/$/);
   });
 
+  test("full-screen view: the place strip gives each place its own view; previous / next step through them", async ({ page, errors }) => {
+    void errors;
+    await page.goto("/en/explore/");
+    const rail = page.getByRole("navigation", { name: "Places in this view" });
+    const gusinje = rail.locator('[data-rail="place:gusinje"]');
+    await expect(gusinje).toBeVisible({ timeout: 20_000 });
+    // The view fills the screen: the strip sits at the bottom of the window.
+    const box = await rail.boundingBox();
+    expect(box!.y + box!.height).toBeGreaterThan(page.viewportSize()!.height - 40);
+
+    await gusinje.click();
+    const panel = page.getByTestId("info-panel");
+    await expect(panel.getByRole("heading", { name: "Gusinje" })).toBeVisible();
+    await expect(gusinje).toHaveAttribute("aria-current", "true");
+    await expect(panel.getByText("2 of 11")).toBeVisible();
+    await expect(page.locator('button[data-key="place:gusinje"]')).toHaveAttribute("aria-pressed", "true");
+
+    await panel.getByRole("button", { name: "Next place" }).click();
+    await expect(panel.getByRole("heading", { name: "Ali Pasha's Springs" })).toBeVisible();
+    await expect(page).toHaveURL(/place=ali-pashas-springs/);
+    await rail.getByRole("button", { name: "Previous place" }).click();
+    await expect(panel.getByRole("heading", { name: "Gusinje" })).toBeVisible();
+  });
+
   test("legend filters hide a category in every view", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/explore/?view=list");

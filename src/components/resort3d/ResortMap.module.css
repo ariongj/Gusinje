@@ -188,7 +188,7 @@
 .hint {
   position: absolute;
   left: 50%;
-  bottom: 16px;
+  bottom: var(--hint-bottom, 16px);
   transform: translateX(-50%);
   padding: 10px 16px;
   background: rgba(6, 26, 29, 0.72);
@@ -215,9 +215,9 @@
 
 .controls {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
-  display: flex;
+  right: var(--controls-right, 12px);
+  bottom: var(--controls-bottom, 12px);
+  display: var(--controls-display, flex);
   gap: 8px;
 }
 
@@ -295,23 +295,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* A 34px touch target around the dot. */
-.pinDot::before {
-  content: "";
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-}
-
-.pinDot::after {
+  .pinDot::after {
     animation: none;
-  }
-}
-
-/* Finger-sized targets (44px) on touch screens. */
-@media (pointer: coarse) {
-  .control {
-    width: 44px;
-    height: 44px;
   }
 }

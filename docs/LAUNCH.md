@@ -14,6 +14,7 @@ it has not been announced or submitted anywhere.
 - 11 place pages, 11 listings, 6 walk/hike pages, 9 travel guides, 4 itinerary templates, 4 tours and 80 cited sources — each page with sources, check dates, share link and QR code.
 - My Trip planner (local only), search across languages, editorial dashboard.
 - Reviews, submissions, claims, corrections and moderation **in preview mode** (nothing is sent or stored); backend schema ready and tested.
+- Design: open, photo-led pages; full-screen Explore with a place strip, a card per place and previous / next through every place.
 - Phones: responsive photo sizes, trimmed fonts, limited prefetching, map-first Explore on data saver / 2G, 44 px touch targets, add-to-home-screen, offline copies of visited pages.
 - Tests: content integrity, desktop and phone end-to-end, no-WebGL, offline, touch targets, axe accessibility scan, schema permissions.
 
@@ -55,11 +56,12 @@ it has not been announced or submitted anywhere.
 - [ ] **Privacy notice and moderation policy**: publish final versions with a named data controller.
 - [ ] **Analytics**: none today. If wanted, a cookie-free, aggregate tool — only with a published notice.
 - [ ] **Partnership**: any approach to the Gusinje Tourism Organisation or the national park, any use of their logos, sponsorship or data sharing — all still proposals.
+- [ ] **Tourism Organisation website option** (proposal on `/partners`): only if the organisation wants it and after a written agreement — then switch the name, logo, colours and domain in `src/config/brand.ts`, give its staff editor/moderator roles, bring across its listings, events and visitor-information details with its permission, and add an events calendar. Until then the guide must not use its name or logo as its own.
 
 ## Performance and accessibility notes
 
 - Home and content pages are static HTML; three.js (~600 KB) loads only on the Explore page, and not at all where WebGL is unavailable. Leaflet loads only when the map is shown.
 - Photos are Wikimedia thumbnails at the width each screen needs (500/960/1280 px), lazy-loaded below the fold. ROSI's Booking.com photos are still hot-linked at their single size until original files are supplied.
-- Page weight on a phone profile (uncompressed, photos excluded): home 1044 KB (was 1488 KB), Explore 1538 KB (was 2013 KB; 1077 KB with data saver). Fonts 163 KB (was 532 KB).
+- Page weight on a phone profile (uncompressed, photos excluded): home 1093 KB (was 1488 KB; the 3D band loads only when scrolled to), Explore 1582 KB (was 2013 KB; 1121 KB with data saver). Fonts 163 KB (was 532 KB).
 - The service worker stores only this site's public pages and build files on the visitor's device (mentioned in the privacy section of "About this guide"). Bump `VERSION` in `public/sw.js` if a release must drop old copies.
 - Automated axe checks pass on the key pages; a manual screen-reader pass (NVDA/VoiceOver) and testing on real phones (iPhone Safari, a budget Android) are still to do — they were not performed. Phone behaviour was tested in emulation (Pixel 7 profile, 320–412 px widths).

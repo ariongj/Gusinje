@@ -36,9 +36,11 @@ type Props = {
   focus: MapFocus;
   /** Markers are not focusable while a guided tour drives the map. */
   touring?: boolean;
+  /** Panels covering the edges (px): a focused marker lands in the middle of the open area. */
+  insets?: { left?: number; right?: number; bottom?: number };
 };
 
-export function LeafletMap({ items, selectedKey, onSelect, focus, touring = false }: Props) {
+export function LeafletMap({ items, selectedKey, onSelect, focus, touring = false, insets }: Props) {
   const { t } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LMap | null>(null);
@@ -46,11 +48,13 @@ export function LeafletMap({ items, selectedKey, onSelect, focus, touring = fals
   const markersRef = useRef(new Map<string, Marker>());
   const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const onSelectRef = useRef(onSelect);
+  const insetsRef = useRef(insets);
   const [status, setStatus] = useState<"loading" | "ready" | "failed">("loading");
   const [tilesFailed, setTilesFailed] = useState(false);
 
   useEffect(() => {
     onSelectRef.current = onSelect;
+    insetsRef.current = insets;
   });
 
   // Create the map once.
@@ -164,19 +168,20 @@ export function LeafletMap({ items, selectedKey, onSelect, focus, touring = fals
     if (status !== "ready" || !map) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const target = focus.key ? items.find((i) => i.key === focus.key) : null;
+    const { left = 0, right = 0, bottom = 0 } = insetsRef.current ?? {};
     if (target?.location) {
       const zoom = target.location.precision === "area" ? 13 : 14;
-      if (reduce) map.setView([target.location.lat, target.location.lng], zoom);
-      else map.flyTo([target.location.lat, target.location.lng], zoom, { duration: 1.2 });
+      // Centre the marker in the part of the map the panels leave open.
+      const point = map.project([target.location.lat, target.location.lng], zoom).add([(right - left) / 2, bottom / 2]);
+      const center = map.unproject(point, zoom);
+      if (reduce) map.setView(center, zoom);
+      else map.flyTo(center, zoom, { duration: 1.2 });
     } else if (!focus.key) {
+      const L = leafletRef.current!;
       const located = items.filter((i) => i.location);
-      if (located.length > 1) {
-        const L = leafletRef.current!;
-        const bounds = L.latLngBounds(located.map((i) => [i.location!.lat, i.location!.lng] as [number, number]));
-        map.fitBounds(bounds.pad(0.15), { animate: !reduce });
-      } else {
-        map.fitBounds(DEFAULT_BOUNDS, { animate: !reduce });
-      }
+      const bounds =
+        located.length > 1 ? L.latLngBounds(located.map((i) => [i.location!.lat, i.location!.lng] as [number, number])).pad(0.15) : L.latLngBounds(DEFAULT_BOUNDS);
+      map.fitBounds(bounds, { animate: !reduce, paddingTopLeft: [left, 0], paddingBottomRight: [right, bottom] });
     }
     // items intentionally omitted: refocusing only on an explicit request.
     // eslint-disable-next-line react-hooks/exhaustive-deps

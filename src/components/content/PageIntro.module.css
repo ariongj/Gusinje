@@ -1,7 +1,5 @@
 .intro {
-  padding: clamp(24px, 4vw, 48px) 0 clamp(20px, 3vw, 36px);
-  background: linear-gradient(180deg, var(--mist), var(--paper));
-  border-bottom: 1px solid var(--line);
+  padding: clamp(28px, 4.4vw, 64px) 0 clamp(4px, 1.2vw, 16px);
 }
 
 .grid {
@@ -11,8 +9,12 @@
 }
 
 .withPhoto .grid {
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  gap: clamp(24px, 4vw, 56px);
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(28px, 5vw, 80px);
+}
+
+.photo > div:first-child {
+  border-radius: var(--r-xl);
 }
 
 @media (max-width: 900px) {

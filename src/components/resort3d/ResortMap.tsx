@@ -33,6 +33,8 @@ type ResortMapProps = {
   onReset?: () => void;
   /** WebGL could not start: the parent switches to the map. */
   onFailed?: () => void;
+  /** Panels covering the edges (px): the place in focus is centred in the open area. */
+  insets?: { left?: number; right?: number; bottom?: number };
   /** Overlays drawn above the map (e.g. the guide card). */
   children?: ReactNode;
   className?: string;
@@ -54,6 +56,7 @@ export function ResortMap({
   onSelect,
   onReset,
   onFailed,
+  insets,
   children,
   className,
 }: ResortMapProps) {
@@ -121,7 +124,9 @@ export function ResortMap({
         const x = (pin.x / 100) * width;
         const y = (pin.y / 100) * height;
         const rect: [number, number, number, number] = [x - w / 2 - 4, y - 54, x + w / 2 + 4, y - 16];
-        const clash = shown.some((r) => r[0] < rect[2] && rect[0] < r[2] && r[1] < rect[3] && rect[1] < r[3]);
+        // With a place selected, it has the stage to itself: other labels wait for hover or focus.
+        const selected = orderRef.current.selected;
+        const clash = (selected !== null && pin.id !== selected) || shown.some((r) => r[0] < rect[2] && rect[0] < r[2] && r[1] < rect[3] && rect[1] < r[3]);
         el.style.setProperty("--lo", clash ? "0" : "1");
         // A hidden label must not catch clicks meant for the pins around it.
         el.style.setProperty("--lpe", clash ? "none" : "auto");
@@ -178,6 +183,13 @@ export function ResortMap({
   useEffect(() => {
     engineRef.current?.setTourMode(touring);
   }, [touring, status]);
+
+  const insetLeft = insets?.left ?? 0;
+  const insetRight = insets?.right ?? 0;
+  const insetBottom = insets?.bottom ?? 0;
+  useEffect(() => {
+    engineRef.current?.setInsets({ left: insetLeft, right: insetRight, bottom: insetBottom });
+  }, [insetLeft, insetRight, insetBottom, status]);
 
   const controlsShown = status === "ready" && !touring && !hero;
   const visibleAnchors = new Set(pins.map((p) => p.anchor));

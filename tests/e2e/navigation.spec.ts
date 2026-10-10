@@ -57,11 +57,13 @@ test("site root sends visitors to their browser language", async ({ browser }) =
 test("skip link moves focus to the main content", async ({ page, errors, isMobile }) => {
   void errors;
   test.skip(isMobile, "keyboard test on desktop");
-  await page.goto("/en/places/");
+  // Wait until the app has started: it rewrites the address on start-up.
+  await page.goto("/en/places/", { waitUntil: "networkidle" });
   await page.keyboard.press("Tab");
   const skip = page.getByRole("link", { name: "Skip to content" });
   await expect(skip).toBeFocused();
   await page.keyboard.press("Enter");
+  await expect(page.locator("main#content")).toBeFocused();
   await expect(page).toHaveURL(/#content$/);
 });
 

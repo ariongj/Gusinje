@@ -353,5 +353,29 @@ export const partners: {
         ],
       },
     },
+    {
+      heading: {
+        en: "Option: the Tourism Organisation's own website",
+        sq: "Mundësi: faqja e vetë Organizatës Turistike",
+        cnr: "Opcija: sopstveni sajt Turističke organizacije",
+      },
+      body: {
+        en: [
+          "Beyond a pilot, the platform could become the Gusinje Tourism Organisation's website if the organisation wanted that. It was built so the name, logo, colours and web address can change in one place, and so the organisation's staff could run it themselves: editors for places and listings, moderators for reviews and corrections, and owners verified for their own listings.",
+          "What would change, only after a written agreement: the organisation's name and branding, its own domain, its staff as editors, its listings, events and visitor-information office brought across from its current website with its permission, and an events calendar added. What would not change: every fact keeps its source and check date, listings stay A–Z with nobody paying for position, and ROSI's own listings follow the same rules as everyone else's.",
+          "Nothing of this has been discussed with or offered to the organisation yet. This guide does not use its name or logo as its own, and is not its website.",
+        ],
+        sq: [
+          "Përtej një piloti, platforma mund të bëhej faqja e Organizatës Turistike të Gucisë, nëse organizata e dëshiron. Ajo është ndërtuar që emri, logoja, ngjyrat dhe adresa e internetit të ndryshojnë në një vend të vetëm, dhe që stafi i organizatës ta drejtojë vetë: redaktorë për vendet dhe listimet, moderatorë për vlerësimet dhe korrigjimet, dhe pronarë të verifikuar për listimet e tyre.",
+          "Çfarë do të ndryshonte, vetëm pas një marrëveshjeje me shkrim: emri dhe identiteti vizual i organizatës, domeni i saj, stafi i saj si redaktorë, listimet, ngjarjet dhe zyra e informimit turistik të sjella nga faqja e saj aktuale me lejen e saj, dhe një kalendar ngjarjesh. Çfarë nuk do të ndryshonte: çdo fakt ruan burimin dhe datën e kontrollit, listimet mbeten A–Zh pa pagesë për pozicion, dhe listimet e vetë ROSI-t ndjekin të njëjtat rregulla si të gjithë të tjerët.",
+          "Asgjë nga kjo nuk është diskutuar apo ofruar ende me organizatën. Ky udhëzues nuk e përdor emrin apo logon e saj si të vetin dhe nuk është faqja e saj.",
+        ],
+        cnr: [
+          "Osim pilota, platforma bi mogla postati sajt Turističke organizacije Gusinje, ako organizacija to želi. Napravljena je tako da se naziv, logo, boje i web adresa mijenjaju na jednom mjestu, i da je osoblje organizacije može samo voditi: urednici za mjesta i oglase, moderatori za recenzije i ispravke, i provjereni vlasnici za svoje oglase.",
+          "Šta bi se promijenilo, tek nakon pisanog sporazuma: naziv i vizuelni identitet organizacije, njen domen, njeno osoblje kao urednici, njeni oglasi, događaji i turistički info centar preneseni s njenog sadašnjeg sajta uz njenu dozvolu, i dodat kalendar događaja. Šta se ne bi promijenilo: svaka činjenica zadržava izvor i datum provjere, oglasi ostaju po abecedi i niko ne plaća poziciju, a ROSI-jevi oglasi poštuju ista pravila kao i svi ostali.",
+          "Ništa od ovoga još nije razgovarano niti ponuđeno organizaciji. Ovaj vodič ne koristi njen naziv ni logo kao svoje i nije njen sajt.",
+        ],
+      },
+    },
   ],
 };
