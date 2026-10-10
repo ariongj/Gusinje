@@ -2,7 +2,9 @@
 
 An independent, multilingual visitor guide to **Gusinje, Vusanje and the Prokletije** (Montenegro):
 a real-terrain 3D map of the valley with a flat map and a list of the same places, place pages with sources,
-a local directory, walks and hikes, travel tips, virtual tours and a personal trip planner.
+hidden gems further afield, a local directory, useful services (emergency, health, money, buses, guides),
+history and culture, walks and hikes, travel tips, virtual tours, journeys flown on the map and a
+personal trip planner.
 
 Created and hosted by **ROSI**. It is not an official tourism website and is not endorsed by any
 tourism organisation or public body. ROSI's own accommodation website (with its booking links) is
@@ -48,7 +50,8 @@ To try the GitHub Pages layout locally: build with `NEXT_PUBLIC_BASE_PATH=/Gusin
 src/
   app/[lang]/          every page, per language (en, sq, cnr); app/(root) picks a language
   content/             the content model — one record per place, listing, route, tour, guide,
-                       itinerary; sources.ts; photos.ts (credits and rights); pages.ts (long text)
+                       itinerary, service; history.ts (timeline, culture); sources.ts;
+                       photos.ts (credits and rights); pages.ts (long text)
   i18n/                languages, UI strings (messages/en|sq|cnr.ts), helpers
   components/
     explore/           Explorer (3D + map + list), legend, info panel, place strip; Leaflet fallback map
@@ -102,10 +105,17 @@ photo.
 **Explore** fills the screen below the header. The legend and filters float top-left (a
 "Legend & filters" button on phones), the selected place opens as a card on the right (a sheet
 on phones), and a strip along the bottom lists every place the view can show, in order up the
-valley. Picking one flies the camera to that place's own view; previous / next (in the strip
-and on the card) step through them one at a time. The camera keeps the place centred in the
-part of the screen the panels leave open (`setInsets` in `resortEngine.ts`; the map does the
-same). While a place is selected, the other labels step back so it has the stage to itself.
+valley. Picking one flies the camera to that place's own view (`fly()` in
+`components/map/TerrainMap.tsx` — it follows the ground's real height, so summits are seen from
+further back); previous / next (in the strip and on the card) step through them one at a time.
+The camera keeps the place centred in the part of the screen the panels leave open. Labels never
+overlap: towns and villages win, then the selected place, and a crowded label shows on hover or
+focus. Virtual tours and **journeys** (each trip plan, stop by stop) fly the same camera with a
+narrator card; `?tour=<slug>` opens either.
+
+**Useful services** (`/services`) and **History & culture** (`/about/history`) are sourced pages
+like the rest: every entry shows its sources and check date, contested history is marked as such,
+and nothing (phone numbers, hours, prices) is shown unless an official page publishes it.
 
 ### Phones, slow connections and no signal
 

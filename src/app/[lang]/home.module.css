@@ -159,6 +159,12 @@
   color: var(--text);
 }
 
+.moreLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+}
+
 .more {
   display: inline-flex;
   align-items: center;
@@ -579,4 +585,47 @@
 
 .creditList p {
   margin: 0;
+}
+
+/* ---------- history & culture ---------- */
+
+.historyBand {
+  background: var(--card);
+  border-top: 1px solid var(--line);
+}
+
+.historySplit {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(28px, 5vw, 80px);
+  align-items: center;
+}
+
+.historyPhoto {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-xl);
+}
+
+.historyPhoto > div {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+}
+
+.historyText {
+  display: grid;
+  justify-items: start;
+  gap: 22px;
+}
+
+.historyText .lede {
+  margin: 0;
+}
+
+@media (max-width: 859.98px) {
+  .historySplit {
+    grid-template-columns: 1fr;
+  }
 }

@@ -357,6 +357,60 @@ export const commonsPhotos = {
     height: 2517,
     ...commons("Pavouk", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Zla_Kolata_summit.jpg", "https://creativecommons.org/licenses/by-sa/4.0/"),
   },
+  zlaKolataNorthEast: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Zla_Kolata.JPG/1280px-Zla_Kolata.JPG",
+    alt: "The summit of Zla Kolata in the Prokletije, seen from the north-east",
+    altLocalized: {
+      sq: "Maja e Kollatës së Keqe në Bjeshkët e Nemuna, parë nga verilindja",
+      cnr: "Vrh Zle Kolate na Prokletijama, viđen sa sjeveroistoka",
+    },
+    width: 4847,
+    height: 3223,
+    ...commons("Pavouk", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Zla_Kolata.JPG", "https://creativecommons.org/licenses/by-sa/4.0/"),
+  },
+  zlaKolataNorthFace: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/The_North_Face_of_Zla_Kolata_mountain.jpg/1280px-The_North_Face_of_Zla_Kolata_mountain.jpg",
+    alt: "The north face of Zla Kolata",
+    altLocalized: {
+      sq: "Faqja veriore e Kollatës së Keqe",
+      cnr: "Sjeverna strana Zle Kolate",
+    },
+    width: 3264,
+    height: 2448,
+    ...commons(
+      "KpokeJlJla",
+      "CC BY-SA 4.0",
+      "https://commons.wikimedia.org/wiki/File:The_North_Face_of_Zla_Kolata_mountain.jpg",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
+    ),
+  },
+  lakePlavWide: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Lake_Plav1.JPG/1280px-Lake_Plav1.JPG",
+    alt: "Lake Plav (Plavsko jezero)",
+    altLocalized: {
+      sq: "Liqeni i Plavës",
+      cnr: "Plavsko jezero",
+    },
+    width: 2048,
+    height: 1536,
+    ...commons("Chlämens", "Public domain", "https://commons.wikimedia.org/wiki/File:Lake_Plav1.JPG"),
+  },
+  karanfilWinterAerial: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/WK402_WikipediaWeekendTirana2015_Jezerca-Karanfil_075.JPG/1280px-WK402_WikipediaWeekendTirana2015_Jezerca-Karanfil_075.JPG",
+    alt: "The central Prokletije from the air in early December, with Jezerca in front and Karanfil behind",
+    altLocalized: {
+      sq: "Bjeshkët e Nemuna qendrore nga ajri në fillim të dhjetorit, me Jezercën përpara dhe Karanfilin prapa",
+      cnr: "Centralne Prokletije iz vazduha početkom decembra, s Jezercom naprijed i Karanfilom iza",
+    },
+    width: 4912,
+    height: 3264,
+    ...commons(
+      "Albinfo",
+      "CC BY-SA 4.0",
+      "https://commons.wikimedia.org/wiki/File:WK402_WikipediaWeekendTirana2015_Jezerca-Karanfil_075.JPG",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
+    ),
+  },
 } satisfies Record<string, Photo>;
 
 export const rosiPhotos = {

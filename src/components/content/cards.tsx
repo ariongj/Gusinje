@@ -21,7 +21,14 @@ export function PlaceCard({ place, lang, t, headingLevel }: Common & { place: Pl
       placeholder={t.common.noPhoto}
       lang={lang}
       headingLevel={headingLevel}
-      badges={!place.location ? <span className={ui.badgeMuted}>{t.explore.noLocation}</span> : undefined}
+      badges={
+        place.gem || !place.location ? (
+          <>
+            {place.gem && <span className={ui.badgeGold}>{t.common.gem}</span>}
+            {!place.location && <span className={ui.badgeMuted}>{t.explore.noLocation}</span>}
+          </>
+        ) : undefined
+      }
       footer={<TripButton kind="place" slug={place.slug} compact />}
     />
   );

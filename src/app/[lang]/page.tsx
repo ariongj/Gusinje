@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { PlaceCard } from "@/components/content/cards";
 import { ValleyShowcase } from "@/components/home/ValleyShowcase";
 import { Photo } from "@/components/ui/Photo";
 import { photoAlt } from "@/components/ui/PhotoFigure";
@@ -29,6 +30,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const lang = resolveLocale((await params).lang);
   const t = getMessages(lang);
   const featured = ["grlja", "ali-pashas-springs", "ropojana", "oko-skakavice", "grbaja"].map((s) => places.find((p) => p.slug === s)!);
+  const gems = places.filter((p) => p.gem);
+  const heritage = commonsPhotos.gusinjeHouses;
   const tips = ["getting-here", "seasons-and-packing", "responsible-travel", "safety-and-emergencies"].map((s) => guides.find((g) => g.slug === s)!);
   const count = (section: Parameters<typeof inSection>[1]) => businesses.filter((b) => inSection(b, section)).length;
 
@@ -41,7 +44,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     { label: t.nav.guides, meta: plural(lang, count("guides-experiences"), t.common.results), path: "/guides-experiences", photo: commonsPhotos.karanfilWest },
     { label: t.footer.itineraries, meta: plural(lang, itineraries.length, t.common.results), path: "/plan", photo: commonsPhotos.vusanjePeaks },
   ];
-  const shown = [HERO, ...featured.map((p) => p.photos[0]).filter(Boolean), ...things.map((x) => x.photo)] as PhotoRecord[];
+  const shown = [HERO, ...featured.map((p) => p.photos[0]), ...things.map((x) => x.photo), heritage, ...gems.map((p) => p.photos[0])].filter(Boolean) as PhotoRecord[];
   const credited = shown.filter((photo, i) => shown.findIndex((other) => other.src === photo.src) === i);
 
   const website = {
@@ -145,6 +148,44 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </ul>
       </section>
 
+      {/* --------------------------------------------------- hidden gems */}
+      <section className={styles.block} aria-labelledby="gems">
+        <div className={styles.head}>
+          <div>
+            <h2 id="gems" className={styles.h2}>
+              {t.home.gemsTitle}
+            </h2>
+            <p className={styles.lede}>{t.home.gemsIntro}</p>
+          </div>
+          <Link href={href(lang, "/places")} className={styles.more}>
+            {t.common.seeAll}
+          </Link>
+        </div>
+        <div className={ui.cards}>
+          {gems.map((p) => (
+            <PlaceCard key={p.slug} place={p} lang={lang} t={t} />
+          ))}
+        </div>
+      </section>
+
+      {/* ------------------------------------------------ history & culture */}
+      <section className={styles.historyBand} aria-labelledby="history">
+        <div className={`${styles.blockInner} ${styles.historySplit}`}>
+          <div className={styles.historyPhoto}>
+            <Photo src={heritage.src} alt={photoAlt(heritage, lang)} sizes="(max-width: 860px) 100vw, 50vw" />
+          </div>
+          <div className={styles.historyText}>
+            <h2 id="history" className={styles.h2}>
+              {t.home.historyTitle}
+            </h2>
+            <p className={styles.lede}>{t.home.historyText}</p>
+            <Link href={href(lang, "/about/history")} className={ui.button}>
+              {t.home.historyCta}
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* --------------------------------------------------------- tours */}
       <section className={styles.toursBand} aria-labelledby="tours">
         <div className={styles.blockInner}>
@@ -180,9 +221,14 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <h2 id="tips" className={styles.h2}>
             {t.home.tipsTitle}
           </h2>
-          <Link href={href(lang, "/travel-tips")} className={styles.more}>
-            {t.common.seeAll}
-          </Link>
+          <div className={styles.moreLinks}>
+            <Link href={href(lang, "/services")} className={styles.more}>
+              {t.footer.services}
+            </Link>
+            <Link href={href(lang, "/travel-tips")} className={styles.more}>
+              {t.common.seeAll}
+            </Link>
+          </div>
         </div>
         <ul className={styles.tips}>
           {tips.map((g) => (

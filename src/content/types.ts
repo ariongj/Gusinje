@@ -158,6 +158,8 @@ export type Place = {
   /** Official information pages (source ids). */
   officialLinks?: string[];
   routes?: string[];
+  /** A lesser-known place worth the detour (listed under "Hidden gems"). */
+  gem?: boolean;
   verification: Verification;
   translations: TranslationStatus;
 };

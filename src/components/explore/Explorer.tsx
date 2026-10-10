@@ -35,6 +35,8 @@ type Props = {
   lead: string;
   items: ExploreItem[];
   tours: ExploreTour[];
+  /** Trip plans flown day by day — played like the tours. */
+  journeys?: ExploreTour[];
 };
 
 type Insets = { left: number; right: number; bottom: number };
@@ -66,7 +68,7 @@ function preferLightweight(): boolean {
 
 const VIEWS: ExploreView[] = ["3d", "map", "list"];
 
-export function Explorer({ title, lead, items, tours }: Props) {
+export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
   const { lang, t } = useI18n();
   const [view, setView] = useState<ExploreView>("3d");
   const [webgl, setWebgl] = useState<"unknown" | "ok" | "no">("unknown");
@@ -192,7 +194,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
 
   const chooseTour = useCallback(
     (slug: string) => {
-      const data = tours.find((x) => x.slug === slug);
+      const data = [...tours, ...journeys].find((x) => x.slug === slug);
       if (!data) return;
       guide.exit();
       setGroups(new Set(legendGroups));
@@ -200,13 +202,26 @@ export function Explorer({ title, lead, items, tours }: Props) {
       setSelectedKey(null);
       if (viewRef.current === "list") switchView(webgl === "no" ? "map" : "3d");
       setTour({ data, phase: "intro" });
-      stageRef.current?.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-        block: "start",
-      });
+      // Right under the header: the whole explorer on wide screens (it fits),
+      // the map itself on phones. (scrollIntoView would add the page's anchor padding.)
+      const stage = stageRef.current;
+      if (stage) {
+        const target = stage.clientWidth >= 900 && stage.parentElement ? stage.parentElement : stage;
+        window.scrollTo({
+          top: target.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(stage).scrollMarginTop) || 0),
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        });
+      }
     },
-    [tours, guide, switchView, webgl],
+    [tours, journeys, guide, switchView, webgl],
   );
+
+  // The intro takes focus without cutting short the scroll up to the map.
+  const beginRef = useRef<HTMLButtonElement>(null);
+  const introOpen = tour?.phase === "intro" && view !== "list";
+  useEffect(() => {
+    if (introOpen) beginRef.current?.focus({ preventScroll: true });
+  }, [introOpen, tour?.data.slug]);
 
   const beginTour = useCallback(() => {
     setTour((x) => (x ? { ...x, phase: "running" } : x));
@@ -265,7 +280,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
     }
     const tourSlug = params.get("tour");
     if (tourSlug) {
-      const data = tours.find((x) => x.slug === tourSlug);
+      const data = [...tours, ...journeys].find((x) => x.slug === tourSlug);
       if (data) setTour({ data, phase: "intro" });
     }
     setReady(true);
@@ -331,7 +346,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
     ro.observe(stage);
     for (const el of [railRef.current, panelRef.current, legendRef.current]) if (el) ro.observe(el);
     return () => ro.disconnect();
-  }, [view, showPanel, legendOpen, touring, selectedKey]);
+  }, [view, showPanel, legendOpen, touring, selectedKey, tour?.phase]);
 
   // Keep the selected place visible in the rail (scrolling only the rail, never the page).
   useEffect(() => {
@@ -428,6 +443,35 @@ export function Explorer({ title, lead, items, tours }: Props) {
     />
   );
 
+  const tourList = (list: ExploreTour[], action: string) => (
+    <ul className={styles.tourList}>
+      {list.map((x, i) => (
+        <li key={x.slug} className={styles.tourCard}>
+          <span className={styles.tourNumber} aria-hidden="true">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <h3 className={styles.tourTitle}>{x.title}</h3>
+          <p className={styles.tourText}>{x.intro}</p>
+          <p className={styles.tourMeta}>{plural(lang, x.stops.length, t.explore.stops)}</p>
+          <div className={styles.tourActions}>
+            <button
+              ref={tour?.data.slug === x.slug ? tourButtonRef : undefined}
+              type="button"
+              className={ui.button}
+              onClick={() => chooseTour(x.slug)}
+              data-tour={x.slug}
+            >
+              {action}
+            </button>
+            <Link href={x.textHref} className={ui.textLink}>
+              {t.explore.textVersion}
+            </Link>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <div className={cx(styles.explorer, view !== "list" && styles.immersive, touring && styles.isTouring)}>
       {/* The bar and the stage fill the screen below the site header. */}
@@ -478,7 +522,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
         )}
 
         {/* ----------------------------------------------------------- stage */}
-        <div ref={stageRef} className={cx(styles.stage, view === "list" && styles.stageList, touring && styles.touring, showPanel && styles.panelOpen)} style={stageVars}>
+        <div ref={stageRef} data-testid="explore-stage" className={cx(styles.stage, view === "list" && styles.stageList, touring && styles.touring, showPanel && styles.panelOpen)} style={stageVars}>
           {/* The real valley: 3D terrain, or the same map laid flat. Without WebGL, a simple tiled map. */}
           {mounted && webgl !== "unknown" && (
             <div className={styles.layer} hidden={view === "list"}>
@@ -527,8 +571,8 @@ export function Explorer({ title, lead, items, tours }: Props) {
             </div>
           )}
 
-          {/* Floating legend and filters (3D and map). */}
-          {view !== "list" && !touring && (
+          {/* Floating legend and filters (3D and map); out of the way of a tour. */}
+          {view !== "list" && !touring && tour?.phase !== "intro" && (
             <div ref={legendRef} className={cx(styles.floatingLegend, legendOpen && styles.floatingLegendOpen)}>
               <button
                 type="button"
@@ -624,7 +668,7 @@ export function Explorer({ title, lead, items, tours }: Props) {
               <p className={styles.tourIntroMeta}>{plural(lang, tour.data.stops.length, t.explore.stops)}</p>
               <p className={styles.disclaimer}>{t.explore.tourDisclaimer}</p>
               <div className={ui.actions}>
-                <button type="button" className={ui.button} onClick={beginTour} autoFocus>
+                <button ref={beginRef} type="button" className={ui.button} onClick={beginTour}>
                   {t.explore.begin}
                 </button>
                 <button type="button" className={ui.buttonGhost} onClick={() => setTour(null)}>
@@ -673,32 +717,16 @@ export function Explorer({ title, lead, items, tours }: Props) {
             {t.explore.toursTitle}
           </h2>
           <p className={styles.toursIntro}>{t.explore.toursIntro}</p>
-          <ul className={styles.tourList}>
-            {tours.map((x, i) => (
-              <li key={x.slug} className={styles.tourCard}>
-                <span className={styles.tourNumber} aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className={styles.tourTitle}>{x.title}</h3>
-                <p className={styles.tourText}>{x.intro}</p>
-                <p className={styles.tourMeta}>{plural(lang, x.stops.length, t.explore.stops)}</p>
-                <div className={styles.tourActions}>
-                  <button
-                    ref={tour?.data.slug === x.slug ? tourButtonRef : undefined}
-                    type="button"
-                    className={ui.button}
-                    onClick={() => chooseTour(x.slug)}
-                    data-tour={x.slug}
-                  >
-                    {t.explore.startTour}
-                  </button>
-                  <Link href={x.textHref} className={ui.textLink}>
-                    {t.explore.textVersion}
-                  </Link>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {tourList(tours, t.explore.startTour)}
+          {journeys.length > 0 && (
+            <>
+              <h2 id="journeys" className={styles.toursTitle}>
+                {t.explore.journeysTitle}
+              </h2>
+              <p className={styles.toursIntro}>{t.explore.journeysIntro}</p>
+              {tourList(journeys, t.explore.startJourney)}
+            </>
+          )}
           <p className={styles.disclaimerBelow}>{t.explore.tourDisclaimer}</p>
         </div>
       </section>

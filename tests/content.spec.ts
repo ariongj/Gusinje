@@ -7,6 +7,8 @@ import { expect, test } from "@playwright/test";
 
 import { businesses, guides, itineraries, places, routes, tours } from "../src/content";
 import { aboutPlatform, aboutRegion, partners } from "../src/content/pages";
+import { culture, timeline } from "../src/content/history";
+import { services } from "../src/content/services";
 import { allSources, sources } from "../src/content/sources";
 import type { Photo } from "../src/content/types";
 import { cnr } from "../src/i18n/messages/cnr";
@@ -173,4 +175,36 @@ test("UI translations are complete and not just English copies", () => {
     expect(same.map(([k]) => k), `${name}: strings still in English`).toEqual([]);
     expect(dict.meta.status, `${name} must stay marked for review until a fluent editor checks it`).toBe("unreviewed");
   }
+});
+
+test("useful services: sources exist, all languages, official numbers only", () => {
+  const langs = ["en", "sq", "cnr"] as const;
+  for (const service of services) {
+    for (const id of service.verification.sources) expect(sources[id], `${service.slug} → ${id}`).toBeTruthy();
+    for (const lang of langs) {
+      expect(service.name[lang], `${service.slug} name ${lang}`).toBeTruthy();
+      expect(service.summary[lang], `${service.slug} summary ${lang}`).toBeTruthy();
+      if (service.facts) expect(service.facts[lang]?.length, `${service.slug} facts ${lang}`).toBe(service.facts.en.length);
+      if (service.hours) expect(service.hours[lang], `${service.slug} hours ${lang}`).toBeTruthy();
+    }
+    // Phone numbers only where an official source publishes them (emergency numbers); no listing phones.
+    for (const phone of service.phones ?? []) expect(["112", "122", "123", "124"]).toContain(phone.number);
+    if (service.slug !== "local-guides") expect(service.verification.sources.length, service.slug).toBeGreaterThan(0);
+  }
+});
+
+test("history and culture: every entry is sourced and in all three languages", () => {
+  for (const entry of [...timeline, ...culture]) {
+    expect(entry.sources.length, entry.title.en).toBeGreaterThan(0);
+    for (const id of entry.sources) expect(sources[id], `${entry.title.en} → ${id}`).toBeTruthy();
+    for (const lang of ["en", "sq", "cnr"] as const) {
+      expect(entry.title[lang], `${entry.title.en} ${lang}`).toBeTruthy();
+      expect(entry.body[lang]?.length, `${entry.title.en} ${lang}`).toBe(entry.body.en.length);
+    }
+  }
+});
+
+test("journeys and tours share the ?tour= link: slugs never collide", () => {
+  const slugs = [...tours.map((t) => t.slug), ...itineraries.map((i) => i.slug)];
+  expect(new Set(slugs).size).toBe(slugs.length);
 });

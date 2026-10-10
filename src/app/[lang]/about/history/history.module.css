@@ -1,0 +1,118 @@
+.section {
+  padding: clamp(40px, 6vw, 88px) 0 0;
+}
+
+.section:last-child {
+  padding-bottom: clamp(48px, 6vw, 96px);
+}
+
+.title {
+  margin: 0 0 clamp(24px, 3vw, 40px);
+  font: 500 clamp(30px, 3.4vw, 46px) / 1.06 var(--font-display);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+/* A timeline: the period on the left, a line down the middle. */
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) minmax(0, 1fr);
+  gap: 0 clamp(20px, 3vw, 44px);
+}
+
+.period {
+  margin: 0;
+  padding-top: 4px;
+  font: 500 clamp(20px, 2vw, 26px) / 1.15 var(--font-display);
+  color: var(--bronze);
+  text-align: right;
+}
+
+.entryBody {
+  position: relative;
+  padding: 0 0 clamp(28px, 3.4vw, 44px) clamp(22px, 2.4vw, 32px);
+  border-left: 2px solid var(--line-3);
+}
+
+.entryBody::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 8px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--teal);
+}
+
+.entry:last-child .entryBody {
+  border-left-color: transparent;
+}
+
+.entryTitle {
+  margin: 0 0 10px;
+  font: 500 clamp(22px, 2vw, 28px) / 1.2 var(--font-display);
+  color: var(--ink);
+}
+
+.text {
+  max-width: 68ch;
+  margin: 0 0 10px;
+  font: 400 16.5px/1.7 var(--font-text);
+  color: var(--text);
+}
+
+.contested {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 6px 12px;
+  border-radius: var(--r-md);
+  background: #fbf6ec;
+  border: 1px dashed var(--gold);
+  font: 600 13.5px/1.45 var(--font-text);
+  color: var(--bronze);
+}
+
+.sources {
+  max-width: 72ch;
+  margin: 4px 0 0;
+  font: 400 12.5px/1.55 var(--font-text);
+  color: var(--text-soft);
+}
+
+.sources a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+@media (max-width: 639.98px) {
+  .entry {
+    grid-template-columns: 1fr;
+  }
+
+  .period {
+    text-align: left;
+    padding: 0 0 6px clamp(22px, 2.4vw, 32px);
+    border-left: 2px solid var(--line-3);
+  }
+}
+
+.culture {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.card {
+  padding: clamp(20px, 2.4vw, 30px);
+  border-radius: var(--r-xl);
+  background: var(--lighter);
+}

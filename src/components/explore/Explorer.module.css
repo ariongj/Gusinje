@@ -147,8 +147,8 @@
 
 @media (max-width: 899.98px) {
   .stage {
-    /* Below the "Legend & filters" button. */
-    --map-notice-top: 64px;
+    /* Below the "Legend & filters" and "Show the whole valley" buttons. */
+    --map-notice-top: 116px;
   }
 }
 
@@ -413,10 +413,12 @@
     font-size: 13px;
   }
 
+  /* Under the "Legend & filters" button, clear of the map credits. */
   .mapReset {
-    top: auto;
-    bottom: calc(var(--inset-bottom, 0px) + 12px);
-    right: 12px;
+    top: 64px;
+    left: 12px;
+    right: auto;
+    min-height: 40px;
   }
 
   /* While the card is open the view is small: pinch to zoom, no buttons. */

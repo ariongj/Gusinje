@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { ItineraryCard, TipCard } from "@/components/content/cards";
 import { PageIntro } from "@/components/content/PageIntro";
@@ -22,7 +23,13 @@ export default async function TipsPage({ params }: PageProps<"/[lang]/travel-tip
   const t = getMessages(lang);
   return (
     <>
-      <PageIntro lang={lang} t={t} title={t.tips.title} lead={t.tips.intro} crumbs={[[t.nav.home, href(lang)]]} />
+      <PageIntro lang={lang} t={t} title={t.tips.title} lead={t.tips.intro} crumbs={[[t.nav.home, href(lang)]]}>
+        <div className={ui.actions}>
+          <Link href={href(lang, "/services")} className={ui.button}>
+            {t.footer.services}
+          </Link>
+        </div>
+      </PageIntro>
       <div className={ui.wrap}>
         <div className={ui.section}>
           <SearchableList

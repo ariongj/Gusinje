@@ -121,6 +121,17 @@ test.describe("Virtual tours", () => {
     const intro = page.getByRole("dialog", { name: "Springs and waterfalls" });
     await expect(intro).toBeVisible();
     await expect(intro.getByText("not a walking or driving route")).toBeVisible();
+    // Started from the list below the map: the page comes back up so the whole map is in view.
+    await expect
+      .poll(() =>
+        page.getByTestId("explore-stage").evaluate((el) => {
+          const { top, bottom } = el.getBoundingClientRect();
+          const header = document.querySelector("header")?.getBoundingClientRect().bottom ?? 0;
+          return top >= header - 1 && bottom <= window.innerHeight + 1;
+        }),
+      )
+      .toBe(true);
+    await expect(intro.getByRole("button", { name: "Begin" })).toBeFocused();
     await intro.getByRole("button", { name: "Begin" }).click();
 
     const card = page.getByTestId("guide-card");
@@ -151,3 +162,30 @@ test.describe("Virtual tours", () => {
   });
 });
 
+
+test.describe("Journeys", () => {
+  test("a trip plan flies day by day on the map, and its page links to it", async ({ page, errors }) => {
+    void errors;
+    await page.goto("/en/plan/itineraries/weekend-in-the-prokletije/");
+    await page.getByRole("link", { name: "Fly this journey in 3D" }).click();
+    const intro = page.getByRole("dialog", { name: "A weekend in the Prokletije" });
+    await expect(intro).toBeVisible();
+    await intro.getByRole("button", { name: "Begin" }).click();
+    const card = page.getByTestId("guide-card");
+    await expect(card.getByText(/Stop 1 of \d+/)).toBeVisible();
+    await card.getByRole("button", { name: "Next stop" }).click();
+    await expect(card.getByText("Day 1", { exact: false }).first()).toBeVisible();
+    await expect(card.getByRole("heading", { name: "Gusinje" })).toBeVisible();
+  });
+});
+
+test("useful services and history pages: sourced, with tap-to-call emergency numbers", async ({ page, errors }) => {
+  void errors;
+  await page.goto("/en/services/");
+  await expect(page.getByRole("heading", { level: 1, name: "Useful services" })).toBeVisible();
+  await expect(page.locator('a[href="tel:112"]')).toBeVisible();
+  await expect(page.getByText("Čaršijska 62, Gusinje")).toBeVisible();
+  await page.goto("/en/about/history/");
+  await expect(page.getByRole("heading", { level: 1, name: "History & culture" })).toBeVisible();
+  await expect(page.getByText("Accounts of this period differ sharply")).toBeVisible();
+});

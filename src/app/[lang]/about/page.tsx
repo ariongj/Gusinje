@@ -36,7 +36,10 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
           </div>
           <aside className={detail.side}>
             <div className={ui.stack}>
-              <Link href={href(lang, "/explore")} className={ui.button}>
+              <Link href={href(lang, "/about/history")} className={ui.button}>
+                {t.footer.history}
+              </Link>
+              <Link href={href(lang, "/explore")} className={ui.buttonGhost}>
                 {t.nav.explore}
               </Link>
               <Link href={href(lang, "/about/platform")} className={ui.buttonGhost}>

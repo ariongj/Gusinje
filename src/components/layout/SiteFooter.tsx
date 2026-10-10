@@ -17,6 +17,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
         { label: t.footer.tours, path: "/tours" },
         { label: t.footer.hikes, path: "/hikes" },
         { label: t.nav.about, path: "/about" },
+        { label: t.footer.history, path: "/about/history" },
       ],
     },
     {
@@ -27,6 +28,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
         { label: t.nav.guides, path: "/guides-experiences" },
         { label: t.footer.directory, path: "/directory" },
         { label: t.nav.tips, path: "/travel-tips" },
+        { label: t.footer.services, path: "/services" },
         { label: t.nav.plan, path: "/plan" },
       ],
     },

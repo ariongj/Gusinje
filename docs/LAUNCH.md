@@ -9,9 +9,10 @@ it has not been announced or submitted anywhere.
 
 ## What works now
 
-- Language-prefixed static site (English, Albanian, Montenegrin) — about 200 pages.
-- Explore: real-terrain 3D map (elevation data + OpenStreetMap) that also lies flat as a map, plus a list, on the same records, filters, legend, deep links, four themed virtual tours, map/photo fallback without WebGL.
-- 11 place pages, 11 listings, 6 walk/hike pages, 9 travel guides, 4 itinerary templates, 4 tours and 80 cited sources — each page with sources, check dates, share link and QR code.
+- Language-prefixed static site (English, Albanian, Montenegrin) — about 220 pages.
+- Explore: real-terrain 3D map (elevation data + OpenStreetMap) that also lies flat as a map, plus a list, on the same records, filters, legend, deep links, four themed virtual tours and four journeys (the trip plans flown stop by stop), map/photo fallback without WebGL.
+- 18 place pages (10 on the map; 7 marked as hidden gems further afield), 11 listings, 6 walk/hike pages, 9 travel guides, 4 itinerary templates, 4 tours and 129 cited sources — each page with sources, check dates, share link and QR code.
+- Useful services (13 entries: emergency numbers, mountain rescue, police, tourist office, national park, health, pharmacy, hospital, cash, buses, guides) and a history & culture page (timeline of 7 periods, 6 culture notes).
 - My Trip planner (local only), search across languages, editorial dashboard.
 - Reviews, submissions, claims, corrections and moderation **in preview mode** (nothing is sent or stored); backend schema ready and tested.
 - Design: open, photo-led pages; full-screen Explore with a place strip, a card per place and previous / next through every place.
@@ -33,6 +34,10 @@ it has not been announced or submitted anywhere.
 - [ ] Resolve disputed facts: **Vizier's Mosque** founding date (1626 / 17th c. / 1765), **Grlja** fall height (12–30 m in sources), elevations of Gusinje/Vusanje.
 - [ ] Have a licensed guide or the park review every **route page**; only then mark a route `published`.
 - [ ] Review all sections marked "General advice — awaiting local review".
+- [ ] **Useful services** (`src/content/services.ts`): call or visit each service and confirm address, hours, phone and email. Facts were read from search excerpts of the official pages; the tourist office's phone is left out because its pages give two different numbers. Bus operators are named from booking sites only — confirm timetables are not shown and operators are current.
+- [ ] **History & culture** (`src/content/history.ts`): a local historian reviews every entry. Dates come from encyclopaedia and research-institute summaries; the 1912–1913 entry is marked contested and must stay balanced; the Second World War is deliberately not covered until a historian writes it.
+- [ ] **Hidden gems** (Lake Plav, Hridsko Lake, Lake Visitor, Kusija waterfall, Rosni vrh, Talijanka/Popadija, Grnčar valley): confirm access and add sourced coordinates — they are listed but not on the map.
+- [ ] Four photos were added from Wikimedia Commons (Zla Kolata ×2, Lake Plav, Karanfili); check each file page's licence once more before launch. A further 25 candidate photos were found but not used because their licence or subject could not be confirmed.
 
 ### Translations
 
@@ -64,4 +69,5 @@ it has not been announced or submitted anywhere.
 - Photos are Wikimedia thumbnails at the width each screen needs (500/960/1280 px), lazy-loaded below the fold. ROSI's Booking.com photos are still hot-linked at their single size until original files are supplied.
 - Page weight on a phone profile (uncompressed, photos excluded): home 1093 KB (was 1488 KB; the 3D band loads only when scrolled to), Explore 1582 KB (was 2013 KB; 1121 KB with data saver). Fonts 163 KB (was 532 KB).
 - The service worker stores only this site's public pages and build files on the visitor's device (mentioned in the privacy section of "About this guide"). Bump `VERSION` in `public/sw.js` if a release must drop old copies.
-- Automated axe checks pass on the key pages; a manual screen-reader pass (NVDA/VoiceOver) and testing on real phones (iPhone Safari, a budget Android) are still to do — they were not performed. Phone behaviour was tested in emulation (Pixel 7 profile, 320–412 px widths).
+- The production base map (OpenFreeMap) could not be loaded from the build environment, so it has only been checked in code: screenshots and tests show the built-in relief style over the real elevation data. Open the preview on a normal connection to see the full map.
+- Automated axe checks pass on the key pages (including Services and History); a manual screen-reader pass (NVDA/VoiceOver) and testing on real phones (iPhone Safari, a budget Android) are still to do — they were not performed. Phone behaviour was tested in emulation (Pixel 7 profile, 320–412 px widths).

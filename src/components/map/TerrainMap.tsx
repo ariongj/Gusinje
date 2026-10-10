@@ -179,6 +179,8 @@ export function TerrainMap({
   const [status, setStatus] = useState<"loading" | "ready" | "failed">("loading");
   const [tilesFailed, setTilesFailed] = useState(false);
   const [detail, setDetail] = useState(false);
+  const detailRef = useRef(false);
+  const selectedRef = useRef<string | null>(null);
   const showcase = variant === "showcase";
 
   useEffect(() => {
@@ -267,7 +269,50 @@ export function TerrainMap({
             },
             { capture: true, passive: true },
           );
-          m.on("zoom", () => setDetail(m.getZoom() >= 12.8));
+          m.on("zoom", () => {
+            detailRef.current = m.getZoom() >= 12.8;
+            setDetail(detailRef.current);
+          });
+          // Labels never pile up: the selected place first, then towns and
+          // villages, then the rest; a label that would overlap one already
+          // shown waits for hover or focus. Checked a few times a second while
+          // the camera moves, and when it stops.
+          let last = 0;
+          const widths = new WeakMap<HTMLElement, number>();
+          const declutter = () => {
+            const shown: [number, number, number, number][] = [];
+            const entries = [...markersRef.current.entries()].map(([key, value]) => ({ key, ...value }));
+            const rank = (e: (typeof entries)[number]) =>
+              e.key === selectedRef.current ? 0 : e.el.dataset.group === "villages" ? 1 : e.el.dataset.precision === "area" ? 2 : 3;
+            entries.sort((a, b) => rank(a) - rank(b));
+            for (const { el, marker, key } of entries) {
+              const candidate = key === selectedRef.current || detailRef.current || el.dataset.group === "villages";
+              if (!candidate) {
+                el.classList.remove(styles.crowded, styles.labelled);
+                continue;
+              }
+              const label = el.lastElementChild as HTMLElement | null;
+              let w = widths.get(el);
+              if (w === undefined) {
+                w = label?.offsetWidth || 110;
+                widths.set(el, w);
+              }
+              const { x, y } = m.project(marker.getLngLat());
+              const rect: [number, number, number, number] = [x - w / 2 - 4, y - 48, x + w / 2 + 4, y - 14];
+              const clash = shown.some((r) => r[0] < rect[2] && rect[0] < r[2] && r[1] < rect[3] && rect[1] < r[3]);
+              el.classList.toggle(styles.crowded, clash);
+              // A marker with its label showing sits above its neighbours' dots.
+              el.classList.toggle(styles.labelled, !clash);
+              if (!clash) shown.push(rect);
+            }
+          };
+          m.on("render", () => {
+            const now = performance.now();
+            if (now - last < 120) return;
+            last = now;
+            declutter();
+          });
+          m.on("moveend", declutter);
           // The visitor takes the controls: stop any flight.
           for (const type of ["mousedown", "touchstart", "wheel"] as const) {
             m.on(type, () => {
@@ -386,12 +431,15 @@ export function TerrainMap({
   useEffect(() => {
     const selected = selectedKey ? items.find((i) => i.key === selectedKey) : undefined;
     const highlight = selected?.hostKey ?? selectedKey;
+    selectedRef.current = highlight;
     for (const [key, { el }] of markersRef.current) {
       const on = key === highlight;
       el.classList.toggle(styles.selected, on);
       el.setAttribute("aria-pressed", on ? "true" : "false");
       el.setAttribute("tabindex", touring ? "-1" : "0");
     }
+    // Re-rank the labels around the new selection.
+    mapRef.current?.triggerRepaint();
   }, [selectedKey, items, status, touring]);
 
   // Fly to the requested place, tour camera or the whole valley.

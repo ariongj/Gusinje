@@ -119,7 +119,7 @@ test("preview forms validate but never send anything", async ({ page, errors }) 
 
 test("accessibility: no serious axe violations on key pages", async ({ page, errors }) => {
   void errors;
-  for (const path of ["/en/", "/en/places/grlja/", "/en/directory/eko-katun-rosi/", "/en/hikes/zla-kolata-from-vusanje/", "/en/plan/", "/sq/travel-tips/getting-here/", "/en/explore/?view=list"]) {
+  for (const path of ["/en/", "/en/places/grlja/", "/en/directory/eko-katun-rosi/", "/en/hikes/zla-kolata-from-vusanje/", "/en/plan/", "/sq/travel-tips/getting-here/", "/en/explore/?view=list", "/en/services/", "/cnr/about/history/"]) {
     await page.goto(path);
     const results = await new AxeBuilder({ page }).exclude(".leaflet-container").analyze();
     const serious = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");

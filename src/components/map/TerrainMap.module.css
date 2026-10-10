@@ -126,6 +126,16 @@
   opacity: 1;
 }
 
+/* Would overlap a more important label: shown on hover or focus only. */
+.marker.crowded .label {
+  opacity: 0;
+}
+
+.marker:hover .label,
+.marker:focus-visible .label {
+  opacity: 1;
+}
+
 .marker:hover .dot {
   transform: scale(1.2);
 }
@@ -134,6 +144,10 @@
   box-shadow:
     0 0 0 3px #fff,
     0 0 0 6px var(--focus-ring);
+}
+
+.labelled {
+  z-index: 2;
 }
 
 .selected {

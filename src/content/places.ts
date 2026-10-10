@@ -426,7 +426,7 @@ export const places: Place[] = [
       ],
     },
     location: { lat: 42.49639, lng: 19.78694, precision: "point", status: "desk-verified", sources: ["wiki-de-veliki-vrh", "peakvisor-veliki-vrh"] },
-    photos: [C.karanfili, C.karanfilWest, C.karanfilWinter],
+    photos: [C.karanfili, C.karanfilWest, C.karanfilWinter, C.karanfilWinterAerial],
     warnings: [
       {
         en: "Summit routes are demanding, exposed mountain terrain. Go only with a qualified mountain guide.",
@@ -472,7 +472,7 @@ export const places: Place[] = [
       ],
     },
     location: { lat: 42.485, lng: 19.89722, precision: "point", status: "desk-verified", sources: ["wiki-zla-kolata", "summitpost-kolata"] },
-    photos: [{ ...C.zlaKolataSummit, position: "40% 50%" }],
+    photos: [C.zlaKolataNorthEast, C.zlaKolataNorthFace, { ...C.zlaKolataSummit, position: "40% 50%" }],
     warnings: [
       {
         en: "High mountain terrain on an international border: weather changes fast, there is little or no shelter, and you must not cross into Albania without permission.",
@@ -566,6 +566,253 @@ export const places: Place[] = [
       ["recultivatur-mosque", "lonelyplanet-viziers-mosque", "wiki-gusinje", "mne-travel-mountain-towns", "photomne-mosques"],
       "Founding date disputed between sources. Visiting customs to be confirmed with the Islamic community in Gusinje.",
     ),
+    translations: DRAFTS,
+  },
+
+  /* --------------------------------------------- hidden gems (lesser known) */
+  {
+    slug: "lake-plav",
+    kind: "place",
+    gem: true,
+    name: { en: "Lake Plav", sq: "Liqeni i Plavës", cnr: "Plavsko jezero" },
+    altNames: [
+      { name: "Plavsko jezero", lang: "cnr" },
+      { name: "Liqeni i Plavës", lang: "sq" },
+    ],
+    category: "lake",
+    area: "plav",
+    summary: {
+      en: "A glacial lake at 906 m beside the town of Plav, between the Prokletije and the Visitor range — about 2 km long and up to about 9 m deep.",
+      sq: "Liqen akullnajor në 906 m pranë qytetit të Plavës, mes Bjeshkëve të Nemuna dhe vargut të Visitorit — rreth 2 km i gjatë dhe deri rreth 9 m i thellë.",
+      cnr: "Glečersko jezero na 906 m pored Plava, između Prokletija i Visitora — dugo oko 2 km i duboko do oko 9 m.",
+    },
+    description: {
+      en: [
+        "Wikipedia describes Lake Plav as the largest glacial lake in Montenegro: about 2,160 m long from north to south, with an area of about 1.99 km² and a maximum depth of about 9 m. It drains into the Lim.",
+        "Together with the Lim and the Grnčar valley, the lake is listed by BirdLife International as an Important Bird Area.",
+      ],
+      sq: [
+        "Wikipedia e përshkruan Liqenin e Plavës si liqenin më të madh akullnajor në Mal të Zi: rreth 2.160 m i gjatë nga veriu në jug, me sipërfaqe rreth 1,99 km² dhe thellësi maksimale rreth 9 m. Derdhet në Lim.",
+        "Bashkë me Limin dhe luginën e Grnçarit, liqeni është renditur nga BirdLife International si Zonë e Rëndësishme për Shpendët.",
+      ],
+      cnr: [
+        "Wikipedia opisuje Plavsko jezero kao najveće glečersko jezero u Crnoj Gori: dugo oko 2.160 m od sjevera ka jugu, površine oko 1,99 km² i najveće dubine oko 9 m. Otiče u Lim.",
+        "Zajedno s Limom i dolinom Grnčara, jezero je BirdLife International uvrstio u Područja važna za ptice.",
+      ],
+    },
+    location: null,
+    photos: [C.lakePlavLilies, C.lakePlavShore, C.lakePlavWide],
+    verification: desk(["wiki-lake-plav", "birdlife-plav-grncar"], "No sourced coordinates recorded yet, so not on the map."),
+    translations: DRAFTS,
+  },
+  {
+    slug: "hridsko-lake",
+    kind: "place",
+    gem: true,
+    name: { en: "Hridsko Lake", sq: "Liqeni i Hridit", cnr: "Hridsko jezero" },
+    altNames: [
+      { name: "Hridsko jezero", lang: "cnr" },
+      { name: "Liqeni i Hridit", lang: "sq" },
+    ],
+    category: "lake",
+    area: "high-mountains",
+    summary: {
+      en: "A small mountain lake at about 1,970 m above Plav, in a strict nature reserve of the national park.",
+      sq: "Liqen i vogël malor rreth 1.970 m mbi Plavë, në një rezervat natyror të rreptë të parkut kombëtar.",
+      cnr: "Malo planinsko jezero na oko 1.970 m iznad Plava, u strogom prirodnom rezervatu nacionalnog parka.",
+    },
+    description: {
+      en: [
+        "A study in the Journal of the Bulgarian Geographical Society gives an altitude of about 1,980 m and an area of about 3.5 ha. With Volušnica, the lake forms a strict reserve inside Prokletije National Park.",
+        "The Peaks of the Balkans stage from Babino Polje to Plav passes the lake; trail descriptions put it 18–20 km from Plav.",
+      ],
+      sq: [
+        "Një studim në Revistën e Shoqërisë Gjeografike Bullgare jep lartësi rreth 1.980 m dhe sipërfaqe rreth 3,5 ha. Bashkë me Volushnicën, liqeni formon një rezervat të rreptë brenda Parkut Kombëtar të Bjeshkëve të Nemuna.",
+        "Etapa e Majave të Ballkanit nga Babino Polje në Plavë kalon pranë liqenit; përshkrimet e shtegut e vendosin 18–20 km nga Plava.",
+      ],
+      cnr: [
+        "Studija u časopisu Bugarskog geografskog društva navodi nadmorsku visinu od oko 1.980 m i površinu od oko 3,5 ha. Zajedno s Volušnicom, jezero čini strogi rezervat u Nacionalnom parku Prokletije.",
+        "Etapa Vrhova Balkana od Babinog polja do Plava prolazi pored jezera; opisi staze ga smještaju 18–20 km od Plava.",
+      ],
+    },
+    location: null,
+    photos: [],
+    warnings: [
+      {
+        en: "Camping is not allowed at the lake: it lies in a strict reserve.",
+        sq: "Kampimi nuk lejohet te liqeni: ndodhet në një rezervat të rreptë.",
+        cnr: "Kampovanje kod jezera nije dozvoljeno: nalazi se u strogom rezervatu.",
+      },
+    ],
+    verification: desk(["jbgs-hridsko", "parksdinarides-hridsko", "pob-babino-plav"], "No sourced coordinates recorded yet, so not on the map."),
+    translations: DRAFTS,
+  },
+  {
+    slug: "lake-visitor",
+    kind: "place",
+    gem: true,
+    name: { en: "Lake Visitor", sq: "Liqeni i Visitorit", cnr: "Visitorsko jezero" },
+    altNames: [{ name: "Visitorsko jezero", lang: "cnr" }],
+    category: "lake",
+    area: "plav",
+    summary: {
+      en: "A small lake high on Mount Visitor, west of Plav, known for its floating island.",
+      sq: "Liqen i vogël lart në malin Visitor, në perëndim të Plavës, i njohur për ishullin e tij lundrues.",
+      cnr: "Malo jezero visoko na Visitoru, zapadno od Plava, poznato po plutajućem ostrvu.",
+    },
+    description: {
+      en: [
+        "Sizes differ between sources: Wikipedia gives about 110 × 75 m; SummitPost gives about 92 × 73 m and 4.1 m deep, at about 1,820 m.",
+        "Mount Visitor (2,211 m) rises west of Plav and Lake Plav.",
+      ],
+      sq: [
+        "Përmasat ndryshojnë sipas burimeve: Wikipedia jep rreth 110 × 75 m; SummitPost jep rreth 92 × 73 m dhe 4,1 m thellësi, në rreth 1.820 m.",
+        "Mali Visitor (2.211 m) ngrihet në perëndim të Plavës dhe të Liqenit të Plavës.",
+      ],
+      cnr: [
+        "Dimenzije se razlikuju po izvorima: Wikipedia navodi oko 110 × 75 m; SummitPost oko 92 × 73 m i dubinu 4,1 m, na oko 1.820 m.",
+        "Visitor (2.211 m) se diže zapadno od Plava i Plavskog jezera.",
+      ],
+    },
+    location: null,
+    photos: [],
+    verification: desk(["wiki-lake-visitor", "wiki-visitor-mountain", "summitpost-visitor"], "No sourced coordinates recorded yet, so not on the map."),
+    translations: DRAFTS,
+  },
+  {
+    slug: "kusija-waterfall",
+    kind: "place",
+    gem: true,
+    name: { en: "Kusija waterfall", sq: "Ujëvara Kusija", cnr: "Vodopad Kusija" },
+    altNames: [{ name: "Kusija", lang: "other" }],
+    category: "waterfall",
+    area: "vusanje",
+    summary: {
+      en: "Vusanje's second waterfall: unlike Grlja, which falls all year, Kusija dries up at one point in the year.",
+      sq: "Ujëvara e dytë e Vuthajve: ndryshe nga Grla, që bie gjithë vitin, Kusija thahet në një periudhë të vitit.",
+      cnr: "Drugi vodopad Vusanja: za razliku od Grlje, koja pada cijele godine, Kusija u jednom dijelu godine presuši.",
+    },
+    description: {
+      en: ["The Gusinje Tourism Organisation lists Kusija with Grlja among the falls of the Vusanje area. Its exact position and the way to it have not been checked for this guide — ask locally."],
+      sq: ["Organizata Turistike e Gucisë e rendit Kusijën bashkë me Grlën mes ujëvarave të zonës së Vuthajve. Pozicioni i saktë dhe rruga deri aty nuk janë kontrolluar për këtë udhëzues — pyetni në vend."],
+      cnr: ["Turistička organizacija Gusinje navodi Kusiju zajedno s Grljom među vodopadima područja Vusanja. Tačan položaj i put do njega nijesu provjereni za ovaj vodič — raspitajte se na licu mjesta."],
+    },
+    location: null,
+    photos: [],
+    verification: desk(["gusinje-travel-falls"], "Single source; position not recorded."),
+    translations: DRAFTS,
+  },
+  {
+    slug: "rosni-vrh",
+    kind: "place",
+    gem: true,
+    name: { en: "Rosni vrh (Bjelič)", sq: "Maja Rosit (Bjeliqi)", cnr: "Rosni vrh (Bjelič)" },
+    altNames: [
+      { name: "Maja Rosit", lang: "sq" },
+      { name: "Bjelič", lang: "cnr", note: { en: "the massif", sq: "masivi", cnr: "masiv" } },
+    ],
+    category: "mountain",
+    area: "high-mountains",
+    summary: {
+      en: "The highest peak of the Bjelič massif, about 2,524 m — described as the third highest in Montenegro, usually approached from Gusinje through Grbaja.",
+      sq: "Maja më e lartë e masivit të Bjeliqit, rreth 2.524 m — e përshkruar si e treta më e lartë në Mal të Zi, zakonisht nga Gucia përmes Gërbajës.",
+      cnr: "Najviši vrh masiva Bjelič, oko 2.524 m — opisan kao treći po visini u Crnoj Gori, obično se prilazi iz Gusinja kroz Grbaju.",
+    },
+    description: {
+      en: [
+        "SummitPost gives 2,524–2,525 m and places the peak in the most karstic part of the Montenegrin Prokletije.",
+        "The Gusinje Tourism Organisation lists Bjelič, with Volušnica and Karanfili, among the places that show the area's glacial and karst landscape.",
+      ],
+      sq: [
+        "SummitPost jep 2.524–2.525 m dhe e vendos majën në pjesën më karstike të Bjeshkëve të Nemuna në Mal të Zi.",
+        "Organizata Turistike e Gucisë e rendit Bjeliqin, bashkë me Volushnicën dhe Karanfilin, mes vendeve që tregojnë peizazhin akullnajor dhe karstik të zonës.",
+      ],
+      cnr: [
+        "SummitPost navodi 2.524–2.525 m i smješta vrh u najkrševitiji dio crnogorskih Prokletija.",
+        "Turistička organizacija Gusinje navodi Bjelič, uz Volušnicu i Karanfile, među mjestima koja pokazuju glečerski i kraški pejzaž kraja.",
+      ],
+    },
+    location: null,
+    photos: [],
+    warnings: [
+      {
+        en: "A serious mountain objective in remote karst terrain. Go only with a qualified mountain guide.",
+        sq: "Objektiv serioz malor në terren karstik të largët. Shkoni vetëm me një udhërrëfyes malor të kualifikuar.",
+        cnr: "Ozbiljan planinski cilj u zabačenom kraškom terenu. Idite samo s kvalifikovanim planinskim vodičem.",
+      },
+    ],
+    verification: desk(["summitpost-rosni-vrh", "gusinje-travel-national-park"], "Heights from SummitPost; no sourced coordinates recorded yet."),
+    translations: DRAFTS,
+  },
+  {
+    slug: "talijanka-popadija",
+    kind: "place",
+    gem: true,
+    name: { en: "Talijanka and Popadija", sq: "Talijanka dhe Popadija", cnr: "Talijanka i Popadija" },
+    altNames: [{ name: "Taljanka", lang: "other" }],
+    category: "mountain",
+    area: "grbaja",
+    summary: {
+      en: "Summits above Grbaja on the border with Albania, on the tourism organisation's themed hike Popadija – Talijanka – Volušnica.",
+      sq: "Maja mbi Gërbajë në kufi me Shqipërinë, në ecjen tematike të organizatës turistike Popadija – Talijanka – Volushnica.",
+      cnr: "Vrhovi iznad Grbaje na granici s Albanijom, na tematskoj turi turističke organizacije Popadija – Talijanka – Volušnica.",
+    },
+    description: {
+      en: [
+        "Names and heights differ between sources: a hiking site gives Talijanka 2,056–2,057 m and Popadija 2,030 m; SummitPost names Popadija (2,057 m), “also named Talijanka”.",
+        "The Gusinje Tourism Organisation lists a thematic hike Popadija – Talijanka – Volušnica.",
+      ],
+      sq: [
+        "Emrat dhe lartësitë ndryshojnë sipas burimeve: një faqe ecjesh jep Talijankën 2.056–2.057 m dhe Popadijën 2.030 m; SummitPost e quan Popadija (2.057 m), “e quajtur edhe Talijanka”.",
+        "Organizata Turistike e Gucisë rendit një ecje tematike Popadija – Talijanka – Volushnica.",
+      ],
+      cnr: [
+        "Nazivi i visine se razlikuju po izvorima: jedan planinarski sajt navodi Talijanku 2.056–2.057 m i Popadiju 2.030 m; SummitPost navodi Popadiju (2.057 m), „zvanu i Talijanka”.",
+        "Turistička organizacija Gusinje navodi tematsku turu Popadija – Talijanka – Volušnica.",
+      ],
+    },
+    location: null,
+    photos: [],
+    warnings: [
+      {
+        en: "The summits lie on the state border: check the border rules before you go (see the travel tips).",
+        sq: "Majat ndodhen në kufirin shtetëror: kontrolloni rregullat e kufirit para se të shkoni (shihni këshillat e udhëtimit).",
+        cnr: "Vrhovi su na državnoj granici: prije polaska provjerite pravila za granicu (vidjeti savjete za putovanje).",
+      },
+    ],
+    verification: desk(["planine-volusnica", "summitpost-popadija", "gusinje-to"], "Names and heights disagree between sources; no coordinates recorded."),
+    translations: DRAFTS,
+  },
+  {
+    slug: "grncar-valley",
+    kind: "place",
+    gem: true,
+    name: { en: "Grnčar valley", sq: "Lugina e Grnçarit", cnr: "Dolina Grnčara" },
+    altNames: [{ name: "Grnčar", lang: "cnr" }],
+    category: "valley",
+    area: "gusinje",
+    summary: {
+      en: "The valley of the Grnčar, the river that comes from Albania and meets the Vruja at Gusinje to form the Ljuča.",
+      sq: "Lugina e Grnçarit, lumit që vjen nga Shqipëria dhe takohet me Vrujën te Gucia për të formuar Luçën.",
+      cnr: "Dolina Grnčara, rijeke koja dolazi iz Albanije i kod Gusinja se spaja s Vrujom u Ljuču.",
+    },
+    description: {
+      en: [
+        "The tourism organisation describes the Grnčar valley as “dry and bright with pebbles and sand”, in contrast to the green, marshy Ljuča.",
+        "With Lake Plav and the Lim, the Grnčar valley is part of an Important Bird Area listed by BirdLife International.",
+      ],
+      sq: [
+        "Organizata turistike e përshkruan luginën e Grnçarit si “të thatë dhe të ndritshme me zhavorr e rërë”, ndryshe nga Luça e gjelbër dhe moçalore.",
+        "Bashkë me Liqenin e Plavës dhe Limin, lugina e Grnçarit është pjesë e një Zone të Rëndësishme për Shpendët të renditur nga BirdLife International.",
+      ],
+      cnr: [
+        "Turistička organizacija opisuje dolinu Grnčara kao „suvu i svijetlu, punu šljunka i pijeska”, za razliku od zelene, močvarne Ljuče.",
+        "Zajedno s Plavskim jezerom i Limom, dolina Grnčara je dio Područja važnog za ptice koje je uvrstio BirdLife International.",
+      ],
+    },
+    location: null,
+    photos: [],
+    verification: desk(["togusinje-rivers", "birdlife-plav-grncar"], "No sourced coordinates recorded yet, so not on the map."),
     translations: DRAFTS,
   },
 ];

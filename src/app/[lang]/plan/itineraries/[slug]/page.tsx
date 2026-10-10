@@ -67,7 +67,12 @@ export default async function ItineraryPage({ params }: PageProps<"/[lang]/plan/
           <strong>{t.plan.interests}:</strong> {loc(it.interests, lang)}
         </p>
         <TranslationNotice status={it.translations} lang={lang} t={t} />
-        <AddTemplateButton trip={asTrip} />
+        <div className={ui.actions}>
+          <AddTemplateButton trip={asTrip} />
+          <Link href={`${href(lang, "/explore")}/?tour=${it.slug}`} className={ui.buttonGhost}>
+            {t.explore.flyJourney}
+          </Link>
+        </div>
       </PageIntro>
       <div className={ui.wrap}>
         <div className={detail.layout}>
