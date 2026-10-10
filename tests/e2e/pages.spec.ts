@@ -1,5 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 
+import { businesses } from "../../src/content";
+
 import { expect, test, trackWrites } from "./fixtures";
 
 test("place page: sources, last check, missing facts, share + QR, nearby, no reviews", async ({ page, errors }) => {
@@ -41,7 +43,7 @@ test("directory: honest coverage, A–Z, filters and a map; ROSI not first", asy
   expect(names).toEqual(sorted);
   expect(names[0]).not.toContain("ROSI");
   await page.locator('select[data-facet="type"]').selectOption("campsite");
-  await expect(page.locator("article")).toHaveCount(2);
+  await expect(page.locator("article")).toHaveCount(businesses.filter((b) => b.categories.includes("campsite")).length);
   await expect(page).toHaveURL(/type=campsite/);
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await expect(page.locator(".leaflet-container")).toBeVisible();
@@ -61,6 +63,16 @@ test("listing page: contact actions, self-reported labels, enquiry by the visito
   await page.goto("/en/directory/metro-hotel/");
   await expect(page.getByText("Not yet claimed by the business").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Claim this listing" })).toHaveAttribute("href", /type=claim&listing=metro-hotel/);
+});
+
+test("a business from open map data says it isn't checked, links to its own page only and can be claimed", async ({ page, errors }) => {
+  void errors;
+  await page.goto("/en/directory/moonlight-house/");
+  await expect(page.getByText("From open map data — not checked").first()).toBeVisible();
+  await expect(page.getByText("Open data · not checked").first()).toBeVisible();
+  await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
+  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Claim this listing" }).first()).toHaveAttribute("href", /type=claim&listing=moonlight-house/);
 });
 
 test("guides & experiences shows an honest empty state for guides", async ({ page, errors }) => {

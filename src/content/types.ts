@@ -178,7 +178,10 @@ export type BusinessCategory =
   | "activity"
   | "transport"
   | "rental"
-  | "visitor-info";
+  | "visitor-info"
+  | "pharmacy"
+  | "atm"
+  | "fuel";
 
 /** How a feature or fact is known. */
 export type Basis = "self-reported" | "verified";
@@ -241,6 +244,23 @@ export type Business = {
   claimed: boolean;
   verification: Verification;
   translations: TranslationStatus;
+  /** Created from open map data (name, type, position) and not checked: said on every view of it. */
+  origin?: { kind: "open-data"; dataset: "overture"; id: string };
+};
+
+/** A business as imported from open map data (scripts/import-overture.py → openData.ts). */
+export type OpenDataListing = {
+  slug: string;
+  name: string;
+  category: BusinessCategory;
+  area: AreaId;
+  /** Only when the record has a position of its own (not a town-centre fallback). */
+  location: { lat: number; lng: number } | null;
+  nearby: string[];
+  website: { url: string } | null;
+  social: { label: string; url: string }[];
+  overtureId: string;
+  confidence: number;
 };
 
 /* ------------------------------------------------------------------ tours */

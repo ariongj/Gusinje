@@ -11,6 +11,7 @@ import { fill } from "@/i18n/localize";
 import { cx } from "@/lib/cx";
 import imageLoader from "@/lib/image-loader";
 
+import { iconSvg } from "./icons";
 import { BASE_STYLE_URL, demSources, EXAGGERATION, HILLSHADE_LAYER, hillshadeLayer, MAX_BOUNDS, reliefStyle, SKY, TERRAIN_SOURCE } from "./mapStyle";
 import styles from "./TerrainMap.module.css";
 
@@ -65,8 +66,11 @@ function pointCamera(target: Extract<CameraTarget, { kind: "point" }>, mode: Map
   const [east, north] = offsetKm(GUSINJE, [target.lng, target.lat]);
   const away = (Math.atan2(east, north) * 180) / Math.PI;
   const bearing = target.bearing ?? (Math.hypot(east, north) < 1.2 ? 190 : (away + 360) % 360);
-  const zoom = target.zoom ?? (target.area ? 13 : 14);
-  return mode === "3d" ? { center: [target.lng, target.lat], zoom, bearing, pitch: 64 } : { center: [target.lng, target.lat], zoom: zoom - 0.4, bearing: 0, pitch: 0 };
+  // Close and low: the camera goes into the village or up to the spot, never out.
+  const zoom = target.zoom ?? (target.area ? 14.9 : 15.7);
+  return mode === "3d"
+    ? { center: [target.lng, target.lat], zoom, bearing, pitch: target.area ? 66 : 70 }
+    : { center: [target.lng, target.lat], zoom: zoom - 0.4, bearing: 0, pitch: 0 };
 }
 
 function cameraFor(target: CameraTarget, mode: MapMode): Camera {
@@ -120,7 +124,8 @@ function fly(map: MLMap, to: Shot, duration: number, done?: () => void): () => v
   const startPadding = paddingOf(map);
   const turn = ((to.bearing - startBearing + 540) % 360) - 180;
   const [east, north] = offsetKm([from.lng, from.lat], to.center);
-  const pullBack = Math.min(1.4, Math.hypot(east, north) / 5);
+  // Only a long hop rises a little in the middle; a short one goes straight in.
+  const pullBack = Math.max(0, Math.min(1.2, (Math.hypot(east, north) - 2.5) / 5));
   const start = performance.now();
   let frame = 0;
   let stopped = false;
@@ -232,7 +237,9 @@ export function TerrainMap({
             maxZoom: 17,
             maxBounds: MAX_BOUNDS,
             interactive: !showcase,
-            attributionControl: showcase ? false : { compact: true },
+            attributionControl: showcase
+              ? false
+              : { compact: true, customAttribution: '<a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps</a> (businesses)' },
             fadeDuration: 150,
           });
         } catch {
@@ -254,6 +261,8 @@ export function TerrainMap({
           m.setTerrain(showcase || modeRef.current === "3d" ? { source: TERRAIN_SOURCE, exaggeration: EXAGGERATION } : null);
           // Markers and controls need the style, not the tiles: with no signal the tiles may never come.
           if (!cancelled) setStatus("ready");
+          // Phones: the credits start folded behind their (i) button.
+          if (window.innerWidth < 600) host.querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show");
         });
 
         let failures = 0;
@@ -309,7 +318,7 @@ export function TerrainMap({
                 widths.set(el, w);
               }
               const { x, y } = m.project(marker.getLngLat());
-              const rect: [number, number, number, number] = [x - w / 2 - 4, y - 48, x + w / 2 + 4, y - 14];
+              const rect: [number, number, number, number] = [x - w / 2 - 4, y - 50, x + w / 2 + 4, y - 16];
               const clash = shown.some((r) => r[0] < rect[2] && rect[0] < r[2] && r[1] < rect[3] && rect[1] < r[3]);
               el.classList.toggle(styles.crowded, clash);
               // A marker with its label showing sits above its neighbours' dots.
@@ -504,12 +513,14 @@ export function TerrainMap({
       el.dataset.key = item.key;
       el.dataset.group = item.group;
       el.dataset.precision = item.location!.precision;
+      if (item.openData) el.dataset.open = "true";
       el.setAttribute("aria-label", `${item.name} — ${item.categoryLabel}`);
       el.setAttribute("aria-pressed", "false");
       const dot = document.createElement("span");
       dot.className = styles.dot;
       dot.dataset.part = "dot";
       dot.setAttribute("aria-hidden", "true");
+      if (item.icon) dot.innerHTML = iconSvg(item.icon);
       const label = document.createElement("span");
       label.className = styles.label;
       label.dataset.part = "label";
@@ -543,7 +554,10 @@ export function TerrainMap({
         e.stopPropagation();
         onSelectRef.current?.(item.key);
       });
-      const marker = new lib.Marker({ element: el, anchor: "center" }).setLngLat([item.location!.lng, item.location!.lat]).addTo(map);
+      // Close to the ground the terrain test fades markers that are in plain view; keep them clear.
+      const marker = new lib.Marker({ element: el, anchor: "center", opacityWhenCovered: "0.85" })
+        .setLngLat([item.location!.lng, item.location!.lat])
+        .addTo(map);
       markers.set(item.key, { marker, el });
     }
   }, [items, status, showcase]);
@@ -583,7 +597,7 @@ export function TerrainMap({
       // Summits are seen from further back than valley floors, so the whole massif is in view.
       if (target.kind === "point" && target.zoom === undefined && map.getTerrain()) {
         const ground = (map.queryTerrainElevation(camera.center) ?? 0) / EXAGGERATION;
-        camera.zoom -= Math.min(1.3, Math.max(0, (ground - 1200) / 1000));
+        camera.zoom -= Math.min(1.6, Math.max(0, (ground - 1200) / 800));
       }
       const { left = 0, right = 0, bottom = 0 } = insetsRef.current ?? {};
       moveCamera(map, { ...camera, padding: { left, right, bottom, top: 0 } }, 2600);

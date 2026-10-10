@@ -50,7 +50,11 @@ export function BusinessCard({ business, lang, t, headingLevel }: Common & { bus
         <>
           {business.disclosure === "platform-creator" && <span className={ui.badgeGold}>{t.directory.rosiBadge}</span>}
           {selfReported && <span className={ui.badge}>{t.directory.selfReportedBadge}</span>}
-          {!business.claimed && <span className={ui.badgeMuted}>{t.directory.unclaimedBadge}</span>}
+          {business.origin ? (
+            <span className={ui.badgeWarn}>{t.common.openData}</span>
+          ) : (
+            !business.claimed && <span className={ui.badgeMuted}>{t.directory.unclaimedBadge}</span>
+          )}
         </>
       }
       footer={<TripButton kind="business" slug={business.slug} compact />}

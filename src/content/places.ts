@@ -472,7 +472,7 @@ export const places: Place[] = [
       ],
     },
     location: { lat: 42.485, lng: 19.89722, precision: "point", status: "desk-verified", sources: ["wiki-zla-kolata", "summitpost-kolata"] },
-    photos: [C.zlaKolataNorthEast, C.zlaKolataNorthFace, { ...C.zlaKolataSummit, position: "40% 50%" }],
+    photos: [C.zlaKolataNorthEast, C.zlaKolataNorthFace, C.zlaKolataNorthWest, { ...C.zlaKolataSummit, position: "40% 50%" }],
     warnings: [
       {
         en: "High mountain terrain on an international border: weather changes fast, there is little or no shelter, and you must not cross into Albania without permission.",

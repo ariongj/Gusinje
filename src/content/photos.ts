@@ -29,7 +29,21 @@ const rosiCredit = (listing: string) => ({
 const rosiKatun = rosiCredit("https://www.booking.com/hotel/me/ethno-katun-rosi-agrotourism.html");
 const rosiHotel = rosiCredit("https://www.booking.com/hotel/me/rosi-gusinje.html");
 
-export const commonsPhotos = {
+/**
+ * Commons thumbnails are linked at the largest standard width the original
+ * allows (1280, 1920 or 3840 px), so big and sharp screens get a sharp photo;
+ * the image loader asks for smaller ones on smaller screens.
+ */
+function sharpest<T extends Record<string, Photo>>(set: T): T {
+  return Object.fromEntries(
+    Object.entries(set).map(([key, photo]) => {
+      const step = [3840, 1920].find((s) => s <= (photo.width ?? 0));
+      return [key, step ? { ...photo, src: photo.src.replace(/\/1280px-([^/]+)$/, `/${step}px-$1`) } : photo];
+    }),
+  ) as T;
+}
+
+export const commonsPhotos = sharpest({
   gusinjeValley: {
     src: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Gucia_rr%C3%ABz%C3%AB_Alpeve.jpg/1280px-Gucia_rr%C3%ABz%C3%AB_Alpeve.jpg",
     alt: "Gusinje town in its green valley beneath snow-capped Prokletije peaks, sheep grazing in the foreground",
@@ -438,6 +452,22 @@ export const commonsPhotos = {
       "https://creativecommons.org/licenses/by/2.0/",
     ),
   },
+  zlaKolataNorthWest: {
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Zla_Kolata_mountain_from_the_North-West.jpg/1280px-Zla_Kolata_mountain_from_the_North-West.jpg",
+    alt: "Zla Kolata seen from the north-west",
+    altLocalized: {
+      sq: "Kollata e Keqe parë nga veriperëndimi",
+      cnr: "Zla Kolata viđena sa sjeverozapada",
+    },
+    width: 3264,
+    height: 2448,
+    ...commons(
+      "KpokeJlJla",
+      "CC BY-SA 4.0",
+      "https://commons.wikimedia.org/wiki/File:Zla_Kolata_mountain_from_the_North-West.jpg",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
+    ),
+  },
   hridskoLake: {
     src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Peaks_of_the_Balkans_-_Hridsko_Lake%2C_Montenegro.jpg/1280px-Peaks_of_the_Balkans_-_Hridsko_Lake%2C_Montenegro.jpg",
     alt: "Hridsko Lake among pines and rocky slopes",
@@ -454,7 +484,7 @@ export const commonsPhotos = {
       "https://creativecommons.org/licenses/by/2.0/",
     ),
   },
-} satisfies Record<string, Photo>;
+} satisfies Record<string, Photo>);
 
 export const rosiPhotos = {
   katunAerial: {

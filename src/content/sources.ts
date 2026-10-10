@@ -571,6 +571,14 @@ const list: Source[] = [
   /* ----------------------------------------- services (October 2026) */
   { id: "ekip-numbers", title: "Important numbers (emergency services)", publisher: "EKIP — Agency for Electronic Communications and Postal Services", url: "https://ekip.me/important-numbers", kind: "official", accessed: OCT_2026 },
   { id: "gov-112", title: "Day of the single European emergency number 112", publisher: "Government of Montenegro (gov.me)", url: "https://www.gov.me/clanak/dan-jedinstvenog-evropskog-broja-za-pozive-u-hitnim-situacijama-112", kind: "official", accessed: OCT_2026 },
+  {
+    id: "overture-places",
+    title: "Places — open map data (release 2026-09-23.1)",
+    publisher: "Overture Maps Foundation (CDLA Permissive 2.0; records from Meta, Microsoft and others)",
+    url: "https://docs.overturemaps.org/guides/places/",
+    kind: "reference",
+    accessed: OCT_2026,
+  },
   { id: "gss-contact", title: "Contact", publisher: "Mountain Rescue Service of Montenegro (GSS CG)", url: "https://gss-cg.me/kontakt/", kind: "official", accessed: OCT_2026 },
   { id: "gss-about", title: "Basic information", publisher: "Mountain Rescue Service of Montenegro (GSS CG)", url: "https://gss-cg.me/osnovne-informacije/", kind: "official", accessed: OCT_2026 },
   { id: "gusinje-travel-contact", title: "Contact", publisher: "Turistička organizacija Gusinje (gusinje.travel)", url: "https://gusinje.travel/en/contact/", kind: "official", accessed: OCT_2026 },

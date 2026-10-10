@@ -84,7 +84,12 @@ export default async function CreditsPage({ params }: PageProps<"/[lang]/credits
             <a href="https://www.openstreetmap.org/copyright" className={ui.textLink} target="_blank" rel="noopener noreferrer">
               OpenStreetMap
             </a>{" "}
-            contributors (ODbL). Leaflet (BSD-2-Clause).
+            contributors (ODbL). Leaflet (BSD-2-Clause). MapLibre GL (BSD-3-Clause). Elevation: Mapzen terrain tiles (SRTM and others) via AWS Open
+            Data. Businesses marked “open data”:{" "}
+            <a href="https://overturemaps.org" className={ui.textLink} target="_blank" rel="noopener noreferrer">
+              Overture Maps Foundation
+            </a>{" "}
+            places (CDLA Permissive 2.0), with records from Meta, Microsoft and others.
           </p>
           <h2 className={ui.h2}>{t.credits.model}</h2>
           <p className={ui.prose}>{t.credits.modelText}</p>

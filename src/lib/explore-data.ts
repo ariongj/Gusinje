@@ -5,7 +5,38 @@ import type { CameraTarget, ExploreItem } from "@/components/explore/types";
 import { creditText } from "@/components/ui/PhotoCredit";
 import { photoAlt } from "@/components/ui/PhotoFigure";
 import { businesses, businessLegendGroup, getBusiness, getPlace, getRoute, itineraries, places, placeGroup, recordPath, tours } from "@/content";
-import type { Business, MapCamera, Photo, Place } from "@/content/types";
+import type { MapIcon } from "@/components/map/icons";
+import type { Business, BusinessCategory, MapCamera, Photo, Place, PlaceCategory } from "@/content/types";
+
+const placeIcon: Record<PlaceCategory, MapIcon> = {
+  town: "town",
+  village: "house",
+  waterfall: "waterfall",
+  spring: "drop",
+  lake: "lake",
+  valley: "valley",
+  viewpoint: "view",
+  mountain: "mountain",
+  culture: "landmark",
+};
+
+const businessIcon: Record<BusinessCategory, MapIcon> = {
+  hotel: "bed",
+  guesthouse: "bed",
+  cabin: "cabin",
+  campsite: "tent",
+  restaurant: "fork",
+  cafe: "cup",
+  shop: "bag",
+  guide: "compass",
+  activity: "compass",
+  transport: "bus",
+  rental: "bag",
+  "visitor-info": "info",
+  pharmacy: "cross",
+  atm: "cash",
+  fuel: "fuel",
+};
 import { href, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n";
 import { fold, loc } from "@/i18n/localize";
@@ -26,11 +57,13 @@ export function placeItem(place: Place, lang: Locale): ExploreItem {
     name,
     categoryLabel: t.placeCategory[place.category],
     group: placeGroup[place.category],
+    icon: placeIcon[place.category],
     area: t.area[place.area],
     summary: loc(place.summary, lang),
     search: fold([place.name.en, place.name.sq, place.name.cnr, ...place.altNames.map((a) => a.name), t.placeCategory[place.category]].filter(Boolean).join(" ")),
     href: href(lang, recordPath("place", place.slug)),
     photo: photoData(place.photos[0], lang),
+    photos: place.photos.slice(0, 5).map((p) => photoData(p, lang)!),
     location: place.location ? { lat: place.location.lat, lng: place.location.lng, precision: place.location.precision, status: place.location.status } : undefined,
   };
 }
@@ -46,15 +79,18 @@ export function businessItem(business: Business, lang: Locale): ExploreItem {
     name: business.name,
     categoryLabel: business.categories.map((c) => t.businessCategory[c]).join(" · "),
     group: businessLegendGroup(business),
+    icon: businessIcon[business.categories[0]],
     area: business.area ? t.area[business.area] : t.area.unknown,
     summary: loc(business.summary, lang),
     search: fold([business.name, ...(business.altNames ?? []), ...business.categories.map((c) => t.businessCategory[c])].join(" ")),
     href: href(lang, recordPath("business", business.slug)),
     photo: photoData(business.photos[0], lang),
+    photos: business.photos.slice(0, 5).map((p) => photoData(p, lang)!),
     location: location ? { lat: location.lat, lng: location.lng, precision: location.precision, status: location.status } : undefined,
     hostKey: host ? `business:${host.slug}` : undefined,
     hostName: host?.name,
     disclosure: business.disclosure === "platform-creator" ? t.directory.rosiBadge : undefined,
+    openData: business.origin ? true : undefined,
   };
 }
 

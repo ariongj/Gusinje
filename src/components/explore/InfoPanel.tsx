@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { TripButton } from "@/components/content/TripButton";
 import { Photo } from "@/components/ui/Photo";
@@ -22,11 +22,27 @@ type Props = {
   onShowIn: (view: ExploreView) => void;
   /** Step through the places in this view, one at a time. */
   step?: { index: number; total: number; onPrevious: () => void; onNext: () => void };
+  /** Mapped places and listings close by, nearest first; picking one selects it. */
+  nearby?: ExploreItem[];
+  onPick?: (key: string) => void;
 };
 
+const GUSINJE = { lat: 42.56194, lng: 19.83389 };
+
+/** Straight-line distance in km. */
+export function km(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+  const r = Math.PI / 180;
+  const h = Math.sin(((b.lat - a.lat) * r) / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(((b.lng - a.lng) * r) / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(h));
+}
+
 /** What the visitor picked — the same panel for the 3D view, the map and the list. */
-export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, autoFocus = true }: Props) {
-  const { t } = useI18n();
+export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, nearby = [], onPick, autoFocus = true }: Props) {
+  const { t, lang } = useI18n();
+  const photos = item.photos && item.photos.length > 0 ? item.photos : item.photo ? [item.photo] : [];
+  const [shown, setShown] = useState({ key: item.key, index: 0 });
+  const photoIndex = shown.key === item.key ? Math.min(shown.index, photos.length - 1) : 0;
+  const photo = photos[photoIndex];
   const headingRef = useRef<HTMLHeadingElement>(null);
   const panelRef = useRef<HTMLElement>(null);
 
@@ -70,14 +86,28 @@ export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, autoFocu
           &times;
         </button>
       </div>
-      {item.photo && (
+      {photo && (
         <figure className={styles.figure}>
           <div className={styles.frame}>
-            <Photo src={item.photo.src} alt={item.photo.alt} sizes="360px" />
+            <Photo key={photo.src} src={photo.src} alt={photo.alt} sizes="(max-width: 899px) 100vw, 380px" className={styles.photo} />
+            {photos.length > 1 && (
+              <div className={styles.gallery}>
+                {photos.map((p, i) => (
+                  <button
+                    key={p.src}
+                    type="button"
+                    className={styles.galleryDot}
+                    aria-label={fill(t.explore.photoOf, { i: i + 1, n: photos.length })}
+                    aria-current={i === photoIndex ? "true" : undefined}
+                    onClick={() => setShown({ key: item.key, index: i })}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <figcaption className={styles.credit}>
-            <a href={item.photo.creditHref} target="_blank" rel="noopener noreferrer">
-              {item.photo.credit}
+            <a href={photo.creditHref} target="_blank" rel="noopener noreferrer">
+              {photo.credit}
             </a>
           </figcaption>
         </figure>
@@ -92,6 +122,9 @@ export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, autoFocu
       {item.disclosure && <p className={styles.disclosure}>{item.disclosure}</p>}
       {item.hostName && <p className={styles.location}>{fill(t.business.partOf, { name: item.hostName })}</p>}
       <p className={styles.summary}>{item.summary}</p>
+      {location && km(GUSINJE, location) >= 0.5 && (
+        <p className={styles.distance}>{fill(t.explore.fromGusinje, { km: km(GUSINJE, location).toLocaleString(lang === "cnr" ? "sr-Latn" : lang, { maximumFractionDigits: 1 }) })}</p>
+      )}
       <p className={styles.location}>
         {location
           ? location.status === "self-reported"
@@ -122,6 +155,24 @@ export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, autoFocu
         )}
         <TripButton kind={item.kind} slug={item.slug} compact />
       </div>
+      {nearby.length > 0 && onPick && (
+        <div className={styles.nearby}>
+          <h3 className={styles.nearbyTitle}>{t.explore.nearbyTitle}</h3>
+          <ul className={styles.nearbyList}>
+            {nearby.map((n) => (
+              <li key={n.key}>
+                <button type="button" className={styles.nearbyItem} onClick={() => onPick(n.key)}>
+                  <span className={styles.swatch} style={{ background: groupColor[n.group] }} aria-hidden="true" />
+                  <span className={styles.nearbyName}>{n.name}</span>
+                  <span className={styles.nearbyMeta}>
+                    {km(location!, n.location!).toLocaleString(lang === "cnr" ? "sr-Latn" : lang, { maximumFractionDigits: 1 })} km
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }

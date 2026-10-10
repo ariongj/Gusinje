@@ -121,10 +121,22 @@ overlap: towns and villages win, then the selected place, and a crowded label sh
 focus. Virtual tours and **journeys** (each trip plan, stop by stop) fly the same camera with a
 narrator card; `?tour=<slug>` opens either.
 
+**Businesses from open data**: `scripts/import-overture.py` reads the valley from Overture Maps'
+open "places" data (CDLA Permissive 2.0 — records from Meta, Microsoft and others) and writes
+`src/content/openData.ts`: name, type, position and a link to the business's own website or
+Facebook page. Each becomes a listing marked "Open data · not checked" (small hollow marker on the
+map, a notice on its page, a claim link), with no phone or email until the business claims it. A
+position is used only when it is the business's own (records sharing one spot — a town centre the
+source fell back to — are listed without a pin); guides and activity providers are not imported
+(they're listed once their licences are checked). Re-run it to refresh:
+`pip install pyarrow fsspec aiohttp requests && python3 scripts/import-overture.py`.
+
 **Map tools**: a photo card when hovering a marker, a compass (tap to face north), an orbit
 button that circles the view, full screen (where the browser allows it) and, in 3D, a tap on the
 ground shows its height from the elevation data (approximate; the ×1.35 drawing exaggeration is
-taken out). On phones the place card is a sheet — swipe down to close, up for more — and the
+taken out). Markers carry an icon for what they are (village, waterfall, peak, bed, fork and
+knife, café, pharmacy, cash machine, fuel…); picking one flies the camera down into it, and its card
+has a photo gallery, the distance from Gusinje and what's within 2 km. On phones the place card is a sheet — swipe down to close, up for more — and the
 title bar shrinks so the map gets the room.
 
 **Useful services** (`/services`) and **History & culture** (`/about/history`) are sourced pages

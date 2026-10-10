@@ -13,7 +13,7 @@ import { cx } from "@/lib/cx";
 import ui from "@/styles/ui.module.css";
 
 import styles from "./Explorer.module.css";
-import { InfoPanel } from "./InfoPanel";
+import { InfoPanel, km } from "./InfoPanel";
 import { LeafletMap } from "./LeafletMap";
 import { groupColor, legendGroups, type CameraTarget, type ExploreItem, type LegendGroup } from "./types";
 
@@ -131,7 +131,15 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
   const notOnMap = filtered.filter((i) => !i.location).length;
 
   /** The places along the bottom of the stage: everything mapped, from Gusinje south into the mountains. */
-  const rail = useMemo(() => (view === "list" ? [] : filtered.filter((i) => i.location).sort((a, b) => b.location!.lat - a.location!.lat)), [filtered, view]);
+  // The strip walks up the valley through the guide's own places and listings; businesses from
+  // open map data join it only when the visitor searches by name (they're always on the map).
+  const rail = useMemo(
+    () =>
+      view === "list"
+        ? []
+        : filtered.filter((i) => i.location && (!i.openData || query.trim() !== "")).sort((a, b) => b.location!.lat - a.location!.lat),
+    [filtered, view, query],
+  );
 
   /* ------------------------------------------------------------ selection */
 
@@ -421,12 +429,28 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
         {view !== "list" && notOnMap > 0 && <> · {plural(lang, notOnMap, t.explore.notOnMap)}</>}
       </p>
       {view !== "list" && <p className={styles.mapNote}>{t.explore.mapNote}</p>}
+      {view !== "list" && items.some((i) => i.openData) && <p className={styles.mapNote}>{t.explore.openDataNote}</p>}
     </section>
   );
+
+  // What's around the selected place: mapped places and listings within 2 km, nearest first.
+  const nearby = useMemo(() => {
+    const here = selected?.location;
+    if (!here) return [];
+    return filtered
+      .filter((i) => i.key !== selected.key && i.location && !i.hostKey)
+      .map((i) => ({ i, d: km(here, i.location!) }))
+      .filter(({ d }) => d <= 2)
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 6)
+      .map(({ i }) => i);
+  }, [selected, filtered]);
 
   const infoPanel = selected && (
     <InfoPanel
       item={selected}
+      nearby={nearby}
+      onPick={(key) => select(key)}
       autoFocus={picked}
       view={view}
       webgl={webgl === "ok"}

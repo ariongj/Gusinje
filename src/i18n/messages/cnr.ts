@@ -96,6 +96,7 @@ export const cnr: Messages = {
     previewBadge: "Pregled",
     newWindow: "otvara se u novoj kartici",
     breadcrumb: "Putanja navigacije",
+    openData: "Otvoreni podaci · nije provjereno",
   },
   verification: {
     title: "O ovim informacijama",
@@ -157,6 +158,9 @@ export const cnr: Messages = {
     transport: "Prevoz",
     rental: "Iznajmljivanje opreme",
     "visitor-info": "Informacije za posjetioce",
+    pharmacy: "Apoteka",
+    atm: "Bankomat",
+    fuel: "Benzinska pumpa",
   },
   area: {
     gusinje: "Gusinje",
@@ -248,6 +252,11 @@ export const cnr: Messages = {
     heightHere: "≈ {m} m nadmorske visine",
     heightNote: "Približno, iz podataka o visini.",
     mapTip: "Prevucite da pomjerite, okrećite i naginjite s dva prsta ili desnim dugmetom miša — dodirnite tlo da vidite visinu.",
+    openDataNote: "Male prazne tačke su objekti iz otvorenih podataka o mapama koje još niko nije provjerio.",
+    openDataItem: "Iz otvorenih podataka o mapama — nije provjereno. Vaš je? Preuzmite oglas.",
+    nearbyTitle: "U blizini",
+    fromGusinje: "{km} km od Gusinja vazdušnom linijom",
+    photoOf: "Fotografija {i} od {n}",
   },
   place: {
     alsoKnownAs: "Poznato i kao",
@@ -338,6 +347,9 @@ export const cnr: Messages = {
     rosiBadge: "Vlasnik ovog vodiča",
     unclaimedBadge: "Nepreuzet",
     selfReportedBadge: "Navodi objekat",
+    openDataTitle: "Iz otvorenih podataka o mapama — nije provjereno",
+    openDataText: "Ovaj oglas je napravljen iz otvorenih podataka Overture Maps: samo naziv, vrsta i položaj. Niko iz ovog vodiča ga nije provjerio — objekat je možda zatvoren, preseljen ili prikazan na pogrešnom mjestu. Vaš je? Preuzmite oglas da dodate fotografije, kontakte i detalje.",
+    openDataCoverage: "{n} od njih su iz otvorenih podataka o mapama i još nisu provjereni — to piše na oglasu.",
   },
   hikes: {
     title: "Šetnje i planinarenje",

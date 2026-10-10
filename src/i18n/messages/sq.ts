@@ -96,6 +96,7 @@ export const sq: Messages = {
     previewBadge: "Parapamje",
     newWindow: "hapet në skedë të re",
     breadcrumb: "Shtegu i navigimit",
+    openData: "Të dhëna të hapura · e pakontrolluar",
   },
   verification: {
     title: "Rreth këtij informacioni",
@@ -157,6 +158,9 @@ export const sq: Messages = {
     transport: "Transport",
     rental: "Qira pajisjesh",
     "visitor-info": "Informacion për vizitorët",
+    pharmacy: "Farmaci",
+    atm: "Bankomat",
+    fuel: "Pikë karburanti",
   },
   area: {
     gusinje: "Gucia",
@@ -244,6 +248,11 @@ export const sq: Messages = {
     heightHere: "≈ {m} m mbi nivelin e detit",
     heightNote: "Përafërsisht, nga të dhënat e lartësisë.",
     mapTip: "Tërhiqni për të lëvizur, rrotulloni dhe anoni me dy gishta ose me butonin e djathtë të miut — prekni tokën për të parë lartësinë.",
+    openDataNote: "Pikat e vogla bosh janë biznese nga të dhënat e hapura të hartave që ende nuk i ka kontrolluar askush.",
+    openDataItem: "Nga të dhënat e hapura të hartave — e pakontrolluar. Është i juaji? Merrni listimin.",
+    nearbyTitle: "Afër",
+    fromGusinje: "{km} km nga Gucia në vijë ajrore",
+    photoOf: "Fotografia {i} nga {n}",
   },
   place: {
     alsoKnownAs: "I njohur edhe si",
@@ -333,6 +342,9 @@ export const sq: Messages = {
     rosiBadge: "Mbajtësi i këtij udhëzuesi",
     unclaimedBadge: "I pamarrë në pronësi",
     selfReportedBadge: "I vetëdeklaruar",
+    openDataTitle: "Nga të dhënat e hapura të hartave — e pakontrolluar",
+    openDataText: "Ky listim u krijua nga të dhënat e hapura të Overture Maps: vetëm emri, lloji dhe vendndodhja. Askush nga ky udhëzues nuk e ka kontrolluar — biznesi mund të jetë mbyllur, zhvendosur ose të shfaqet në vend të gabuar. Është i juaji? Merrni listimin për të shtuar foto, kontakte dhe detaje.",
+    openDataCoverage: "{n} prej tyre vijnë nga të dhënat e hapura të hartave dhe ende nuk janë kontrolluar — e thonë këtë në listim.",
   },
   hikes: {
     title: "Shëtitje dhe ecje malore",

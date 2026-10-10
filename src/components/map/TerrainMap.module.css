@@ -81,27 +81,51 @@
 .marker[data-group="food"] { --group: #c0612b; }
 .marker[data-group="services"] { --group: #5b5a8f; }
 
+/* A coloured disc with the place's icon; areas (villages, valleys) are white with a coloured ring. */
 .dot {
-  width: 16px;
-  height: 16px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: var(--group, var(--teal));
-  border: 3px solid #fff;
-  box-shadow: 0 3px 10px rgba(10, 42, 45, 0.4);
+  border: 2.5px solid #fff;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(10, 42, 45, 0.38);
   transition: transform 0.2s var(--ease-soft);
 }
 
+.dot svg {
+  display: block;
+}
+
 .marker[data-precision="area"] .dot {
-  width: 22px;
-  height: 22px;
-  background: rgba(255, 255, 255, 0.82);
-  border: 4px solid var(--group, var(--teal));
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  border: 3px solid var(--group, var(--teal));
+  color: var(--group, var(--teal));
+}
+
+/* From open map data, not checked: smaller and hollow. */
+.marker[data-open] .dot {
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border: 2px solid var(--group, var(--teal));
+  color: var(--group, var(--teal));
+  box-shadow: 0 2px 8px rgba(10, 42, 45, 0.28);
+}
+
+.marker[data-open] .dot svg {
+  width: 12px;
+  height: 12px;
 }
 
 .label {
   position: absolute;
   left: 50%;
-  bottom: calc(100% - 4px);
+  bottom: calc(100% + 1px);
   transform: translateX(-50%);
   padding: 6px 12px;
   border-radius: var(--r-pill);

@@ -95,6 +95,7 @@ export const en = {
     previewBadge: "Preview",
     newWindow: "opens in a new tab",
     breadcrumb: "Breadcrumb",
+    openData: "Open data · not checked",
   },
   verification: {
     title: "About this information",
@@ -156,6 +157,9 @@ export const en = {
     transport: "Transport",
     rental: "Equipment rental",
     "visitor-info": "Visitor information",
+    pharmacy: "Pharmacy",
+    atm: "Cash machine",
+    fuel: "Fuel station",
   },
   area: {
     gusinje: "Gusinje",
@@ -243,6 +247,11 @@ export const en = {
     heightHere: "≈ {m} m above sea level",
     heightNote: "Approximate, from elevation data.",
     mapTip: "Drag to move, turn and tilt with two fingers or the right mouse button — tap the ground to see its height.",
+    openDataNote: "Small hollow dots are businesses from open map data that nobody has checked yet.",
+    openDataItem: "From open map data — not checked. Is it yours? Claim the listing.",
+    nearbyTitle: "Nearby",
+    fromGusinje: "{km} km from Gusinje as the crow flies",
+    photoOf: "Photo {i} of {n}",
   },
   place: {
     alsoKnownAs: "Also known as",
@@ -332,6 +341,9 @@ export const en = {
     rosiBadge: "Host of this guide",
     unclaimedBadge: "Unclaimed",
     selfReportedBadge: "Self-reported",
+    openDataTitle: "From open map data — not checked",
+    openDataText: "This listing was created from Overture Maps open data: name, type and position only. Nobody from this guide has checked it — the business may have closed, moved or be shown in the wrong place. Is it yours? Claim the listing to add photos, contacts and details.",
+    openDataCoverage: "{n} of them come from open map data and haven't been checked yet — they say so on the listing.",
   },
   hikes: {
     title: "Walks & hikes",

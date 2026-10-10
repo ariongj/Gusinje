@@ -116,6 +116,32 @@ test("listings follow the directory rules", () => {
   for (const b of rosi) expect(b.disclosure, `${b.slug} must disclose the host relationship`).toBe("platform-creator");
 });
 
+test("businesses from open map data say so and carry nothing copied beyond name, type, position and own pages", () => {
+  const open = businesses.filter((b) => b.origin);
+  expect(open.length).toBeGreaterThan(0);
+  for (const b of open) {
+    expect(b.verification.status, b.slug).toBe("unverified");
+    expect(b.verification.sources).toContain("overture-places");
+    expect(b.claimed).toBe(false);
+    expect(b.contact.phones, `${b.slug} phone`).toBeUndefined();
+    expect(b.contact.email, `${b.slug} email`).toBeUndefined();
+    expect(b.photos).toHaveLength(0);
+    expect(b.hours).toBeUndefined();
+    expect(b.prices).toBeUndefined();
+    if (b.location) {
+      expect(b.location.status).toBe("unverified");
+      // Inside the valley and Plav, on the Montenegrin side.
+      expect(b.location.lat).toBeGreaterThan(42.44);
+      expect(b.location.lat).toBeLessThan(42.62);
+      expect(b.location.lng).toBeGreaterThan(19.7);
+      expect(b.location.lng).toBeLessThan(19.97);
+    }
+  }
+  // No business is listed twice (curated and open data).
+  const names = businesses.map((b) => b.name.toLowerCase().replace(/[^a-z]/g, ""));
+  expect(new Set(names).size).toBe(names.length);
+});
+
 test("routes never imply navigable tracks or unverified status", () => {
   for (const r of routes) {
     expect(r.track).toBe("none");

@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
     loader: "custom",
     loaderFile: "./src/lib/image-loader.ts",
     // Widths that match Commons' standard thumbnail sizes.
-    deviceSizes: [500, 960, 1280],
+    deviceSizes: [500, 960, 1280, 1920, 3840],
     imageSizes: [250, 330],
   },
   experimental: {

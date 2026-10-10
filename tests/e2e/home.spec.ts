@@ -9,7 +9,7 @@ test("home: the hero's photos name their places; pause, step and the peaks link 
 
   // Choosing a photo stops the slideshow and names the new place.
   await photos.getByRole("button", { name: /^Photo 2:/ }).click();
-  await expect(photos.getByRole("link", { name: /^Grlja/ })).toHaveAttribute("href", /\/en\/places\/grlja\/$/);
+  await expect(photos.getByRole("link", { name: /^Vusanje/ })).toHaveAttribute("href", /\/en\/places\/vusanje\/$/);
   await expect(photos.getByRole("button", { name: "Play the photos" })).toBeVisible();
   await expect(photos.getByRole("group", { name: "2 of 7" })).not.toHaveAttribute("aria-hidden", "true");
 

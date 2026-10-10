@@ -93,6 +93,9 @@ export const businessGroup: Record<BusinessCategory, LegendGroup> = {
   transport: "services",
   rental: "services",
   "visitor-info": "services",
+  pharmacy: "services",
+  atm: "services",
+  fuel: "services",
 };
 
 /** Directory sections in the main navigation. */
@@ -100,7 +103,7 @@ export const directorySections = {
   stay: ["hotel", "guesthouse", "cabin", "campsite"],
   "eat-drink": ["restaurant", "cafe"],
   "guides-experiences": ["guide", "activity"],
-  services: ["shop", "transport", "rental", "visitor-info"],
+  services: ["shop", "transport", "rental", "visitor-info", "pharmacy", "atm", "fuel"],
 } as const satisfies Record<string, readonly BusinessCategory[]>;
 
 export type DirectorySection = keyof typeof directorySections;

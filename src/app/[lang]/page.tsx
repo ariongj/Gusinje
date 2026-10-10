@@ -45,14 +45,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     href: href(lang, recordPath("place", p.slug)),
     credit: photo.credit,
   });
+  // Only photos whose originals are big enough to stay sharp full-screen.
   const heroSlides: [PhotoRecord, Place][] = [
     [HERO, place("gusinje")],
-    [commonsPhotos.grlja, place("grlja")],
-    [commonsPhotos.vusanjeView, place("vusanje")],
-    [commonsPhotos.vusanjeGuesthouses, place("vusanje")],
+    [commonsPhotos.vusanjeVillage, place("vusanje")],
     [commonsPhotos.blueEye, place("oko-skakavice")],
-    [commonsPhotos.ropojanaMeadow, place("ropojana")],
+    [commonsPhotos.ropojanaUpper, place("ropojana")],
+    [commonsPhotos.grbajaUpper, place("grbaja")],
     [commonsPhotos.karanfilWest, place("karanfili")],
+    [commonsPhotos.zlaKolataNorthEast, place("zla-kolata")],
   ];
   const tips = ["getting-here", "seasons-and-packing", "responsible-travel", "safety-and-emergencies"].map((s) => guides.find((g) => g.slug === s)!);
   const count = (section: Parameters<typeof inSection>[1]) => businesses.filter((b) => inSection(b, section)).length;

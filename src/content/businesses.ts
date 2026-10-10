@@ -12,8 +12,9 @@
  * - No phone number, rating, price or opening time is ever estimated.
  */
 
+import { OVERTURE_RELEASE, openDataListings } from "./openData";
 import { rosiPhotos as R } from "./photos";
-import type { Business, TranslationStatus, Verification } from "./types";
+import type { Business, OpenDataListing, TranslationStatus, Verification } from "./types";
 
 const DRAFTS: TranslationStatus = { sq: "unreviewed", cnr: "unreviewed" };
 
@@ -47,7 +48,42 @@ const listedOnlySummary = (kind: { en: string; sq: string; cnr: string }) => ({
   cnr: `Turistička organizacija Gusinje navodi ga kao ${kind.cnr}. Još nemamo više podataka — kontakt potražite u zvaničnom oglasu.`,
 });
 
-export const businesses: Business[] = [
+/**
+ * Businesses mapped from open data (Overture Maps): name, type and position
+ * only, plus a link to the business's own page. Not checked — every view says
+ * so — and no phone or email until the business claims the listing.
+ */
+const OPEN_DATA_SUMMARY = {
+  en: "From open map data: name, type and position only. Not checked by this guide yet — if this is your business, claim the listing to add photos, contacts and details.",
+  sq: "Nga të dhënat e hapura të hartave: vetëm emri, lloji dhe vendndodhja. Ende e pakontrolluar nga ky udhëzues — nëse ky është biznesi juaj, merrni listimin për të shtuar foto, kontakte dhe detaje.",
+  cnr: "Iz otvorenih podataka o mapama: samo naziv, vrsta i položaj. Ovaj vodič ga još nije provjerio — ako je ovo vaš objekat, preuzmite oglas da dodate fotografije, kontakte i detalje.",
+};
+
+const fromOpenData = (l: OpenDataListing): Business => ({
+  slug: l.slug,
+  kind: "business",
+  name: l.name,
+  categories: [l.category],
+  area: l.area,
+  summary: OPEN_DATA_SUMMARY,
+  location: l.location ? { ...l.location, precision: "point", status: "unverified", sources: ["overture-places"] } : null,
+  contact: { ...(l.website ? { website: l.website } : {}), ...(l.social.length ? { social: l.social } : {}) },
+  photos: [],
+  nearby: l.nearby,
+  sponsored: false,
+  claimed: false,
+  verification: {
+    status: "unverified",
+    lastChecked: null,
+    owner: "Editorial team",
+    sources: ["overture-places"],
+    notes: `Name, type and position from Overture Maps open data (release ${OVERTURE_RELEASE}, record ${l.overtureId}). Not checked.`,
+  },
+  translations: DRAFTS,
+  origin: { kind: "open-data", dataset: "overture", id: l.overtureId },
+});
+
+const curated: Business[] = [
   /* ------------------------------------------------------------ ROSI */
   {
     slug: "eko-katun-rosi",
@@ -394,3 +430,5 @@ export const businesses: Business[] = [
     translations: DRAFTS,
   },
 ];
+
+export const businesses: Business[] = [...curated, ...openDataListings.map(fromOpenData)];

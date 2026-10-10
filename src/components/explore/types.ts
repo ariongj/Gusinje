@@ -1,3 +1,4 @@
+import type { MapIcon } from "@/components/map/icons";
 import type { VerificationStatus } from "@/content/types";
 
 /** Legend groups: every item on the 3D view, map and list belongs to one. */
@@ -26,12 +27,18 @@ export type ExploreItem = {
   /** Detail page, already prefixed with the language. */
   href: string;
   photo?: { src: string; alt: string; credit: string; creditHref: string };
+  /** Up to five photos for the card's gallery (the first is `photo`). */
+  photos?: { src: string; alt: string; credit: string; creditHref: string }[];
   location?: { lat: number; lng: number; precision: "point" | "area"; status: VerificationStatus };
   /** Inside another listing (a hotel's restaurant): drawn as that listing's marker. */
   hostKey?: string;
   hostName?: string;
   /** Listing created by the site's host — disclosed wherever it appears. */
   disclosure?: string;
+  /** From open map data and not checked (drawn as a small hollow dot). */
+  openData?: boolean;
+  /** Marker icon. */
+  icon?: MapIcon;
 };
 
 /** Colours per legend group (kept in sync with Legend.module.css). */

@@ -5,7 +5,7 @@ import { businesses, sortByName, type DirectorySection as Section, inSection } f
 import type { Business } from "@/content/types";
 import type { Locale } from "@/i18n/config";
 import { href } from "@/i18n/config";
-import { plural } from "@/i18n/localize";
+import { fill, plural } from "@/i18n/localize";
 import type { Messages } from "@/i18n/messages/en";
 import { businessItem } from "@/lib/explore-data";
 import ui from "@/styles/ui.module.css";
@@ -37,6 +37,7 @@ export function DirectorySection({ lang, t, sections, empty, notes }: Props) {
     <div className={ui.stack}>
       <Notice tone="info" title={plural(lang, businesses.length, t.directory.coverage)}>
         <p>{t.directory.order}</p>
+        {businesses.some((b) => b.origin) && <p>{fill(t.directory.openDataCoverage, { n: businesses.filter((b) => b.origin).length })}</p>}
         {notes}
         <p>
           <Link href={href(lang, "/contribute")} className={ui.textLink}>

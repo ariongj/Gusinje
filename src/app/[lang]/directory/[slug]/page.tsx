@@ -86,6 +86,9 @@ const schemaType: Partial<Record<Business["categories"][number], string>> = {
   restaurant: "Restaurant",
   cafe: "CafeOrCoffeeShop",
   "visitor-info": "TouristInformationCenter",
+  pharmacy: "Pharmacy",
+  atm: "AutomatedTeller",
+  fuel: "GasStation",
 };
 
 export default async function BusinessPage({ params }: PageProps<"/[lang]/directory/[slug]">) {
@@ -145,6 +148,7 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
           {b.disclosure === "platform-creator" && <span className={ui.badgeGold}>{t.directory.rosiBadge}</span>}
           <span className={b.claimed ? ui.badge : ui.badgeMuted}>{b.claimed ? t.business.claimed : t.business.unclaimed}</span>
           {b.verification.status === "self-reported" && <span className={ui.badge}>{t.directory.selfReportedBadge}</span>}
+          {b.origin && <span className={ui.badgeWarn}>{t.common.openData}</span>}
         </div>
         <TranslationNotice status={b.translations} lang={lang} t={t} />
         <div className={ui.actions}>
@@ -156,6 +160,16 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
         <div className={detail.layout}>
           <div className={detail.main}>
             {b.disclosure === "platform-creator" && <Notice tone="info">{t.business.disclosureCreator}</Notice>}
+            {b.origin && (
+              <Notice tone="warning" title={t.directory.openDataTitle}>
+                <p>{t.directory.openDataText}</p>
+                <p>
+                  <Link className={ui.textLink} href={`${href(lang, "/contribute")}?type=claim&listing=${b.slug}`}>
+                    {t.business.claim}
+                  </Link>
+                </p>
+              </Notice>
+            )}
 
             <section className={detail.block} aria-labelledby="contact">
               <h2 id="contact" className={ui.h2}>
