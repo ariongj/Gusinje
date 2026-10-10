@@ -40,7 +40,7 @@ export const places: Place[] = [
     name: { en: "Gusinje", sq: "Gucia", cnr: "Gusinje" },
     altNames: [
       { name: "Guci / Gucia", lang: "sq" },
-      { name: "Гусиње", lang: "cnr", note: "Cyrillic" },
+      { name: "Гусиње", lang: "cnr", note: { en: "Cyrillic", sq: "cirilikë", cnr: "ćirilica" } },
     ],
     category: "town",
     area: "gusinje",
@@ -87,7 +87,7 @@ export const places: Place[] = [
     name: { en: "Vusanje", sq: "Vuthaj", cnr: "Vusanje" },
     altNames: [
       { name: "Vuthaj", lang: "sq" },
-      { name: "Вусање", lang: "cnr", note: "Cyrillic" },
+      { name: "Вусање", lang: "cnr", note: { en: "Cyrillic", sq: "cirilikë", cnr: "ćirilica" } },
     ],
     category: "village",
     area: "vusanje",
@@ -264,7 +264,7 @@ export const places: Place[] = [
     name: { en: "Oko Skakavice", sq: "Oko Skakavice", cnr: "Oko Skakavice" },
     altNames: [
       { name: "Blue Eye of Vusanje", lang: "en" },
-      { name: "Oko Skakavice", lang: "cnr", note: "“the eye of the Skakavica”" },
+      { name: "Oko Skakavice", lang: "cnr", note: { en: "“the eye of the Skakavica”", sq: "“syri i Skakavicës”", cnr: "„oko Skakavice”" } },
     ],
     category: "spring",
     area: "vusanje",
@@ -307,7 +307,7 @@ export const places: Place[] = [
     altNames: [
       { name: "Ropojanska dolina", lang: "cnr" },
       { name: "Luginë e Ropojanës", lang: "sq" },
-      { name: "Liqeni i Gjeshtarës", lang: "sq", note: "the seasonal lake at its end" },
+      { name: "Liqeni i Gjeshtarës", lang: "sq", note: { en: "the seasonal lake at its end", sq: "liqeni sezonal në fund të saj", cnr: "sezonsko jezero na njenom kraju" } },
     ],
     category: "valley",
     area: "ropojana",
@@ -407,9 +407,9 @@ export const places: Place[] = [
     kind: "place",
     name: { en: "Karanfili", sq: "Karanfili", cnr: "Karanfili" },
     altNames: [
-      { name: "Severni vrh / Maja Bals", lang: "other", note: "North Peak, 2,460 m" },
-      { name: "Veliki vrh / Kremeni vrh / Maja Gurt e Zjarmit", lang: "other", note: "2,490 m" },
-      { name: "Južni vrh / Zlovrh / Maja e Keq", lang: "other", note: "South Peak, 2,441 m" },
+      { name: "Severni vrh / Maja Bals", lang: "other", note: { en: "North Peak, 2,460 m", sq: "Maja Veriore, 2.460 m", cnr: "Sjeverni vrh, 2.460 m" } },
+      { name: "Veliki vrh / Kremeni vrh / Maja Gurt e Zjarmit", lang: "other", note: { en: "main summit, 2,490 m", sq: "maja kryesore, 2.490 m", cnr: "glavni vrh, 2.490 m" } },
+      { name: "Južni vrh / Zlovrh / Maja e Keq", lang: "other", note: { en: "South Peak, 2,441 m", sq: "Maja Jugore, 2.441 m", cnr: "Južni vrh, 2.441 m" } },
     ],
     category: "mountain",
     area: "high-mountains",
@@ -453,7 +453,7 @@ export const places: Place[] = [
     name: { en: "Zla Kolata", sq: "Kollata e Keqe", cnr: "Zla Kolata" },
     altNames: [
       { name: "Kollata e Keqe", lang: "sq" },
-      { name: "Зла Колата", lang: "cnr", note: "Cyrillic" },
+      { name: "Зла Колата", lang: "cnr", note: { en: "Cyrillic", sq: "cirilikë", cnr: "ćirilica" } },
     ],
     category: "mountain",
     area: "high-mountains",

@@ -86,7 +86,7 @@ export default async function PlacePage({ params }: PageProps<"/[lang]/places/[s
       >
         {place.altNames.length > 0 && (
           <p className={detail.alt}>
-            <strong>{t.place.alsoKnownAs}:</strong> {place.altNames.map((a) => a.name + (a.note ? ` (${a.note})` : "")).join(" · ")}
+            <strong>{t.place.alsoKnownAs}:</strong> {place.altNames.map((a) => a.name + (a.note ? ` (${loc(a.note, lang)})` : "")).join(" · ")}
           </p>
         )}
         <TranslationNotice status={place.translations} lang={lang} t={t} fallback={isFallback(place.summary, lang)} />

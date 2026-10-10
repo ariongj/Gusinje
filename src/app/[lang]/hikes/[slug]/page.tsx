@@ -17,7 +17,7 @@ import { getSource } from "@/content/sources";
 import type { Reported } from "@/content/types";
 import { getMessages, resolveLocale } from "@/i18n";
 import { href, locales, type Locale } from "@/i18n/config";
-import { fill, loc } from "@/i18n/localize";
+import { fill, loc, localizeNumbers } from "@/i18n/localize";
 import type { Messages } from "@/i18n/messages/en";
 import { pageMetadata } from "@/lib/seo";
 import detail from "@/styles/detail.module.css";
@@ -49,8 +49,9 @@ function reported(r: Reported<string> | undefined, unit: string, lang: Locale, t
   return {
     value: (
       <span>
-        {r.value}
+        {localizeNumbers(r.value, lang)}
         {unit && ` ${unit}`}
+        {r.qualifier && ` (${t.hikes.qualifier[r.qualifier]})`}
       </span>
     ),
     note: (

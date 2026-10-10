@@ -105,7 +105,7 @@ export const businesses: Business[] = [
         basis: "self-reported",
       },
       payment: { label: { en: "Cash only", sq: "Vetëm para në dorë", cnr: "Samo gotovina" }, basis: "self-reported" },
-      languages: { value: ["English", "Albanian", "Serbian"], basis: "self-reported" },
+      languages: { value: ["en", "sq", "sr"], basis: "self-reported" },
     },
     hours: {
       text: { en: "Check-in 15:00–23:00 · check-out 08:00–11:00", sq: "Hyrja 15:00–23:00 · dalja 08:00–11:00", cnr: "Prijava 15:00–23:00 · odjava 08:00–11:00" },
@@ -176,7 +176,7 @@ export const businesses: Business[] = [
         basis: "self-reported",
       },
       payment: { label: { en: "Cash only", sq: "Vetëm para në dorë", cnr: "Samo gotovina" }, basis: "self-reported" },
-      languages: { value: ["English", "Albanian", "Serbian"], basis: "self-reported" },
+      languages: { value: ["en", "sq", "sr"], basis: "self-reported" },
     },
     hours: {
       text: { en: "Check-in 12:00–23:30 · check-out 07:00–11:30", sq: "Hyrja 12:00–23:30 · dalja 07:00–11:30", cnr: "Prijava 12:00–23:30 · odjava 07:00–11:30" },

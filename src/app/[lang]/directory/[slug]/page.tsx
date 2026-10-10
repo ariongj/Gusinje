@@ -18,7 +18,7 @@ import { absoluteUrl } from "@/config/brand";
 import { businesses, businessLocation, getBusiness, getPlace, hostedBy, inSection } from "@/content";
 import type { Basis, Business, Feature } from "@/content/types";
 import { getMessages, resolveLocale } from "@/i18n";
-import { formatDate, href, locales, type Locale } from "@/i18n/config";
+import { formatDate, href, intlLocale, locales, type Locale } from "@/i18n/config";
 import { fill, loc } from "@/i18n/localize";
 import type { Messages } from "@/i18n/messages/en";
 import { jsonLd, pageMetadata } from "@/lib/seo";
@@ -50,6 +50,19 @@ function section(b: Business, t: Messages): [string, string] {
   if (inSection(b, "eat-drink")) return [t.nav.eatDrink, "/eat-drink"];
   if (inSection(b, "guides-experiences")) return [t.nav.guides, "/guides-experiences"];
   return [t.footer.directory, "/directory"];
+}
+
+/** Language codes in the reader's language ("sq" → "Albanian" / "shqip" / "albanski"). */
+function languageNames(codes: string[], lang: Locale): string {
+  for (const tag of intlLocale[lang]) {
+    try {
+      const names = new Intl.DisplayNames([tag], { type: "language" });
+      return codes.map((c) => names.of(c) ?? c).join(", ");
+    } catch {
+      // try the next tag
+    }
+  }
+  return codes.join(", ");
 }
 
 function basisLabel(basis: Basis, t: Messages) {
@@ -256,7 +269,7 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
                     label: t.business.languages,
                     value: languages ? (
                       <span>
-                        {languages.value.join(", ")} {basisLabel(languages.basis, t)}
+                        {languageNames(languages.value, lang)} {basisLabel(languages.basis, t)}
                       </span>
                     ) : undefined,
                   },

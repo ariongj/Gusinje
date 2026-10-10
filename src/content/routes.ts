@@ -39,7 +39,7 @@ export const routes: Route[] = [
       },
     },
     places: ["grlja", "oko-skakavice"],
-    distanceKm: { value: "3.4 (loop)", source: "komoot-grlja-loop" },
+    distanceKm: { value: "3.4", qualifier: "loop", source: "komoot-grlja-loop" },
     ascentM: { value: "≈ 50", source: "komoot-grlja-loop" },
     duration: { value: { en: "about 1 hour", sq: "rreth 1 orë", cnr: "oko 1 sat" }, source: "komoot-grlja-loop" },
     seasonality: {
@@ -175,12 +175,14 @@ export const routes: Route[] = [
     },
     places: ["volusnica", "karanfili"],
     distanceKm: {
-      value: "≈ 10.3 (loop)",
+      value: "≈ 10.3",
+      qualifier: "loop",
       source: "alltrails-volusnica",
       note: { en: "AllTrails lists a 6.4-mile loop.", sq: "AllTrails rendit një rreth prej 6,4 miljesh.", cnr: "AllTrails navodi krug od 6,4 milje." },
     },
     ascentM: {
-      value: "≈ 970 (loop)",
+      value: "≈ 970",
+      qualifier: "loop",
       source: "alltrails-volusnica",
       note: {
         en: "AllTrails: 3,195 ft of climbing on the loop. The height difference from the hut (about 1,160 m) to the summit (1,879 m) is about 720 m.",
@@ -233,7 +235,8 @@ export const routes: Route[] = [
     start: { place: "vusanje" },
     places: ["zla-kolata"],
     distanceKm: {
-      value: "≈ 9–12 (one way)",
+      value: "≈ 9–12",
+      qualifier: "one-way",
       source: "summitpost-zla-kolata-route",
       note: { en: "SummitPost gives about 12 km; other route descriptions give 8.9–9.2 km.", sq: "SummitPost jep rreth 12 km; përshkrime të tjera japin 8,9–9,2 km.", cnr: "SummitPost navodi oko 12 km; drugi opisi navode 8,9–9,2 km." },
     },

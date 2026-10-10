@@ -25,6 +25,11 @@ test("routes separate the waterfall walk from the canyon and give no GPS track",
   await page.goto("/en/hikes/vusanje-theth/");
   await expect(page.getByRole("note").filter({ hasText: "Border permission" })).toBeVisible();
   await expect(page.getByText(/reported by Peaks of the Balkans/).first()).toBeVisible();
+  // Figures follow the reader's number format and language.
+  await page.goto("/sq/hikes/grlja-oko-skakavice-walk/");
+  await expect(page.getByText("3,4 km (rrugë rrethore)")).toBeVisible();
+  await page.goto("/en/hikes/grlja-oko-skakavice-walk/");
+  await expect(page.getByText("3.4 km (loop)")).toBeVisible();
 });
 
 test("directory: honest coverage, A–Z, filters and a map; ROSI not first", async ({ page, errors }) => {

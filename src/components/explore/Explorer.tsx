@@ -56,6 +56,8 @@ export function Explorer({ items, tours }: Props) {
   const [tour, setTour] = useState<{ data: ExploreTour; phase: "intro" | "running" } | null>(null);
   const [ready, setReady] = useState(false);
   const [announce, setAnnounce] = useState("");
+  /** The visitor has picked something (as opposed to a deep link on load). */
+  const [picked, setPicked] = useState(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const tourButtonRef = useRef<HTMLButtonElement>(null);
@@ -98,6 +100,7 @@ export function Explorer({ items, tours }: Props) {
   const select = useCallback(
     (key: string | null) => {
       setSelectedKey(key);
+      setPicked(true);
       const item = key ? byKey.get(key) : undefined;
       if (item) {
         focusItem(item, viewRef.current);
@@ -396,6 +399,7 @@ export function Explorer({ items, tours }: Props) {
           {selected && !touring && (
             <InfoPanel
               item={selected}
+              autoFocus={picked}
               view={view}
               webgl={webgl === "ok"}
               onClose={() => setSelectedKey(null)}

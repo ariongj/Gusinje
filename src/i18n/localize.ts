@@ -30,6 +30,18 @@ export function plural(lang: Locale, count: number, forms: readonly string[]): s
   return fill(form, { n: count });
 }
 
+/**
+ * Numbers written in English format ("1,450", "3.4") in the reader's format:
+ * Albanian and Montenegrin use "1.450" and "3,4".
+ */
+export function localizeNumbers(text: string, lang: Locale): string {
+  if (lang === "en") return text;
+  return text
+    .replace(/(\d),(\d{3})/g, "$1\u0000$2")
+    .replace(/(\d)\.(\d)/g, "$1,$2")
+    .replace(/\u0000/g, ".");
+}
+
 /** Lower-case, accent-free text for matching ("Alipašini" → "alipasini"). */
 export function fold(text: string): string {
   return text

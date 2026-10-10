@@ -340,6 +340,7 @@ export const en = {
     },
     km: "km",
     m: "m",
+    qualifier: { loop: "loop", "one-way": "one way" },
     reportedBy: "reported by {source}",
     permits: "Border permission",
     awaiting: "Awaiting verification — don't use this page to navigate.",
@@ -538,6 +539,18 @@ export const en = {
     moderationTitle: "Moderation queue (preview)",
     moderationText:
       "A preview of the moderation workflow using items you create in this browser only. In the live version, reviews, tips, submissions and reports arrive here from the approved backend.",
+    mod: {
+      type: "Type",
+      testText: "Test text (not stored)",
+      add: "Add test item",
+      empty: "The queue is empty.",
+      approve: "Approve",
+      reject: "Reject",
+      escalate: "Escalate",
+      priority: "safety — handled first",
+      kinds: { review: "Review", tip: "Tip", correction: "Correction", claim: "Ownership claim", report: "Report" },
+      statuses: { pending: "Waiting", published: "Published", rejected: "Rejected", escalated: "Escalated" },
+    },
   },
   notFound: {
     title: "Page not found",

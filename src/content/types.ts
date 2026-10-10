@@ -138,7 +138,7 @@ export type Photo = {
 
 export type PlaceCategory = "town" | "village" | "waterfall" | "spring" | "valley" | "viewpoint" | "culture" | "mountain" | "lake";
 
-export type AltName = { name: string; lang: "sq" | "cnr" | "en" | "other"; note?: string };
+export type AltName = { name: string; lang: "sq" | "cnr" | "en" | "other"; note?: Localized };
 
 export type Place = {
   slug: string;
@@ -229,6 +229,7 @@ export type Business = {
     family?: Feature;
     accessibility?: Feature;
     payment?: Feature;
+    /** ISO 639 codes, shown in the reader's language (e.g. "sq" → "Albanian"). */
     languages?: { value: string[]; basis: Basis };
   };
   /** Opening hours / seasons — only as supplied, with the date supplied. */
@@ -281,7 +282,14 @@ export type VirtualTour = {
 export type RouteType = "walk" | "hike" | "summit" | "canyon" | "cross-border";
 
 /** A number as reported by a named source — shown with that source, never rounded into certainty. */
-export type Reported<T> = { value: T; source: string; note?: Localized };
+export type Reported<T> = {
+  /** English number format ("1,450", "3.4"); pages localise it. */
+  value: T;
+  /** What the figure covers, when the source says. */
+  qualifier?: "loop" | "one-way";
+  source: string;
+  note?: Localized;
+};
 
 export type Route = {
   slug: string;

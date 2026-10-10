@@ -20,9 +20,9 @@ const commons = (author: string, license: string, href: string, licenseUrl?: str
 const rosiCredit = (listing: string) => ({
   credit: {
     author: "Hotel & Eko Katun ROSI",
-    license: "© the owners — permission and originals pending",
+    license: "© ROSI",
     href: listing,
-    via: "the property's Booking.com listing",
+    via: "Booking.com",
   },
   rights: "owner-pending" as const,
 });
@@ -364,6 +364,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/886936299.jpg?k=3f345710e6533a1da409233a1167f792c0d1c9cf2530658b1f7a12e02059ddb8&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/886936299.jpg?k=3f345710e6533a1da409233a1167f792c0d1c9cf2530658b1f7a12e02059ddb8&o=",
     alt: "Eko Katun ROSI from above: the stone main house, a red-roofed pavilion and a row of wooden bungalows on a meadow with grazing sheep, under steep green mountains",
+    altLocalized: {
+      sq: "Eko Katun ROSI nga lart: shtëpia kryesore prej guri, një pavijon me çati të kuqe dhe një varg bungallosh druri në një livadh me dele që kullosin, nën male të pjerrëta të gjelbra",
+      cnr: "Eko Katun ROSI odozgo: glavna kamena kuća, paviljon s crvenim krovom i niz drvenih bungalova na livadi s ovcama, ispod strmih zelenih planina",
+    },
     width: 1200,
     height: 900,
     ...rosiKatun,
@@ -372,6 +376,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/886934318.jpg?k=8d66b202be1ee8304414d674ccc9e25086292ae53250ed5a79aaaf1889586645&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/886934318.jpg?k=8d66b202be1ee8304414d674ccc9e25086292ae53250ed5a79aaaf1889586645&o=",
     alt: "Lantern-lit stone path between wooden bungalows, with a big wooden heart on the lawn and snow-streaked peaks behind",
+    altLocalized: {
+      sq: "Shteg guri i ndriçuar me fenerë mes bungallove prej druri, me një zemër të madhe druri në lëndinë dhe maja me vija bore prapa",
+      cnr: "Kamena staza osvijetljena fenjerima između drvenih bungalova, s velikim drvenim srcem na travnjaku i vrhovima prošaranim snijegom u pozadini",
+    },
     width: 1280,
     height: 853,
     ...rosiKatun,
@@ -380,6 +388,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/886934241.jpg?k=69fb52196d1ec386b2be3404008016ea6a0f3b31b4a966d79b3f42886f959bf9&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/886934241.jpg?k=69fb52196d1ec386b2be3404008016ea6a0f3b31b4a966d79b3f42886f959bf9&o=",
     alt: "Wooden bungalow with two chairs on its small porch and a lamp by the door, beside a lantern-lined stone path under a green mountainside",
+    altLocalized: {
+      sq: "Bungallo druri me dy karrige në verandën e vogël dhe një llambë pranë derës, pranë një shtegu guri me fenerë nën një shpat të gjelbër",
+      cnr: "Drveni bungalov s dvije stolice na malom tremu i lampom kraj vrata, pored kamene staze s fenjerima ispod zelene padine",
+    },
     width: 1280,
     height: 853,
     ...rosiKatun,
@@ -388,6 +400,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/557008354.jpg?k=4289be02f9f1ee464e1071e81a8d82b17c861249727f3ef4a1647e932b7bf806&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/557008354.jpg?k=4289be02f9f1ee464e1071e81a8d82b17c861249727f3ef4a1647e932b7bf806&o=",
     alt: "Two-storey stone house with small arched windows and a red hipped roof, joined to a glazed wooden veranda, with hikers outside and bungalows beyond",
+    altLocalized: {
+      sq: "Shtëpi guri dykatëshe me dritare të vogla me hark dhe çati të kuqe, e lidhur me një verandë druri me xhama, me ecës jashtë dhe bungallo më tej",
+      cnr: "Dvospratna kamena kuća s malim lučnim prozorima i crvenim krovom, spojena sa zastakljenom drvenom verandom, s planinarima ispred i bungalovima dalje",
+    },
     width: 1280,
     height: 853,
     ...rosiKatun,
@@ -396,6 +412,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/557016314.jpg?k=a08bed9bf4b1d023505588d7514628d83e0f70f927097afda5e4c84b957c757e&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/557016314.jpg?k=a08bed9bf4b1d023505588d7514628d83e0f70f927097afda5e4c84b957c757e&o=",
     alt: "Wooden picnic tables on the terrace beside the stone-and-timber main building with its Eko Katun ROSI sign, below snow-capped mountains",
+    altLocalized: {
+      sq: "Tavolina pikniku prej druri në tarracë pranë ndërtesës kryesore prej guri e druri me tabelën Eko Katun ROSI, nën male me borë",
+      cnr: "Drveni stolovi za piknik na terasi pored glavne zgrade od kamena i drveta s natpisom Eko Katun ROSI, ispod snijegom pokrivenih planina",
+    },
     width: 1200,
     height: 900,
     ...rosiKatun,
@@ -404,6 +424,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/554542200.jpg?k=975ca97dce14f761fce0cdb8ad7610ce90ab85f9e1e8bf73feb974612fee69e3&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/554542200.jpg?k=975ca97dce14f761fce0cdb8ad7610ce90ab85f9e1e8bf73feb974612fee69e3&o=",
     alt: "Blue tents pitched on the meadow next to the bungalow row, with campers and limestone cliffs behind",
+    altLocalized: {
+      sq: "Çadra blu të ngritura në livadh pranë vargut të bungallove, me kampues dhe shkëmbinj gëlqerorë prapa",
+      cnr: "Plavi šatori podignuti na livadi pored niza bungalova, s kamperima i krečnjačkim liticama u pozadini",
+    },
     width: 675,
     height: 900,
     ...rosiKatun,
@@ -412,6 +436,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/458083717.jpg?k=dbbd1c283fea2da2e0d16a4895d64f2c24501f8cb4bffa68f3ae26091897e3eb&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/458083717.jpg?k=dbbd1c283fea2da2e0d16a4895d64f2c24501f8cb4bffa68f3ae26091897e3eb&o=",
     alt: "The yellow Hotel ROSI building with its glass-walled bar-restaurant above the ground-floor market, a mountain rising behind",
+    altLocalized: {
+      sq: "Ndërtesa e verdhë e Hotel ROSI me bar-restorantin me mure xhami mbi marketin në katin përdhes, me një mal që ngrihet prapa",
+      cnr: "Žuta zgrada hotela ROSI sa zastakljenim bar-restoranom iznad marketa u prizemlju, iza nje se diže planina",
+    },
     width: 1200,
     height: 900,
     ...rosiHotel,
@@ -420,6 +448,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/458083506.jpg?k=494105f1890207773626b86f318ae80cdad276fc12d8d04a3abafd52776dada8&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/458083506.jpg?k=494105f1890207773626b86f318ae80cdad276fc12d8d04a3abafd52776dada8&o=",
     alt: "Hotel ROSI at dusk, the set tables of its glass-walled restaurant lit up above the ground-floor market",
+    altLocalized: {
+      sq: "Hotel ROSI në muzg, tavolinat e shtruara të restorantit me mure xhami të ndriçuara mbi marketin në katin përdhes",
+      cnr: "Hotel ROSI u sumrak, s osvijetljenim postavljenim stolovima zastakljenog restorana iznad marketa u prizemlju",
+    },
     width: 675,
     height: 900,
     ...rosiHotel,
@@ -428,6 +460,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/198600193.jpg?k=61ae49910db1a3fdba06e33c49ab7bd9c461066abcd6f3db8991f03ad13392ab&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/198600193.jpg?k=61ae49910db1a3fdba06e33c49ab7bd9c461066abcd6f3db8991f03ad13392ab&o=",
     alt: "Gusinje at blue hour: rooftops, street lights and a lit minaret below snow-capped mountains",
+    altLocalized: {
+      sq: "Gucia në orën blu: çati, drita rruge dhe një minare e ndriçuar nën male me borë",
+      cnr: "Gusinje u plavi sat: krovovi, ulična svjetla i osvijetljeni minaret ispod snijegom pokrivenih planina",
+    },
     width: 1200,
     height: 900,
     ...rosiHotel,
@@ -436,6 +472,10 @@ export const rosiPhotos = {
     src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/256143440.jpg?k=83921c0a58feb433c9fe9d3856c853a6346ee21e606e443716a1763e2dca4b68&o=",
     srcSmall: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/256143440.jpg?k=83921c0a58feb433c9fe9d3856c853a6346ee21e606e443716a1763e2dca4b68&o=",
     alt: "The hotel’s tiled roof terrace with a railing, a lamp post and the ROSI restaurant sign, looking over the street to wooded mountains",
+    altLocalized: {
+      sq: "Tarraca me pllaka në çatinë e hotelit, me parmak, shtyllë ndriçimi dhe tabelën e restorantit ROSI, me pamje nga rruga dhe malet me pyje",
+      cnr: "Popločana krovna terasa hotela s ogradom, stubom rasvjete i natpisom restorana ROSI, s pogledom na ulicu i šumovite planine",
+    },
     width: 1200,
     height: 900,
     ...rosiHotel,

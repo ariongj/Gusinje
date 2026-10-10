@@ -9,12 +9,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "serve": "npx serve out -l 4173",
-    "check:content": "node --experimental-strip-types scripts/check-content.ts",
+    "serve": "node scripts/serve-static.mjs",
+    "check:content": "playwright test --project=content",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
-    "test": "npm run typecheck && npm run check:content && npm run test:e2e"
+    "test": "npm run typecheck && npm run lint && npm run test:schema && npm run build && playwright test",
+    "test:schema": "node backend/test-schema.mjs"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
+    "@electric-sql/pglite": "^0.3.7",
     "@playwright/test": "1.56.1",
     "@types/leaflet": "^1.9.20",
     "@types/node": "^20",

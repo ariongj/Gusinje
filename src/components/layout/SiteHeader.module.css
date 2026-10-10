@@ -16,7 +16,7 @@
   align-items: center;
   gap: 16px;
   min-height: 64px;
-  padding: 8px var(--gutter-tight);
+  padding: 8px clamp(16px, 2.5vw, 40px);
 }
 
 .logo {
@@ -57,6 +57,7 @@
 }
 
 .region {
+  white-space: nowrap;
   font: 700 10px/1 var(--font-text);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -185,6 +186,12 @@
   height: 2px;
   border-radius: 2px;
   background: currentColor;
+}
+
+@media (min-width: 1280px) {
+  .logo {
+    flex-shrink: 0;
+  }
 }
 
 /* Below this width the eight sections move into the menu. */

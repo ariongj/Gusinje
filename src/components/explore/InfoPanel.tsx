@@ -14,6 +14,8 @@ import { groupColor, type ExploreItem } from "./types";
 
 type Props = {
   item: ExploreItem;
+  /** Move focus to the panel (after the visitor picked something — not on page load). */
+  autoFocus?: boolean;
   view: ExploreView;
   webgl: boolean;
   onClose: () => void;
@@ -21,7 +23,7 @@ type Props = {
 };
 
 /** What the visitor picked — the same panel for the 3D view, the map and the list. */
-export function InfoPanel({ item, view, webgl, onClose, onShowIn }: Props) {
+export function InfoPanel({ item, view, webgl, onClose, onShowIn, autoFocus = true }: Props) {
   const { t } = useI18n();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const panelRef = useRef<HTMLElement>(null);
@@ -31,11 +33,14 @@ export function InfoPanel({ item, view, webgl, onClose, onShowIn }: Props) {
   useEffect(() => {
     const active = document.activeElement as HTMLElement | null;
     const fromPicker = !active || active === document.body || !!active.closest?.("[data-key]");
+    if (!autoFocus) return;
     if (fromPicker) headingRef.current?.focus({ preventScroll: true });
     if (window.innerWidth < 900) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       panelRef.current?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
     }
+    // Only when the selection changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.key]);
 
   const location = item.location;

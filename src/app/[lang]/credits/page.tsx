@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PageIntro } from "@/components/content/PageIntro";
 import { SourceList } from "@/components/content/SourceList";
 import { PhotoCredit } from "@/components/ui/PhotoCredit";
+import { photoAlt } from "@/components/ui/PhotoFigure";
 import { businesses, places, recordPath } from "@/content";
 import { allSources } from "@/content/sources";
 import type { Photo } from "@/content/types";
@@ -43,7 +44,7 @@ export default async function CreditsPage({ params }: PageProps<"/[lang]/credits
       {items.map(({ photo, pages }) => (
         <li key={photo.src} className={styles.item}>
           <PhotoCredit credit={photo.credit} pending={photo.rights === "owner-pending"} t={t} />
-          <p className={styles.alt}>{photo.alt}</p>
+          <p className={styles.alt}>{photoAlt(photo, lang)}</p>
           <p className={styles.used}>
             {t.credits.usedOn}:{" "}
             {pages.map((p, i) => (
