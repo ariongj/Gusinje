@@ -1,0 +1,142 @@
+.section {
+  padding: var(--section-y) var(--gutter-tight);
+  background: var(--paper);
+}
+
+.panel {
+  position: relative;
+  max-width: var(--max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(36px, 5vw, 80px);
+  align-items: center;
+  padding: clamp(32px, 6vw, 88px);
+  overflow: hidden;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(70% 90% at 100% 0%, rgba(47, 113, 118, 0.72), transparent 62%),
+    radial-gradient(60% 70% at 0% 100%, rgba(184, 137, 74, 0.16), transparent 64%),
+    var(--deeper);
+  color: var(--cream-2);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Faint contour lines, like a lake chart, in the corner. */
+.panel::before {
+  content: "";
+  position: absolute;
+  right: -12%;
+  bottom: -40%;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(207, 227, 230, 0.1);
+  box-shadow:
+    0 0 0 40px transparent,
+    0 0 0 41px rgba(207, 227, 230, 0.07),
+    0 0 0 90px transparent,
+    0 0 0 91px rgba(207, 227, 230, 0.05);
+  pointer-events: none;
+}
+
+.copy {
+  position: relative;
+  min-width: 0;
+}
+
+.title {
+  margin-top: 20px;
+  max-width: 12ch;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--highlight);
+}
+
+.lead {
+  max-width: 46ch;
+  margin-top: 22px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+  margin-top: 34px;
+}
+
+.helps {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.help {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 22px 24px;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(238, 244, 243, 0.12);
+  border-radius: var(--r-lg);
+  transition:
+    background-color 0.3s,
+    transform 0.4s var(--ease-soft);
+}
+
+.help:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .help:hover {
+    transform: translateX(4px);
+  }
+}
+
+.helpNumber {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(220, 189, 141, 0.16);
+  font: 400 16px/1 var(--font-display);
+  color: var(--highlight);
+}
+
+.helpTitle {
+  margin: 2px 0 6px;
+  font: 400 21px/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--cream-2);
+}
+
+.helpText {
+  margin: 0;
+  font: 400 15px/1.6 var(--font-text);
+  color: rgba(238, 244, 243, 0.74);
+}
+
+@media (max-width: 900px) {
+  .panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .help {
+    padding: 18px;
+    gap: 14px;
+  }
+}

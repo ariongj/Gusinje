@@ -1,0 +1,159 @@
+/* The dark band that carries on from the intro: toolbar, then the stage. */
+.band {
+  --stage-max: 1600px;
+  --stage-gutter: clamp(10px, 2.4vw, 36px);
+  padding: 0 var(--stage-gutter);
+  background: var(--deeper);
+}
+
+/* Touch phones: the stage turns the view under every swipe, so leave a wider
+   margin to scroll the page by. */
+@media (pointer: coarse) and (max-width: 599.98px) {
+  .band {
+    --stage-gutter: 16px;
+  }
+}
+
+/* ---------- toolbar: note + guided tour ---------- */
+
+.toolbar {
+  max-width: var(--stage-max);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding-bottom: clamp(14px, 1.8vw, 20px);
+}
+
+.toolbarNote {
+  margin: 0;
+  font: 400 14px/1.5 var(--font-text);
+  color: rgba(238, 244, 243, 0.62);
+}
+
+.guideButton {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 24px 0 9px;
+  background: var(--gold);
+  color: var(--on-gold);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--r-pill);
+  font: 700 15px/1 var(--font-text);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 10px 26px rgba(184, 137, 74, 0.28);
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s,
+    box-shadow 0.3s,
+    transform 0.3s var(--ease-soft);
+}
+
+.guideButton:hover {
+  background: var(--gold-hover);
+  border-color: var(--gold-hover);
+  transform: translateY(-1px);
+}
+
+.playDisc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding-left: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.guideButtonActive,
+.guideButtonActive:hover {
+  padding: 0 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(238, 244, 243, 0.4);
+  color: var(--cream-2);
+  box-shadow: none;
+  transform: none;
+}
+
+.guideButtonActive:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--cream-2);
+}
+
+@media (max-width: 699.98px) {
+  .guideButton {
+    flex: 1 1 100%;
+    margin-left: 0;
+  }
+
+  .toolbarNote {
+    order: 3;
+    flex: 1 1 100%;
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+/* ---------- stage ---------- */
+
+/* Positioning context for the guide card (see GuideCard.module.css). */
+.stage {
+  position: relative;
+  max-width: var(--stage-max);
+  margin: 0 auto;
+}
+
+.viewer {
+  position: relative;
+  height: clamp(480px, 78vh, 860px);
+  overflow: hidden;
+  /* Lets the rounded corners clip the WebGL canvases in Safari too. */
+  isolation: isolate;
+  background: #061a1d;
+  border-radius: var(--r-xl);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 599.98px) {
+  .viewer {
+    border-radius: var(--r-lg);
+  }
+}
+
+/* Touch phones: short enough that the page below still shows, and scrolls. */
+@media (pointer: coarse) and (max-width: 599.98px) {
+  .viewer {
+    height: clamp(360px, 64svh, 860px);
+  }
+}
+
+/* Landscape phones: the whole stage fits under the nav. */
+@media (max-height: 560px) {
+  .viewer {
+    height: clamp(240px, calc(100svh - 96px), 860px);
+  }
+}
+
+/* While the guide talks on a phone, its card docks under the stage
+   (GuideCard.module.css): shrink the stage so both fit on one screen below
+   the nav — 84px scroll clearance, the card's 10px margin and its measured
+   height (--guide-h, set by TourExplorer). */
+@media (max-width: 599.98px), (max-height: 560px) {
+  .touring .viewer {
+    height: max(220px, calc(100svh - 84px - 10px - var(--guide-h, 370px)));
+  }
+}
+
+/* The 3D map fills the stage. */
+.layer {
+  position: absolute;
+  inset: 0;
+}

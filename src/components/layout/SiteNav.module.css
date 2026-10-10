@@ -1,0 +1,319 @@
+/* Over the hero: a transparent bar. Once scrolled: a floating glass bar. */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px clamp(18px, 4vw, 48px);
+  /* Over the hero the focus ring needs the light brass; the glass bar resets it. */
+  --focus-ring: var(--gold-light);
+  color: var(--cream-2);
+  background: linear-gradient(180deg, rgba(8, 32, 35, 0.5), rgba(8, 32, 35, 0));
+  border: 1px solid transparent;
+  border-radius: 0;
+  transition:
+    top 0.5s var(--ease-soft),
+    left 0.5s var(--ease-soft),
+    right 0.5s var(--ease-soft),
+    padding 0.5s var(--ease-soft),
+    border-radius 0.5s var(--ease-soft),
+    background 0.5s ease,
+    color 0.5s ease,
+    box-shadow 0.5s ease,
+    border-color 0.5s ease;
+}
+
+.solid {
+  top: 12px;
+  left: clamp(10px, 2vw, 24px);
+  right: clamp(10px, 2vw, 24px);
+  padding: 10px 10px 10px clamp(16px, 2.4vw, 26px);
+  border-radius: var(--r-lg);
+  --focus-ring: var(--gold-deep);
+  background: var(--glass-strong);
+  border-color: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 16px/1 var(--font-display);
+  letter-spacing: 0.3em;
+  white-space: nowrap;
+  color: inherit;
+}
+
+.logo:hover {
+  color: inherit;
+}
+
+.logoText {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* "Hotel & Eko Katun" under the wordmark. */
+.logoSub {
+  font: 700 9px/1 var(--font-text);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+/* A small peak-and-sun mark before the wordmark. */
+.logo::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background:
+    linear-gradient(135deg, transparent 49%, currentColor 50%, currentColor 56%, transparent 57%) center / 100% 100%,
+    radial-gradient(circle at 50% 78%, var(--gold) 0 34%, transparent 35%);
+  box-shadow: inset 0 0 0 1.5px currentColor;
+  opacity: 0.9;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+}
+
+.desktop,
+.mobile {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobile {
+  display: none;
+  gap: 10px;
+}
+
+@media (max-width: 1079.98px) {
+  .desktop {
+    display: none;
+  }
+
+  .mobile {
+    display: flex;
+  }
+}
+
+.link {
+  padding: 10px 14px;
+  border-radius: var(--r-pill);
+  font: 600 14px/1 var(--font-text);
+  letter-spacing: 0.01em;
+  color: inherit;
+  transition: background-color 0.3s;
+}
+
+.link:hover {
+  color: inherit;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.solid .link:hover {
+  background: var(--mist);
+}
+
+.active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.solid .active {
+  background: var(--mist);
+}
+
+.cta,
+.ctaMobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-left: 10px;
+  padding: 13px 22px;
+  background: var(--gold);
+  color: var(--on-gold);
+  font: 700 13px/1 var(--font-text);
+  letter-spacing: 0.02em;
+  border-radius: var(--r-pill);
+  box-shadow: 0 8px 22px rgba(184, 137, 74, 0.3);
+  transition:
+    background-color 0.3s,
+    transform 0.3s var(--ease-soft);
+}
+
+.ctaMobile {
+  margin-left: 0;
+  padding: 11px 18px;
+}
+
+.cta:hover,
+.ctaMobile:hover {
+  background: var(--gold-hover);
+  color: var(--on-gold);
+  transform: translateY(-1px);
+}
+
+.burger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.14);
+  border: none;
+  border-radius: 50%;
+  color: inherit;
+}
+
+.solid .burger {
+  background: var(--mist);
+}
+
+.burger span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+/* Small phones: tighten the bar so the burger never runs off the edge, and
+   let the wordmark clip rather than push it (e.g. "Reserve" at 360px). */
+@media (max-width: 399.98px) {
+  .nav {
+    gap: 10px;
+  }
+
+  .logo {
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+    letter-spacing: 0.16em;
+  }
+
+  .ctaMobile {
+    padding: 10px 14px;
+  }
+}
+
+/* ---------- mobile menu ---------- */
+
+.menu {
+  --focus-ring: var(--gold-light);
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  padding: 22px clamp(20px, 6vw, 56px) max(22px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(120% 70% at 100% 0%, rgba(47, 113, 118, 0.55), transparent 60%),
+    var(--deeper);
+  color: var(--cream-2);
+  animation: menu-in 0.35s var(--ease-soft);
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.menuHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menuLogo {
+  font: 500 16px/1 var(--font-display);
+  letter-spacing: 0.3em;
+  color: var(--cream-2);
+}
+
+.menuLogo:hover {
+  color: var(--cream-2);
+}
+
+.close {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: var(--cream-2);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.menuLinks {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  overflow-y: auto;
+}
+
+.menuLink {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(238, 244, 243, 0.12);
+  font: 400 clamp(28px, 7vw, 38px) / 1.2 var(--font-display);
+  color: var(--cream-2);
+}
+
+.menuLink:hover {
+  color: var(--highlight);
+}
+
+.menuCta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 18px;
+  background: var(--gold);
+  color: var(--on-gold);
+  font: 700 15px/1 var(--font-text);
+  border-radius: var(--r-pill);
+}
+
+.menuCta:hover {
+  color: var(--on-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    animation: none;
+  }
+}
+
+/* Phone link under the menu button: the quickest way to book for tonight. */
+.menuPhone {
+  display: block;
+  margin-top: 14px;
+  text-align: center;
+  font: 600 15px/1.4 var(--font-text);
+  color: var(--cream);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

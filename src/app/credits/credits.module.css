@@ -1,0 +1,75 @@
+.section {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(48px, 6vw, 88px) var(--gutter) var(--section-y);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--light);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px 20px;
+}
+
+.alt {
+  margin: 0 0 4px;
+  font: 500 15px/1.45 var(--font-text);
+  color: var(--ink);
+}
+
+.meta,
+.used {
+  margin: 0;
+  font: 600 13px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.used {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.link {
+  margin-top: auto;
+  padding-top: 10px;
+  font: 700 13px/1 var(--font-text);
+  color: var(--lake);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.note {
+  margin: 32px 0 0;
+  font: 500 14px/1.6 var(--font-text);
+  color: var(--text-soft);
+}
+
+.note a {
+  color: var(--lake);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

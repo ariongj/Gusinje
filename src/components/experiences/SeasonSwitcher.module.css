@@ -1,0 +1,112 @@
+.root {
+  min-width: 0;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+
+/* Two equal pills on a frosted track, with a sliding thumb behind the active one. */
+.switch {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 5px;
+  background: var(--lighter);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-soft);
+}
+
+.thumb {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  width: calc(50% - 5px);
+  border-radius: var(--r-pill);
+  background: var(--dark);
+  box-shadow: 0 8px 20px rgba(12, 44, 48, 0.22);
+  transition: transform 0.45s var(--ease-soft);
+}
+
+.option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 132px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  font: 700 15px/1 var(--font-text);
+  color: var(--text-2);
+  transition: color 0.3s;
+}
+
+.option:hover {
+  color: var(--ink);
+}
+
+.optionActive,
+.optionActive:hover {
+  color: var(--cream-2);
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.optionActive .icon {
+  stroke: var(--gold-light);
+}
+
+.intro {
+  flex: 1 1 280px;
+  max-width: 52ch;
+  margin: 0;
+  font: 400 clamp(15px, 1.2vw, 17px) / 1.6 var(--font-text);
+  color: var(--text-soft);
+}
+
+.panel {
+  min-width: 0;
+}
+
+/* Panels take focus (tabs pattern): round the ring to match the cards. */
+.panel:focus-visible {
+  outline-offset: 6px;
+  border-radius: var(--r-xl);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb {
+    transition: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .switch {
+    width: 100%;
+  }
+
+  .option {
+    min-width: 0;
+    padding: 0 12px;
+  }
+}

@@ -1,0 +1,207 @@
+.section {
+  padding: var(--section-y) var(--gutter);
+  background: var(--paper);
+}
+
+.grid {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+.copy {
+  min-width: 0;
+}
+
+.title {
+  margin-top: 20px;
+  max-width: 13ch;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--lake);
+}
+
+.lead {
+  max-width: 54ch;
+  margin-top: 24px;
+}
+
+.lead + .lead {
+  margin-top: 14px;
+}
+
+.nearby {
+  margin-top: 34px;
+}
+
+.nearbyLabel {
+  display: block;
+  margin-bottom: 12px;
+  font: 700 11px/1 var(--font-text);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 9px 16px;
+  border: 1px solid var(--line-3);
+  border-radius: var(--r-pill);
+  background: var(--light);
+  font: 600 14px/1 var(--font-text);
+  color: var(--text);
+}
+
+/* ---------- stat bento ---------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(150px, auto) minmax(150px, auto) auto;
+  gap: 14px;
+  margin: 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  gap: 18px;
+  padding: clamp(20px, 2.4vw, 30px);
+  background: var(--light);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 0.4s var(--ease-soft),
+    box-shadow 0.4s var(--ease-soft);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+.accent {
+  grid-row: span 2;
+  position: relative;
+  overflow: hidden;
+  border-color: transparent;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(47, 113, 118, 0.75), transparent 60%),
+    radial-gradient(80% 60% at 0% 100%, rgba(207, 227, 230, 0.14), transparent 70%),
+    var(--dark);
+  color: var(--cream-2);
+}
+
+/* A soft contour of "water" at the foot of the lake card. */
+.accent::after {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -38%;
+  height: 70%;
+  border-radius: 50%;
+  border-top: 1px solid rgba(207, 227, 230, 0.22);
+  box-shadow: 0 -18px 0 -17px rgba(207, 227, 230, 0.12);
+  pointer-events: none;
+}
+
+.wide {
+  grid-column: 1 / -1;
+  min-height: 0;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.statValue {
+  margin: 0;
+  font: 400 clamp(40px, 4.6vw, 64px) / 0.95 var(--font-display);
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.accent .statValue {
+  font-size: clamp(56px, 7vw, 104px);
+  color: var(--cream-2);
+}
+
+.statLabel {
+  max-width: 18ch;
+  font: 600 15px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.accent .statLabel {
+  position: relative;
+  z-index: 1;
+  color: var(--glacier);
+}
+
+.wide .statLabel {
+  padding-bottom: 6px;
+  max-width: none;
+}
+
+/* Side by side with the copy, the accent card is one narrow column: keep "906 m" on one line. */
+@media (min-width: 901px) {
+  .accent .statValue {
+    font-size: clamp(44px, 5vw, 84px);
+  }
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .stats {
+    grid-template-rows: none;
+  }
+
+  .stat {
+    min-height: 132px;
+  }
+
+  .accent {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    min-height: 180px;
+  }
+
+  .wide {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+}
+
+/* Small phones: "10,000" must fit a half-width card. The accent card is full width here and keeps its size. */
+@media (max-width: 400px) {
+  .statValue {
+    font-size: 34px;
+  }
+}

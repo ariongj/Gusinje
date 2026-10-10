@@ -1,0 +1,287 @@
+/* ==========================================================================
+   Plav Hotel — global styles
+   "Lakeside modern": lake teal, glacier blue, warm stone and brass, inspired
+   by Lake Plav and the Prokletije peaks. Component styles live next to
+   their components as CSS Modules and read these tokens.
+   ========================================================================== */
+
+:root {
+  /* Text */
+  --ink: #152a2c;
+  --text: #34494b;
+  --text-2: #43585a;
+  --text-soft: #56696a;
+  --muted: #5f7071;
+  --muted-2: #8d9c9c;
+  --faint: #9eaaaa;
+
+  /* Surfaces */
+  --paper: #f2efe9;
+  --card: #f8f6f1;
+  --light: #fbfaf7;
+  --lighter: #ffffff;
+  --note: #e5eeee;
+  --sand: #dde9ea;
+
+  /* Lines */
+  --line: #dde3e0;
+  --line-2: #e1e5e2;
+  --line-3: #cdd6d4;
+  --line-4: #c3cdcb;
+  --line-chip: #b9c6c4;
+
+  /* Brass (the historic token names say "gold") */
+  --gold: #b8894a;
+  --gold-hover: #a0733a;
+  --gold-dark: #8c6532;
+  --gold-deep: #87612d;
+  --bronze: #7c5726;
+  --gold-light: #dcbd8d;
+  --highlight: #ead1a1;
+  --gold-chip: #eadcc3;
+  /* Keyboard focus ring: a brass at least 3:1 on both stone and lake teal.
+     Dark containers (footer, menu, heroes, sticky bar) switch it to --gold-light. */
+  --focus-ring: #a3773c;
+
+  /* Lake (the historic token names say "dark") */
+  --dark: #0f3b3f;
+  --deeper: #0a2a2d;
+  --on-gold: #10201f;
+  --cream: #eef4f3;
+  --cream-2: #f6f9f8;
+  --footer-text: #d9e6e5;
+
+  /* Lakeside accents */
+  --teal: #0f3b3f;
+  --teal-2: #17565b;
+  --lake: #2f7176;
+  --glacier: #cfe3e6;
+  --mist: #e9f2f3;
+
+  /* Type — the --font-fraunces / --font-manrope variables come from next/font */
+  --font-display: var(--font-fraunces), "Fraunces", Georgia, serif;
+  --font-text: var(--font-manrope), "Manrope", system-ui, sans-serif;
+
+  /* Shape */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* Depth and glass */
+  --shadow-soft: 0 12px 40px rgba(12, 44, 48, 0.08);
+  --shadow-lift: 0 30px 80px rgba(12, 44, 48, 0.16);
+  --glass: rgba(251, 250, 247, 0.72);
+  --glass-strong: rgba(251, 250, 247, 0.88);
+  --glass-dark: rgba(8, 36, 39, 0.55);
+  --glass-line: rgba(255, 255, 255, 0.55);
+
+  /* Layout */
+  --gutter: clamp(20px, 5vw, 96px);
+  --gutter-tight: clamp(16px, 5vw, 96px);
+  --section-y: clamp(72px, 9vw, 136px);
+  --max: 1280px;
+  --max-narrow: 1180px;
+
+  /* Motion */
+  --ease-soft: cubic-bezier(0.22, 0.68, 0.2, 1);
+  --ease-bar: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  /* In-page anchors (#book, #reserve …) land below the fixed nav. */
+  scroll-padding-top: 84px;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+}
+
+/* Sideways scroll reveals start ±46px off-axis; never let them widen the page.
+   (clip, unlike hidden, keeps position: sticky working.) */
+main {
+  overflow-x: clip;
+}
+
+/* Element defaults use :where() so they never out-rank component classes —
+   the prototypes set these inline, which always won over the stylesheet. */
+:where(a) {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+:where(a:hover) {
+  color: var(--gold-dark);
+}
+
+::selection {
+  background: var(--sand);
+  color: var(--ink);
+}
+
+:where(input, select, button, textarea) {
+  font-family: var(--font-text);
+}
+
+:where(button) {
+  cursor: pointer;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* The arrow is --muted (#5f7071); CSS variables don't reach into data URIs. */
+:where(select) {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%235f7071' fill='none' stroke-width='1.3'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+:where(input[type="range"]) {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: var(--line-3);
+  border-radius: var(--r-sm);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(40, 86, 90, 0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+}
+
+/* The focus reset above leaves sliders without a visible focus; ring the thumb. */
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--focus-ring);
+}
+
+input[type="range"]:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--focus-ring);
+}
+
+/* iOS zooms into any field under 16px on focus — keep touch devices at 16px. */
+@media (pointer: coarse) {
+  input:not([type="range"], [type="checkbox"], [type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Scroll reveals
+   Mark an element with data-reveal="up|left|right|scale" (and optionally
+   data-delay="80"). <RevealObserver/> adds data-revealed once it scrolls
+   into view. Content stays visible without JavaScript, and a CSS fallback
+   shows it anyway if the page never hydrates.
+   -------------------------------------------------------------------------- */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 1.2s var(--ease-soft),
+      transform 1.2s var(--ease-soft);
+  }
+
+  [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+  }
+
+  [data-reveal="up"]:not([data-revealed]) {
+    transform: translateY(40px);
+  }
+
+  [data-reveal="left"]:not([data-revealed]) {
+    transform: translateX(-46px);
+  }
+
+  [data-reveal="right"]:not([data-revealed]) {
+    transform: translateX(46px);
+  }
+
+  [data-reveal="scale"]:not([data-revealed]) {
+    transform: scale(0.94);
+  }
+
+  html:not([data-reveal-ready]) [data-reveal] {
+    animation: reveal-fallback 0s linear 3s forwards;
+  }
+
+  [data-delay="70"] { transition-delay: 70ms; }
+  [data-delay="80"] { transition-delay: 80ms; }
+  [data-delay="90"] { transition-delay: 90ms; }
+  [data-delay="100"] { transition-delay: 100ms; }
+  [data-delay="120"] { transition-delay: 120ms; }
+  [data-delay="140"] { transition-delay: 140ms; }
+  [data-delay="160"] { transition-delay: 160ms; }
+  [data-delay="180"] { transition-delay: 180ms; }
+  [data-delay="200"] { transition-delay: 200ms; }
+  [data-delay="210"] { transition-delay: 210ms; }
+  [data-delay="220"] { transition-delay: 220ms; }
+  [data-delay="240"] { transition-delay: 240ms; }
+  [data-delay="280"] { transition-delay: 280ms; }
+  [data-delay="320"] { transition-delay: 320ms; }
+}
+
+@keyframes reveal-fallback {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

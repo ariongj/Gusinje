@@ -1,0 +1,34 @@
+.credit {
+  margin: 0;
+  font: 400 12px/1.4 var(--font-text);
+  letter-spacing: 0.01em;
+  color: rgba(246, 249, 248, 0.72);
+}
+
+/* --text-soft: at least 4.5:1 on paper, light and white. */
+.dark {
+  color: var(--text-soft);
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(246, 249, 248, 0.4);
+  text-underline-offset: 2px;
+}
+
+.dark .link {
+  text-decoration-color: var(--line-chip);
+}
+
+.link:hover {
+  color: var(--cream-2);
+}
+
+.dark .link:hover {
+  color: var(--ink);
+}
+
+.spaced {
+  margin-top: 28px;
+}

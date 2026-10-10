@@ -1,0 +1,518 @@
+/* Sections shared by the Eko Katun and Hotel pages. */
+
+.m0 {
+  margin: 0;
+}
+
+.mt18 {
+  margin-top: 18px;
+}
+
+.mt32 {
+  margin-top: 32px;
+}
+
+.accent,
+.head em,
+.featureCopy em,
+.facilities em {
+  font-style: italic;
+  color: var(--lake);
+}
+
+.featureDark .featureCopy em,
+.distances em {
+  font-style: italic;
+  color: var(--highlight);
+}
+
+.small {
+  margin: 14px 0 0;
+  font: 500 13px/1.6 var(--font-text);
+  color: var(--text-soft);
+}
+
+.credit {
+  margin-top: 14px;
+}
+
+/* ---------- intro ---------- */
+
+.intro {
+  background: var(--paper);
+}
+
+.introGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  align-items: center;
+  gap: clamp(32px, 6vw, 96px);
+}
+
+.statement {
+  margin: 24px 0 0;
+  font: 400 clamp(24px, 2.6vw, 38px) / 1.3 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bento li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 20px;
+  background: var(--light);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.bento .bentoDark {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--cream-2);
+}
+
+.bentoValue {
+  font: 400 clamp(30px, 3vw, 44px) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.bentoValue small {
+  font-size: 0.45em;
+  letter-spacing: 0;
+  opacity: 0.75;
+}
+
+.bentoLabel {
+  font: 600 13px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.bentoDark .bentoLabel {
+  color: rgba(238, 244, 243, 0.75);
+}
+
+/* ---------- units ---------- */
+
+.units {
+  background: var(--light);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  align-items: end;
+  gap: 20px 60px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.headLead {
+  max-width: 48ch;
+}
+
+.unitGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+  gap: 20px;
+}
+
+/* ---------- feature split ---------- */
+
+.feature {
+  background: var(--paper);
+}
+
+.featureDark {
+  background: var(--dark);
+  color: var(--cream-2);
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 6vw, 96px);
+}
+
+.flip .featurePhoto {
+  order: 2;
+}
+
+.featurePhoto {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lift);
+}
+
+.featureText,
+.featureTextLight {
+  margin-top: 22px;
+  font: 500 16px/1.7 var(--font-text);
+}
+
+.featureText {
+  color: var(--text);
+}
+
+.featureTextLight {
+  color: rgba(238, 244, 243, 0.86);
+}
+
+.featureText p,
+.featureTextLight p {
+  margin: 0 0 14px;
+}
+
+/* ---------- facilities + restaurant ---------- */
+
+.facilities {
+  background: var(--light);
+}
+
+.facilitiesGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 10px 16px;
+  background: var(--lighter);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font: 600 14px/1.2 var(--font-text);
+  color: var(--ink);
+}
+
+.restaurantCard {
+  padding: clamp(24px, 3vw, 36px);
+  background: var(--dark);
+  color: var(--cream-2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lift);
+}
+
+.restaurantKicker {
+  font: 700 11px/1 var(--font-text);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+.restaurantName {
+  margin: 12px 0 10px;
+  font: 400 clamp(28px, 3vw, 38px) / 1.05 var(--font-display);
+}
+
+.restaurantText {
+  margin: 0;
+  font: 500 15px/1.65 var(--font-text);
+  color: rgba(238, 244, 243, 0.86);
+}
+
+.restaurantFacts {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.restaurantFacts div {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 12px;
+  font: 600 14px/1.4 var(--font-text);
+}
+
+.restaurantFacts dt {
+  color: rgba(238, 244, 243, 0.62);
+}
+
+.restaurantFacts dd {
+  margin: 0;
+}
+
+.restaurantLink {
+  font: 700 14px/1 var(--font-text);
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---------- distances ---------- */
+
+.distances {
+  background: var(--deeper);
+  color: var(--cream-2);
+}
+
+.distancesGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.distanceList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.distanceList li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.distancePlace {
+  font: 500 19px/1.3 var(--font-display);
+}
+
+.distanceValue {
+  font: 600 14px/1.5 var(--font-text);
+  color: var(--gold-light);
+  text-align: right;
+}
+
+.distanceValue small {
+  font-size: 1em;
+  font-weight: 500;
+  color: rgba(238, 244, 243, 0.7);
+}
+
+/* ---------- practical ---------- */
+
+.practical {
+  background: var(--paper);
+}
+
+.practicalGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.panel {
+  padding: 26px;
+  background: var(--lighter);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+}
+
+.panelTitle {
+  margin: 0 0 18px;
+  font: 500 22px/1.2 var(--font-display);
+  color: var(--ink);
+}
+
+.rules {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.rules div {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 12px;
+  font: 500 14px/1.45 var(--font-text);
+}
+
+.rules dt {
+  font-weight: 700;
+  color: var(--lake);
+}
+
+.rules dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+}
+
+.scoreValue {
+  font: 400 48px/0.9 var(--font-display);
+  letter-spacing: -0.03em;
+  color: var(--dark);
+}
+
+.scoreValue small {
+  font-size: 0.4em;
+  letter-spacing: 0;
+  color: var(--text-soft);
+}
+
+.scoreLabel {
+  font: 600 13px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.score:hover .scoreLabel {
+  color: var(--lake);
+  text-decoration: underline;
+}
+
+.address {
+  font: 600 15px/1.6 var(--font-text);
+  font-style: normal;
+  color: var(--ink);
+}
+
+.panelLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+/* ---------- gallery ---------- */
+
+.gallery {
+  background: var(--light);
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.galleryItem {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+}
+
+.galleryItem:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* ---------- call to action ---------- */
+
+.cta {
+  padding: clamp(80px, 10vw, 150px) var(--gutter);
+  background: radial-gradient(120% 90% at 50% 0%, var(--teal-2) 0%, var(--dark) 55%, var(--deeper) 100%);
+  color: var(--cream-2);
+  text-align: center;
+}
+
+.ctaInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.ctaTitle {
+  margin: 20px 0 0;
+  font: 400 clamp(44px, 6.5vw, 96px) / 0.98 var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.ctaTitle em {
+  font-style: italic;
+  color: var(--highlight);
+}
+
+.ctaLead {
+  max-width: 46ch;
+  margin: 22px 0 0;
+  font: 500 17px/1.6 var(--font-text);
+  color: rgba(238, 244, 243, 0.82);
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.ctaNote {
+  margin: 18px 0 0;
+  font: 500 13px/1.5 var(--font-text);
+  color: rgba(238, 244, 243, 0.66);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1023.98px) {
+  .practicalGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 899.98px) {
+  .introGrid,
+  .head,
+  .featureGrid,
+  .facilitiesGrid,
+  .distancesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .flip .featurePhoto {
+    order: 0;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 479.98px) {
+  .rules div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .distanceValue {
+    text-align: left;
+  }
+}

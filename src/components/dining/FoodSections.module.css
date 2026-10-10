@@ -1,0 +1,163 @@
+.m0 {
+  margin: 0;
+}
+
+.mt18 {
+  margin-top: 18px;
+}
+
+.mt24 {
+  margin-top: 24px;
+}
+
+.breakfast em,
+.head em {
+  font-style: italic;
+}
+
+.breakfast em {
+  color: var(--lake);
+}
+
+.head em {
+  color: var(--highlight);
+}
+
+/* ---------- breakfast ---------- */
+
+.breakfast {
+  background: var(--paper);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 6vw, 96px);
+}
+
+.note {
+  margin: 22px 0 0;
+  padding: 14px 18px;
+  background: var(--mist);
+  border-radius: var(--r-md);
+  font: 600 14px/1.5 var(--font-text);
+  color: var(--dark);
+}
+
+.photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 12px;
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+}
+
+.photo:first-child {
+  grid-column: 1 / -1;
+}
+
+/* ---------- regional dishes ---------- */
+
+.regional {
+  background: var(--dark);
+  color: var(--cream-2);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  align-items: end;
+  gap: 20px 60px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.headLead {
+  max-width: 46ch;
+}
+
+.dishes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dish {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-lg);
+}
+
+.dishName {
+  margin: 0 0 8px;
+  font: 500 22px/1.2 var(--font-display);
+  color: var(--cream-2);
+}
+
+.dishText {
+  margin: 0;
+  font: 500 14px/1.6 var(--font-text);
+  color: rgba(238, 244, 243, 0.8);
+}
+
+/* ---------- groups ---------- */
+
+.groups {
+  background: var(--light);
+}
+
+.groupsCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px 48px;
+  padding: clamp(28px, 4vw, 48px);
+  background: var(--lighter);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+}
+
+.groupsCard > div {
+  flex: 1 1 420px;
+}
+
+.groupsTitle {
+  margin: 14px 0 10px;
+  font: 400 clamp(26px, 3vw, 38px) / 1.15 var(--font-display);
+  color: var(--ink);
+}
+
+.groupsText {
+  margin: 0;
+  max-width: 60ch;
+  font: 500 15px/1.65 var(--font-text);
+  color: var(--text-soft);
+}
+
+@media (max-width: 899.98px) {
+  .split,
+  .head {
+    grid-template-columns: 1fr;
+  }
+
+  .dishes {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 559.98px) {
+  .dishes {
+    grid-template-columns: 1fr;
+  }
+}

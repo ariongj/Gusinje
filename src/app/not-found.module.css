@@ -1,0 +1,39 @@
+.hero {
+  --focus-ring: var(--gold-light);
+  min-height: 78vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  padding: clamp(140px, 18vh, 190px) var(--gutter) clamp(70px, 9vw, 120px);
+  background: var(--deeper);
+  color: var(--cream);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font: 400 clamp(40px, 6vw, 84px) / 1.04 var(--font-display);
+  color: var(--cream-2);
+}
+
+.title em {
+  font-style: italic;
+  color: var(--highlight);
+}
+
+.text {
+  margin: 0;
+  max-width: 44ch;
+  font: 300 clamp(15px, 1.2vw, 18px) / 1.8 var(--font-text);
+  color: rgba(238, 244, 243, 0.72);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+}

@@ -1,0 +1,200 @@
+/* Shared primitives for the patterns repeated on every page.
+   Margins are only ever reset (at zero specificity) — add spacing with a page
+   class alongside.
+   If a usage differs in size or colour, write a full class in the page's own
+   module instead of overriding one of these. */
+
+/* ---------- layout ---------- */
+
+.section {
+  padding: var(--section-y) var(--gutter);
+}
+
+.container {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.containerNarrow {
+  max-width: var(--max-narrow);
+  margin: 0 auto;
+}
+
+/* ---------- type ---------- */
+
+/* Small kicker above headings, with a short rule before it. */
+.eyebrow,
+.eyebrowLight {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font: 700 12px/1 var(--font-text);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lake);
+}
+
+.eyebrowLight {
+  color: var(--gold-light);
+}
+
+.eyebrow::before,
+.eyebrowLight::before {
+  content: "";
+  width: 22px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* Reset heading/paragraph margins without out-ranking page classes. */
+:where(.h2, .h2Light, .lead, .leadLight) {
+  margin: 0;
+}
+
+/* Section heading (h2). */
+.h2,
+.h2Light {
+  font: 400 clamp(34px, 4.6vw, 64px) / 1.04 var(--font-display);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.h2Light {
+  color: var(--cream-2);
+}
+
+/* Intro paragraph under a section heading. */
+.lead,
+.leadLight {
+  font: 400 clamp(16px, 1.2vw, 18px) / 1.7 var(--font-text);
+  color: var(--text-soft);
+}
+
+.leadLight {
+  color: rgba(238, 244, 243, 0.76);
+}
+
+/* Small field label (booking bars, forms). --text-soft keeps 11px text above
+   4.5:1 on paper and white (--muted is too light at this size). */
+.label {
+  font: 700 11px/1 var(--font-text);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+/* ---------- actions ---------- */
+
+.btnGold,
+.btnOutline,
+.btnOutlineLight,
+.btnCream {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 26px;
+  font: 700 15px/1 var(--font-text);
+  letter-spacing: 0.01em;
+  border-radius: var(--r-pill);
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s,
+    transform 0.3s var(--ease-soft),
+    box-shadow 0.3s;
+}
+
+.btnGold {
+  background: var(--gold);
+  color: var(--on-gold);
+  border: none;
+  box-shadow: 0 10px 26px rgba(184, 137, 74, 0.28);
+}
+
+.btnGold:hover {
+  background: var(--gold-hover);
+  color: var(--on-gold);
+  transform: translateY(-1px);
+}
+
+.btnOutline {
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+}
+
+.btnOutline:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btnOutlineLight {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(238, 244, 243, 0.45);
+  color: var(--cream);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.btnOutlineLight:hover {
+  border-color: var(--cream);
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btnCream {
+  background: var(--cream-2);
+  color: var(--ink);
+  border: none;
+}
+
+.btnCream:hover {
+  background: #fff;
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+/* Text link with an underline: "View all rooms", "Discover". */
+.linkUnderline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 14px/1 var(--font-text);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  border-bottom: 1.5px solid var(--gold);
+  padding-bottom: 6px;
+  transition:
+    color 0.3s,
+    gap 0.3s var(--ease-soft);
+}
+
+.linkUnderline:hover {
+  color: var(--lake);
+  gap: 12px;
+}
+
+/* ---------- surfaces ---------- */
+
+/* Frosted panel for content over imagery or 3D. */
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.glassDark {
+  background: var(--glass-dark);
+  -webkit-backdrop-filter: saturate(150%) blur(16px);
+  backdrop-filter: saturate(150%) blur(16px);
+  border: 1px solid rgba(238, 244, 243, 0.14);
+  border-radius: var(--r-lg);
+  color: var(--cream);
+}

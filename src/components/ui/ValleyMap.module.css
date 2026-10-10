@@ -1,0 +1,158 @@
+.map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.peaks path {
+  fill: var(--dark);
+  opacity: 0.13;
+}
+
+.range {
+  font: 700 11px var(--font-text);
+  letter-spacing: 0.24em;
+  fill: var(--dark);
+  opacity: 0.7;
+}
+
+.border {
+  fill: none;
+  stroke: var(--dark);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 6;
+  opacity: 0.45;
+}
+
+.borderLabel {
+  font: 600 11px var(--font-text);
+  fill: var(--text-soft);
+}
+
+.river {
+  fill: none;
+  stroke: #5f9ea3;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.stream {
+  fill: none;
+  stroke: #5f9ea3;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.road {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2.5;
+  stroke-dasharray: 1 7;
+  stroke-linecap: round;
+}
+
+.track {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+  stroke-dasharray: 1 9;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+.town rect {
+  fill: var(--dark);
+  opacity: 0.75;
+}
+
+.label {
+  font: 700 15px var(--font-text);
+  fill: var(--ink);
+}
+
+.small {
+  font: 600 12.5px var(--font-text);
+  fill: var(--ink);
+}
+
+.valley {
+  font: italic 500 14px var(--font-display);
+  fill: var(--lake);
+}
+
+.route {
+  font: 600 12px var(--font-text);
+  fill: var(--gold-hover);
+}
+
+.pool {
+  fill: #5f9ea3;
+}
+
+.fall {
+  stroke: #cfe3e6;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.pin circle:not(:last-child) {
+  fill: var(--gold);
+}
+
+.pulse {
+  opacity: 0.35;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 2.4s ease-out infinite;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.6);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}
+
+.tag {
+  fill: var(--dark);
+}
+
+.tagText {
+  font: 700 13px var(--font-text);
+  fill: var(--cream-2);
+}
+
+.north path {
+  fill: var(--dark);
+}
+
+.north text {
+  font: 700 11px var(--font-text);
+  fill: var(--dark);
+}
+
+/* The map scales down to ~0.65 on phones: enlarge its labels (in SVG units). */
+@media (max-width: 559.98px) {
+  .label {
+    font-size: 19px;
+  }
+
+  .small,
+  .route {
+    font-size: 15px;
+  }
+
+  .range {
+    font-size: 13px;
+  }
+}

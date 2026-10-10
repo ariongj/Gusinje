@@ -1,0 +1,30 @@
+.section {
+  position: relative;
+  padding: var(--section-y) var(--gutter);
+  background:
+    radial-gradient(60% 50% at 100% 0%, rgba(207, 227, 230, 0.7), transparent 70%),
+    var(--mist);
+  /* Keeps the phone carousel's edge-to-edge bleed inside the page. */
+  overflow-x: clip;
+}
+
+.container {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+
+.title {
+  margin-top: 18px;
+  max-width: 16ch;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--lake);
+}

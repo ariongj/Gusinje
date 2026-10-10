@@ -1,0 +1,143 @@
+/* Lake-teal gradient that settles into --deeper at the bottom, so it runs
+   straight on into the tour toolbar and stage. */
+.intro {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(132px, 17vh, 180px) var(--gutter) clamp(44px, 5.5vw, 76px);
+  background:
+    linear-gradient(180deg, transparent 58%, var(--deeper) 100%),
+    radial-gradient(80% 90% at 88% 0%, rgba(47, 113, 118, 0.62), transparent 64%),
+    radial-gradient(55% 70% at 4% 30%, rgba(184, 137, 74, 0.13), transparent 62%),
+    linear-gradient(180deg, var(--teal) 0%, var(--deeper) 100%);
+  color: var(--cream);
+}
+
+/* ---------- ridgeline ---------- */
+
+.ridge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: clamp(110px, 16vw, 230px);
+  pointer-events: none;
+  /* Fade out before the bottom edge so the intro runs seamlessly into the toolbar. */
+  -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 96%);
+  mask-image: linear-gradient(180deg, #000 45%, transparent 96%);
+}
+
+.ridgeBack {
+  fill: rgba(207, 227, 230, 0.05);
+  stroke: rgba(207, 227, 230, 0.22);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ridgeFront {
+  stroke: rgba(207, 227, 230, 0.12);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- content ---------- */
+
+.inner {
+  position: relative;
+  max-width: var(--max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(28px, 5vw, 80px);
+}
+
+@media (max-width: 899.98px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 9px 16px 9px 13px;
+  background: rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--r-pill);
+  font: 600 13px/1 var(--font-text);
+  letter-spacing: 0.01em;
+  color: var(--cream-2);
+}
+
+.kicker::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 0 4px rgba(220, 189, 141, 0.18);
+}
+
+.title {
+  margin: 0;
+  max-width: 14ch;
+  font: 400 clamp(42px, 6.4vw, 96px) / 1 var(--font-display);
+  letter-spacing: -0.025em;
+  color: var(--cream-2);
+  text-wrap: balance;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--highlight);
+}
+
+.side {
+  display: grid;
+  gap: 22px;
+  padding-bottom: 6px;
+}
+
+.lead {
+  margin: 0;
+  max-width: 46ch;
+  font: 400 clamp(16px, 1.25vw, 18px) / 1.7 var(--font-text);
+  color: rgba(238, 244, 243, 0.8);
+  text-wrap: pretty;
+}
+
+/* ---------- how-to chips ---------- */
+
+.tips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px 0 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(207, 227, 230, 0.16);
+  border-radius: var(--r-pill);
+  font: 500 13px/1 var(--font-text);
+  color: rgba(238, 244, 243, 0.82);
+}
+
+.tip svg {
+  flex: 0 0 auto;
+  color: var(--gold-light);
+}

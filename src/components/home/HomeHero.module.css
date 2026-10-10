@@ -1,0 +1,133 @@
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: max(100svh, 680px);
+  padding: clamp(110px, 16vh, 150px) var(--gutter) clamp(20px, 3vw, 32px);
+  overflow: hidden;
+  background: var(--deeper);
+  color: var(--cream-2);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+}
+
+/* Keep the type legible over the bright horizon and snow (the poster and the
+   scene are near-white at mid-height), while the top-right of the view stays clear. */
+.shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 32, 35, 0.5) 0%, rgba(8, 32, 35, 0) 22%),
+    linear-gradient(
+      0deg,
+      rgba(8, 32, 35, 0.92) 0%,
+      rgba(8, 32, 35, 0.7) 40%,
+      rgba(8, 32, 35, 0.35) 70%,
+      rgba(8, 32, 35, 0) 90%
+    ),
+    linear-gradient(90deg, rgba(8, 32, 35, 0.55) 0%, rgba(8, 32, 35, 0) 65%);
+}
+
+.content {
+  position: relative;
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  pointer-events: none;
+}
+
+.content a,
+.content button {
+  pointer-events: auto;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 9px 16px;
+  background: var(--glass-dark);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: var(--r-pill);
+  font: 700 12px/1 var(--font-text);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kicker::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 0 4px rgba(220, 189, 141, 0.25);
+}
+
+.title {
+  margin: 0;
+  max-width: 13ch;
+  font: 400 clamp(46px, 7.6vw, 118px) / 0.96 var(--font-display);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px rgba(4, 20, 22, 0.35);
+}
+
+.title em {
+  font-style: italic;
+  color: var(--highlight);
+}
+
+.lead {
+  margin: 22px 0 0;
+  max-width: 46ch;
+  font: 500 clamp(16px, 1.3vw, 19px) / 1.6 var(--font-text);
+  color: rgba(238, 244, 243, 0.9);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+/* CSS-only entrance, so the first screen never waits for hydration. */
+@media (prefers-reduced-motion: no-preference) {
+  .content > * {
+    animation: heroIn 0.9s var(--ease-soft) both;
+  }
+
+  .content > :nth-child(2) {
+    animation-delay: 80ms;
+  }
+
+  .content > :nth-child(3) {
+    animation-delay: 160ms;
+  }
+
+  .content > :nth-child(4) {
+    animation-delay: 220ms;
+  }
+}
+
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.booking {
+  position: relative;
+  width: 100%;
+  max-width: var(--max);
+  margin: clamp(28px, 5vh, 56px) auto 0;
+}
