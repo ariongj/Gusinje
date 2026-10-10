@@ -1,4 +1,19 @@
+import type { Locator } from "@playwright/test";
+
 import { expect, test } from "./fixtures";
+
+/**
+ * Pause a running tour and go back to its first stop. The tour moves on by
+ * itself, and on a slow machine it can do so before the pause lands.
+ */
+async function pauseAtFirstStop(card: Locator) {
+  await card.getByRole("button", { name: "Pause" }).click();
+  await expect(card.getByRole("button", { name: "Play" })).toBeVisible();
+  for (let i = 0; i < 6 && !(await card.getByText(/^Stop 1 of \d+$/).isVisible()); i++) {
+    await card.getByRole("button", { name: "Previous stop" }).click();
+  }
+  await expect(card.getByText(/^Stop 1 of \d+$/)).toBeVisible();
+}
 
 test.describe("Explore: 3D, map and list share the same records", () => {
   test("3D map renders markers at sourced positions; selecting one opens the info panel", async ({ page, errors }) => {
@@ -114,6 +129,10 @@ test.describe("Explore: 3D, map and list share the same records", () => {
 });
 
 test.describe("Virtual tours", () => {
+  // Camera moves are instant: flights are covered by the place-strip test, and
+  // with software WebGL each one would hold up the clicks that follow.
+  test.use({ contextOptions: { reducedMotion: "reduce" } });
+
   test("intro, progress, previous/next, pause, restart and exit", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/explore/");
@@ -135,9 +154,8 @@ test.describe("Virtual tours", () => {
     await intro.getByRole("button", { name: "Begin" }).click();
 
     const card = page.getByTestId("guide-card");
-    await expect(card.getByText("Stop 1 of 6")).toBeVisible();
-    await card.getByRole("button", { name: "Pause" }).click();
-    await expect(card.getByRole("button", { name: "Play" })).toBeVisible();
+    await expect(card.getByText(/^Stop \d of 6$/)).toBeVisible();
+    await pauseAtFirstStop(card);
     await card.getByRole("button", { name: "Next stop" }).click();
     await expect(card.getByText("Stop 2 of 6")).toBeVisible();
     await expect(card.getByRole("heading", { name: "Ali Pasha's Springs" })).toBeVisible();
@@ -164,6 +182,8 @@ test.describe("Virtual tours", () => {
 
 
 test.describe("Journeys", () => {
+  test.use({ contextOptions: { reducedMotion: "reduce" } });
+
   test("a trip plan flies day by day on the map, and its page links to it", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/plan/itineraries/weekend-in-the-prokletije/");
@@ -172,8 +192,9 @@ test.describe("Journeys", () => {
     await expect(intro).toBeVisible();
     await intro.getByRole("button", { name: "Begin" }).click();
     const card = page.getByTestId("guide-card");
-    await expect(card.getByText(/Stop 1 of \d+/)).toBeVisible();
+    await pauseAtFirstStop(card);
     await card.getByRole("button", { name: "Next stop" }).click();
+    await expect(card.getByText(/Stop 2 of \d+/)).toBeVisible();
     await expect(card.getByText("Day 1", { exact: false }).first()).toBeVisible();
     await expect(card.getByRole("heading", { name: "Gusinje" })).toBeVisible();
   });
