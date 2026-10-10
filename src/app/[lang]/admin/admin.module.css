@@ -1,0 +1,43 @@
+.tableWrap {
+  overflow-x: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-3);
+  background: var(--lighter);
+}
+
+.table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  font: 400 13.5px/1.45 var(--font-text);
+  color: var(--text);
+}
+
+.table th,
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  background: var(--card);
+  font-weight: 700;
+  color: var(--ink);
+  position: sticky;
+  top: 0;
+}
+
+.table tbody th {
+  font-weight: 600;
+}
+
+.table td[data-status="self-reported"] {
+  color: var(--bronze);
+}
+
+.missing {
+  max-width: 320px;
+  color: var(--text-soft);
+}

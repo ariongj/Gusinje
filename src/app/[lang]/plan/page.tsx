@@ -1,0 +1,48 @@
+import type { Metadata } from "next";
+
+import { ItineraryCard } from "@/components/content/cards";
+import { PageIntro } from "@/components/content/PageIntro";
+import { TripPlanner } from "@/components/plan/TripPlanner";
+import { itineraries } from "@/content";
+import { getMessages, resolveLocale } from "@/i18n";
+import { href } from "@/i18n/config";
+import { catalogue } from "@/lib/catalogue";
+import { pageMetadata } from "@/lib/seo";
+import ui from "@/styles/ui.module.css";
+
+export async function generateMetadata({ params }: PageProps<"/[lang]/plan">): Promise<Metadata> {
+  const lang = resolveLocale((await params).lang);
+  const t = getMessages(lang);
+  return pageMetadata({ lang, path: "/plan", title: t.plan.title, description: t.plan.intro });
+}
+
+export default async function PlanPage({ params }: PageProps<"/[lang]/plan">) {
+  const lang = resolveLocale((await params).lang);
+  const t = getMessages(lang);
+  return (
+    <>
+      <div className={ui.noPrint}>
+        <PageIntro lang={lang} t={t} title={t.plan.title} lead={t.plan.intro} crumbs={[[t.nav.home, href(lang)]]} />
+      </div>
+      <div className={ui.wrap}>
+        <section className={ui.section} aria-labelledby="my-trip">
+          <h2 id="my-trip" className={`${ui.h2} ${ui.noPrint}`}>
+            {t.plan.myTrip}
+          </h2>
+          <TripPlanner catalogue={catalogue(lang)} />
+        </section>
+        <section className={`${ui.section} ${ui.noPrint}`} aria-labelledby="templates">
+          <h2 id="templates" className={ui.h2}>
+            {t.plan.templates}
+          </h2>
+          <p className={ui.muted}>{t.plan.templatesIntro}</p>
+          <div className={ui.cards}>
+            {itineraries.map((i) => (
+              <ItineraryCard key={i.slug} itinerary={i} lang={lang} t={t} />
+            ))}
+          </div>
+        </section>
+      </div>
+    </>
+  );
+}

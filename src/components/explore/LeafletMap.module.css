@@ -1,0 +1,149 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--mist);
+}
+
+.map {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-text);
+}
+
+.map :global(.leaflet-control-attribution) {
+  font-size: 11px;
+  background: rgba(251, 250, 247, 0.85);
+  color: var(--text);
+}
+
+.map :global(.leaflet-control-attribution a) {
+  color: var(--teal-2);
+  text-decoration: underline;
+}
+
+/* Marker: a coloured dot per legend group; areas (villages, valleys, massifs) are rings. */
+.markerWrap {
+  background: none;
+  border: none;
+}
+
+.markerWrap:focus-visible {
+  outline: none;
+}
+
+.marker {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: var(--group, var(--teal));
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(10, 42, 45, 0.35);
+  transition: transform 0.2s var(--ease-soft);
+}
+
+.marker.area {
+  background: rgba(255, 255, 255, 0.85);
+  border: 4px solid var(--group, var(--teal));
+}
+
+.marker[data-group="villages"] { --group: #0f3b3f; }
+.marker[data-group="water"] { --group: #1f7a9a; }
+.marker[data-group="nature"] { --group: #4f7a3a; }
+.marker[data-group="culture"] { --group: #8a3b4a; }
+.marker[data-group="stay"] { --group: #b8894a; }
+.marker[data-group="food"] { --group: #c0612b; }
+.marker[data-group="services"] { --group: #5b5a8f; }
+
+.label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 2px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--lighter);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(10, 42, 45, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+/* Labels only for the hovered, focused or selected marker: they never pile up. */
+.markerWrap:hover .label,
+.markerWrap:focus-visible .label,
+.selected .label {
+  opacity: 1;
+}
+
+.markerWrap:focus-visible .marker {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--focus-ring);
+}
+
+.selected .marker {
+  transform: scale(1.45);
+  box-shadow: 0 0 0 4px rgba(184, 137, 74, 0.55), 0 3px 12px rgba(10, 42, 45, 0.45);
+}
+
+.selected .label {
+  background: var(--teal);
+  color: #fff;
+}
+
+.controls {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 500;
+  display: grid;
+  gap: 6px;
+}
+
+.control {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--line-3);
+  background: var(--glass-strong);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  box-shadow: var(--shadow-soft);
+}
+
+.control:hover {
+  background: #fff;
+}
+
+.notice {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  color: var(--text);
+  z-index: 400;
+}
+
+.tilesFailed {
+  position: absolute;
+  left: 12px;
+  right: 64px;
+  top: 12px;
+  z-index: 500;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--glass-strong);
+  font-size: 13px;
+  color: var(--text);
+  box-shadow: var(--shadow-soft);
+}

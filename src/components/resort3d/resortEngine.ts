@@ -53,7 +53,8 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import type { PoiId } from "./pois";
+import type { SceneAnchor } from "@/content/types";
+
 import {
   FALLS,
   fbm,
@@ -71,12 +72,12 @@ import {
   type XZ,
 } from "./terrain";
 
-export type ViewId = PoiId | "overview" | "hero";
+export type ViewId = SceneAnchor | "overview" | "hero";
 type Vec3 = [number, number, number];
 type CameraView = { position: Vec3; target: Vec3 };
 
 /** Screen position of a place marker, in % of the viewport. */
-export type PinPosition = { id: PoiId; x: number; y: number; visible: boolean };
+export type PinPosition = { id: SceneAnchor; x: number; y: number; visible: boolean };
 
 export type ResortEngineOptions = {
   reducedMotion: boolean;
@@ -175,14 +176,15 @@ const nearAny = (samples: readonly Vector3[], x: number, z: number, r: number) =
   samples.some((p) => (p.x - x) ** 2 + (p.z - z) ** 2 < r * r);
 
 /** Marker anchors (world space). */
-const ANCHORS: Record<PoiId, Vector3> = {
+const ANCHORS: Record<SceneAnchor, Vector3> = {
   hotel: new Vector3(PLACES.hotel.x, hotelY + 17, PLACES.hotel.z),
   gusinje: new Vector3(PLACES.gusinje.x - 4, townY + 10, PLACES.gusinje.z - 2),
   springs: new Vector3(POOLS.springs.x, poolSurface(POOLS.springs) + 3.5, POOLS.springs.z),
   katun: new Vector3(-10, katunY + 8, -40),
-  tower: new Vector3(PLACES.tower.x, katunY + 15, PLACES.tower.z),
+  vusanje: new Vector3(PLACES.vusanje.x, padLevel(PADS.vusanje) + 9, PLACES.vusanje.z),
   grlja: new Vector3(FALLS.x, heightAt(FALLS.x - FALLS.dir.x * 2, FALLS.z - FALLS.dir.z * 2) + 1.5, FALLS.z),
   blueEye: new Vector3(POOLS.blueEye.x, poolSurface(POOLS.blueEye) + 3.5, POOLS.blueEye.z),
+  grbaja: new Vector3(62, heightAt(62, 34) + 6, 34),
   ropojana: new Vector3(PLACES.ropojana.x, heightAt(PLACES.ropojana.x, PLACES.ropojana.z) + 6, PLACES.ropojana.z),
   karanfili: new Vector3(106, heightAt(106, -74) + 4, -74),
   zlaKolata: new Vector3(-40, heightAt(-40, -116) + 4, -116),
@@ -204,9 +206,11 @@ const VIEWS: Record<ViewId, CameraView> = {
   springs: { position: above(-2, 68, 24), target: [POOLS.springs.x, poolSurface(POOLS.springs) + 1, POOLS.springs.z - 2] },
   // From above the valley floor north of the katun (the slopes either side are wooded).
   katun: { position: above(-4, 22, 34), target: above(-12, -36, 0) },
-  tower: { position: above(-34, -2, 14), target: [PLACES.tower.x, katunY + 8, PLACES.tower.z] },
+  vusanje: { position: above(-8, -18, 30), target: above(18, -58, 2) },
   grlja: { position: above(10, -30, 24), target: [FALLS.x, poolSurface(POOLS.grlja) + 4, FALLS.z] },
   blueEye: { position: above(26, -50, 24), target: [POOLS.blueEye.x, poolSurface(POOLS.blueEye) + 1, POOLS.blueEye.z] },
+  // Up the side valley west of Gusinje, towards the Karanfili wall.
+  grbaja: { position: above(-14, 78, 42), target: above(74, 22, 6) },
   ropojana: { position: above(12, -48, 46), target: above(56, -116, 4) },
   // The mountains from well back, summits in frame.
   karanfili: { position: [20, karanfiliTop * 0.9, 62], target: [100, karanfiliTop * 0.68, -72] },
@@ -527,7 +531,7 @@ export class ResortEngine {
     lift: number;
   } | null = null;
   private readonly projected = new Vector3();
-  private readonly pinIds = Object.keys(ANCHORS) as PoiId[];
+  private readonly pinIds = Object.keys(ANCHORS) as SceneAnchor[];
   private readonly compact: boolean;
 
   constructor(container: HTMLElement, options: ResortEngineOptions) {

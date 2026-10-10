@@ -1,0 +1,59 @@
+.form {
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
+  padding: 18px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line-3);
+  background: var(--lighter);
+}
+
+.stars {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.starRow {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.star {
+  position: relative;
+  cursor: pointer;
+}
+
+.star input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+
+.star span[aria-hidden] {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 26px;
+  color: var(--gold);
+}
+
+.star input:focus-visible + span {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.file {
+  font: 400 14px/1.4 var(--font-text);
+}
+
+.status {
+  margin: 0;
+  min-height: 1.2em;
+  font: 600 14px/1.5 var(--font-text);
+  color: var(--teal-2);
+}

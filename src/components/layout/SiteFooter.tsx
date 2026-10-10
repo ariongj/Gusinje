@@ -1,112 +1,84 @@
 import Link from "next/link";
 
-import { exploreNav, site } from "@/config/site";
-import { cx } from "@/lib/cx";
-import { directionsUrl } from "@/lib/stay/links";
-import { properties } from "@/lib/stay/properties";
+import { brand } from "@/config/brand";
+import { href, type Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n";
 
 import styles from "./SiteFooter.module.css";
 
-type SiteFooterProps = {
-  /** Hairline + tighter top padding, for pages whose last section is dark. */
-  divider?: boolean;
-  /** Home renders the wordmark as text (it is already the home page). */
-  isHome?: boolean;
-};
+export function SiteFooter({ lang }: { lang: Locale }) {
+  const t = getMessages(lang);
+  const columns = [
+    {
+      title: t.footer.explore,
+      links: [
+        { label: t.nav.explore, path: "/explore" },
+        { label: t.nav.places, path: "/places" },
+        { label: t.footer.tours, path: "/tours" },
+        { label: t.footer.hikes, path: "/hikes" },
+        { label: t.nav.about, path: "/about" },
+      ],
+    },
+    {
+      title: t.footer.practical,
+      links: [
+        { label: t.nav.stay, path: "/stay" },
+        { label: t.nav.eatDrink, path: "/eat-drink" },
+        { label: t.nav.guides, path: "/guides-experiences" },
+        { label: t.footer.directory, path: "/directory" },
+        { label: t.nav.tips, path: "/travel-tips" },
+        { label: t.nav.plan, path: "/plan" },
+      ],
+    },
+    {
+      title: t.footer.project,
+      links: [
+        { label: t.footer.aboutPlatform, path: "/about/platform" },
+        { label: t.footer.contribute, path: "/contribute" },
+        { label: t.footer.partners, path: "/partners" },
+        { label: t.footer.credits, path: "/credits" },
+      ],
+    },
+  ];
 
-export function SiteFooter({ divider = false, isHome = false }: SiteFooterProps) {
   return (
-    <footer className={cx(styles.footer, divider && styles.divider)}>
+    <footer className={styles.footer}>
       <div className={styles.grid}>
         <div className={styles.brand}>
-          {isHome ? (
-            <div className={styles.wordmark}>{site.wordmark}</div>
-          ) : (
-            <Link href="/" className={styles.wordmark}>
-              {site.wordmark}
-            </Link>
-          )}
-          <p className={cx(styles.tagline, styles.taglineSpaced)}>{site.tagline}</p>
-          <div className={styles.social}>
-            {site.social.map((item) => (
-              <a
-                key={item.short}
-                href={item.href}
-                className={styles.socialLink}
-                aria-label={`${item.label} (${item.handle})`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {item.short}
-              </a>
-            ))}
-          </div>
+          <p className={styles.wordmark}>{brand.name[lang]}</p>
+          <p className={styles.region}>{brand.region}</p>
+          <p className={styles.note}>{t.meta.independent}</p>
         </div>
-
-        <div>
-          <h2 className={styles.heading}>Explore</h2>
-          <div className={styles.list}>
-            {exploreNav.map((item) => (
-              <Link key={item.href} href={item.href} className={styles.listLink}>
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <h2 className={styles.heading}>Find us</h2>
-          <div className={styles.contact}>
-            {properties.map((property) => (
-              <address key={property.id} className={styles.place}>
-                <Link href={property.href} className={styles.placeName}>
-                  {property.name}
-                </Link>
-                <span>
-                  {property.address.line1}, {property.address.postcode} {property.address.locality}
-                  <br />
-                  {property.address.country}
-                </span>
-                <a href={directionsUrl(property)} className={styles.listLink} target="_blank" rel="noopener noreferrer">
-                  Directions
-                </a>
-              </address>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <h2 className={styles.heading}>Contact</h2>
-          <address className={styles.contact}>
-            <a href={site.phone.href} className={styles.listLink}>
-              {site.phone.display}
-            </a>
-            <a href={site.email.href} className={styles.listLink}>
-              {site.email.display}
-            </a>
-            <span className={styles.note}>Both places are open 24 hours. Cash payments only.</span>
-            <Link href="/contact" className={styles.asideLink}>
-              Send us a request
-            </Link>
-          </address>
-        </div>
+        {columns.map((column) => (
+          <nav key={column.title} aria-label={column.title} className={styles.column}>
+            <h2 className={styles.heading}>{column.title}</h2>
+            <ul className={styles.list}>
+              {column.links.map((link) => (
+                <li key={link.path}>
+                  <Link href={href(lang, link.path)} className={styles.link}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
       </div>
-
-      <div className={styles.mega} aria-hidden="true">
-        {site.wordmark}
-      </div>
-
       <div className={styles.bottom}>
-        <span>
-          &copy; {site.copyrightYear} {site.name} · Gusinje, Montenegro
-        </span>
-        <div className={styles.legal}>
-          {site.legal.map((item) => (
-            <Link key={item.label} href={item.href}>
-              {item.label}
-            </Link>
-          ))}
-        </div>
+        <p>
+          {t.footer.creator}{" "}
+          <a href={brand.creator.website} className={styles.inline}>
+            {t.footer.rosiSite}
+          </a>
+          . {t.footer.notOfficial}
+        </p>
+        <p>{t.footer.mapData}</p>
+        <p>
+          © {brand.copyrightYear} ROSI ·{" "}
+          <Link href={href(lang, "/admin")} className={styles.inline}>
+            {t.footer.admin}
+          </Link>
+        </p>
       </div>
     </footer>
   );

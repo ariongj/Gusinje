@@ -1,27 +1,36 @@
 {
-  "name": "rosi-website",
+  "name": "gusinje-vusanje-valley-guide",
   "version": "0.1.0",
   "private": true,
-  "description": "Hotel & Eko Katun ROSI — a family-run eco katun in Vusanje and hotel in Gusinje, Montenegro: website with stay requests and a 3D valley (Next.js App Router).",
+  "description": "Interactive destination guide for Gusinje, Vusanje and the Prokletije (Montenegro): 3D valley, map, places, local directory, travel tips and trip planner. Created and hosted by ROSI. Next.js static export.",
   "engines": {
     "node": ">=20.9.0"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "serve": "npx serve out -l 4173",
+    "check:content": "node --experimental-strip-types scripts/check-content.ts",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "test": "npm run typecheck && npm run check:content && npm run test:e2e"
   },
   "dependencies": {
+    "leaflet": "^1.9.4",
     "next": "16.3.6",
+    "qrcode": "^1.5.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "^0.0.1",
     "three": "^0.186.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "1.56.1",
+    "@types/leaflet": "^1.9.20",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.186.0",

@@ -1,0 +1,44 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.item {
+  font: 400 14px/1.55 var(--font-text);
+  color: var(--text);
+}
+
+.kind {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--mist);
+  color: var(--teal-2);
+  font: 700 11px/1.4 var(--font-text);
+  letter-spacing: 0.03em;
+  vertical-align: 1px;
+}
+
+.kind[data-kind="official"] {
+  background: var(--gold-chip);
+  color: var(--bronze);
+}
+
+.kind[data-kind="business"] {
+  background: #ece6f4;
+  color: #4f3f75;
+}
+
+.link {
+  color: var(--teal-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.meta,
+.note {
+  color: var(--text-soft);
+}

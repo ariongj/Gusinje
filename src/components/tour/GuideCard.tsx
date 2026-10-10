@@ -1,33 +1,49 @@
+"use client";
+
 import Link from "next/link";
 import { useLayoutEffect, useRef, type Ref, type RefObject } from "react";
 
+import { Photo } from "@/components/ui/Photo";
+import { useI18n } from "@/i18n/client";
+import { fill } from "@/i18n/localize";
 import { cx } from "@/lib/cx";
 
-import type { GuideStop } from "./guide";
 import styles from "./GuideCard.module.css";
 
+export type GuideCardStop = {
+  kicker: string;
+  title: string;
+  text: string;
+  photo?: { src: string; alt: string; credit: string; creditHref: string };
+  /** The stop's page. */
+  href?: string;
+};
+
 type GuideCardProps = {
-  stop: GuideStop;
+  stop: GuideCardStop;
   index: number;
   total: number;
   isLast: boolean;
   playing: boolean;
   voice: boolean;
   voiceAvailable: boolean;
-  /** Restarts the progress bar when it changes. */
+  /** Restarts the per-stop timer bar when it changes. */
   runKey: string;
   duration: number;
   onBack: () => void;
   onNext: () => void;
   onTogglePlay: () => void;
   onToggleVoice: () => void;
+  onRestart: () => void;
   onExit: () => void;
-  /** Where focus goes when the card closes while it holds focus (the tour's start/end button). */
+  /** Show the stop's photo (when the stage can't show the place itself). */
+  showPhoto?: boolean;
+  /** Where focus goes when the card closes while it holds focus. */
   returnFocusRef?: RefObject<HTMLElement | null>;
   ref?: Ref<HTMLDivElement>;
 };
 
-/** The narrator's card for the guided tour, docked over the stage. */
+/** The narrator's card for a virtual tour, docked over (or under) the stage. */
 export function GuideCard({
   stop,
   index,
@@ -42,14 +58,17 @@ export function GuideCard({
   onNext,
   onTogglePlay,
   onToggleVoice,
+  onRestart,
   onExit,
+  showPhoto = false,
   returnFocusRef,
   ref,
 }: GuideCardProps) {
+  const { t } = useI18n();
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Ending the tour from inside the card (×, Done, Escape) unmounts the
-  // focused button: hand focus to the toolbar button instead of <body>.
+  // Ending the tour from inside the card unmounts the focused button: hand
+  // focus to the tour's start button instead of <body>.
   useLayoutEffect(() => {
     const root = rootRef.current;
     const returnTo = returnFocusRef?.current;
@@ -58,6 +77,8 @@ export function GuideCard({
     };
   }, [returnFocusRef]);
 
+  const position = fill(t.explore.stopOf, { i: index + 1, n: total });
+
   return (
     <div
       ref={(el) => {
@@ -65,28 +86,42 @@ export function GuideCard({
         if (typeof ref === "function") ref(el);
         else if (ref) ref.current = el;
       }}
-      className={styles.card}
+      className={cx(styles.card, showPhoto && stop.photo && styles.withPhoto)}
       role="region"
-      aria-label="Guided tour"
+      aria-label={t.explore.guidedTour}
+      data-testid="guide-card"
     >
       <div className={styles.head}>
         <span className={styles.badge}>
           <span className={styles.pulse} aria-hidden="true" />
-          Guided tour
+          {t.explore.guidedTour}
         </span>
-        <span className={styles.count}>
-          <span className="visually-hidden">Stop </span>
-          {index + 1}
-          <span aria-hidden="true"> / </span>
-          <span className="visually-hidden"> of </span>
-          {total}
-        </span>
-        <button type="button" className={styles.exit} aria-label="End the guided tour" onClick={onExit}>
+        <span className={styles.count}>{position}</span>
+        <button type="button" className={styles.exit} aria-label={t.explore.exit} title={t.explore.exit} onClick={onExit}>
           <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true">
             <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
         </button>
       </div>
+
+      <div className={styles.overall} role="progressbar" aria-label={t.explore.progress} aria-valuemin={1} aria-valuemax={total} aria-valuenow={index + 1} aria-valuetext={position}>
+        {Array.from({ length: total }, (_, i) => (
+          <span key={i} className={cx(styles.segment, i <= index && styles.segmentDone)} />
+        ))}
+      </div>
+
+      {showPhoto && stop.photo && (
+        <figure className={styles.photo}>
+          <div className={styles.photoFrame}>
+            <Photo src={stop.photo.src} alt={stop.photo.alt} sizes="400px" />
+          </div>
+          <figcaption className={styles.photoCredit}>
+            <a href={stop.photo.creditHref} target="_blank" rel="noopener noreferrer">
+              {stop.photo.credit}
+            </a>
+          </figcaption>
+        </figure>
+      )}
 
       <div aria-live="polite" aria-atomic="true">
         {/* Keyed so each stop eases in; the live region itself stays put. */}
@@ -97,9 +132,9 @@ export function GuideCard({
         </div>
       </div>
 
-      {stop.link && (
-        <Link href={stop.link.href} className={styles.link}>
-          {stop.link.label}
+      {stop.href && (
+        <Link href={stop.href} className={styles.link}>
+          {t.common.openPage}
           <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
             <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </svg>
@@ -107,7 +142,7 @@ export function GuideCard({
       )}
 
       <div className={styles.controls}>
-        <button type="button" className={styles.round} aria-label="Previous stop" disabled={index === 0} onClick={onBack}>
+        <button type="button" className={styles.round} aria-label={t.explore.previous} title={t.explore.previous} disabled={index === 0} onClick={onBack}>
           <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
             <path d="M8.5 2.5 4 7l4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </svg>
@@ -115,7 +150,8 @@ export function GuideCard({
         <button
           type="button"
           className={cx(styles.round, styles.play)}
-          aria-label={playing ? "Pause the tour" : "Play the tour"}
+          aria-label={playing ? t.explore.pause : t.explore.play}
+          title={playing ? t.explore.pause : t.explore.play}
           onClick={onTogglePlay}
         >
           {playing ? (
@@ -128,51 +164,34 @@ export function GuideCard({
             </svg>
           )}
         </button>
-        <button
-          type="button"
-          className={cx(styles.round, isLast && styles.finish)}
-          aria-label={isLast ? undefined : "Next stop"}
-          onClick={onNext}
-        >
+        <button type="button" className={cx(styles.round, isLast && styles.finish)} aria-label={isLast ? undefined : t.explore.next} title={isLast ? undefined : t.explore.next} onClick={onNext}>
           {isLast ? (
-            "Done"
+            t.explore.finish
           ) : (
             <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
               <path d="M5.5 2.5 10 7l-4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
           )}
         </button>
+        <button type="button" className={styles.round} aria-label={t.explore.restart} title={t.explore.restart} onClick={onRestart}>
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+            <path d="M2.5 7a4.5 4.5 0 1 0 1.3-3.2M2.5 1.5v2.8h2.8" stroke="currentColor" fill="none" strokeWidth="1.5" />
+          </svg>
+        </button>
         {voiceAvailable && (
-          <button
-            type="button"
-            className={cx(styles.voice, voice && styles.voiceOn)}
-            aria-pressed={voice}
-            onClick={onToggleVoice}
-          >
+          <button type="button" className={cx(styles.voice, voice && styles.voiceOn)} aria-pressed={voice} onClick={onToggleVoice}>
             <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M2.5 6v4h2.8L9 13V3L5.3 6z" fill="currentColor" />
-              {voice && (
-                <path
-                  d="M11 5.2a3.6 3.6 0 0 1 0 5.6M12.8 3.4a6.2 6.2 0 0 1 0 9.2"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-              )}
+              {voice && <path d="M11 5.2a3.6 3.6 0 0 1 0 5.6M12.8 3.4a6.2 6.2 0 0 1 0 9.2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" fill="none" />}
             </svg>
-            Voice
+            {t.explore.voice}
           </button>
         )}
       </div>
 
       {!voice && !isLast && (
         <div className={styles.progress} aria-hidden="true">
-          <span
-            key={runKey}
-            className={styles.progressFill}
-            style={{ animationDuration: `${duration}ms`, animationPlayState: playing ? "running" : "paused" }}
-          />
+          <span key={runKey} className={styles.progressFill} style={{ animationDuration: `${duration}ms`, animationPlayState: playing ? "running" : "paused" }} />
         </div>
       )}
     </div>

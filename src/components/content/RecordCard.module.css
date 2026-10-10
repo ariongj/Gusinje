@@ -1,0 +1,119 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--lighter);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(12, 44, 48, 0.04);
+  transition:
+    box-shadow 0.25s var(--ease-soft),
+    transform 0.25s var(--ease-soft);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+.card:focus-within {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--mist);
+}
+
+.media > div {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 30% 120%, rgba(184, 137, 74, 0.25), transparent 55%),
+    linear-gradient(160deg, var(--glacier), var(--mist));
+  color: var(--teal-2);
+  font: 600 13px/1.4 var(--font-text);
+  text-align: center;
+}
+
+.body {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px 14px;
+  flex: 1 1 auto;
+  align-content: start;
+}
+
+.kicker {
+  margin: 0;
+  font: 700 11.5px/1.3 var(--font-text);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lake);
+}
+
+.title {
+  margin: 0;
+  font: 600 19px/1.25 var(--font-display);
+  color: var(--ink);
+}
+
+.link {
+  color: inherit;
+}
+
+.link:hover {
+  color: var(--teal-2);
+}
+
+/* The title link covers the card. */
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.text {
+  margin: 2px 0 0;
+  font: 400 14.5px/1.55 var(--font-text);
+  color: var(--text);
+}
+
+.footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 18px 16px;
+}

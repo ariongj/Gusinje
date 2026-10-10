@@ -1,0 +1,25 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.item {
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--lighter);
+  border: 1px solid var(--line);
+}
+
+.alt,
+.used {
+  margin: 4px 0 0;
+  font: 400 13.5px/1.5 var(--font-text);
+  color: var(--text);
+}
+
+.used {
+  color: var(--text-soft);
+}

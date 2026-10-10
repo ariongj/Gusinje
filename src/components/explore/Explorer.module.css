@@ -1,0 +1,513 @@
+.explorer {
+  display: grid;
+  gap: 14px;
+}
+
+/* ---------- toolbar ---------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.views {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--lighter);
+  border: 1px solid var(--line-3);
+}
+
+.viewButton {
+  min-width: 72px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text);
+  font: 700 14px/1 var(--font-text);
+}
+
+.viewButton:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--mist);
+}
+
+.viewActive,
+.viewActive:hover:not(:disabled) {
+  background: var(--teal);
+  color: #fff;
+}
+
+.viewButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.filter {
+  flex: 1 1 220px;
+  max-width: 360px;
+}
+
+.filterInput {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-3);
+  background: var(--lighter);
+  color: var(--ink);
+  font: 500 15px/1 var(--font-text);
+}
+
+.filterInput:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.notice {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: #fbf6ec;
+  border: 1px dashed var(--gold);
+  font: 600 14px/1.5 var(--font-text);
+  color: var(--bronze);
+}
+
+/* ---------- layout ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 899.98px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stage {
+  position: relative;
+  height: clamp(420px, 72vh, 760px);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  background: linear-gradient(180deg, #cfe0e6, #e9efe8);
+  border: 1px solid var(--line-3);
+  scroll-margin-top: 80px;
+}
+
+@media (max-width: 599.98px) {
+  .stage {
+    height: clamp(380px, 64vh, 560px);
+    border-radius: var(--r-lg);
+  }
+
+  /* The guide card docks under the model on phones. */
+  .touring {
+    height: auto;
+    overflow: visible;
+    border: none;
+    background: none;
+  }
+
+  .touring .layer {
+    position: relative;
+    height: clamp(320px, 52vh, 480px);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    border: 1px solid var(--line-3);
+  }
+}
+
+.stageList {
+  height: auto;
+  min-height: 300px;
+  overflow: visible;
+  background: none;
+  border: none;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.layer[hidden] {
+  display: none;
+}
+
+.illustrative {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 6;
+  max-width: calc(100% - 80px);
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--glass-strong);
+  font: 700 12px/1.35 var(--font-text);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+}
+
+.mapReset {
+  position: absolute;
+  right: 12px;
+  bottom: 28px;
+  z-index: 500;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-3);
+  background: var(--glass-strong);
+  color: var(--ink);
+  font: 700 13px/1 var(--font-text);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ---------- tour intro ---------- */
+
+.tourIntro {
+  position: absolute;
+  left: clamp(12px, 2.4vw, 24px);
+  bottom: clamp(12px, 2.4vw, 24px);
+  z-index: 700;
+  width: min(440px, calc(100% - 24px));
+  max-height: calc(100% - 24px);
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: var(--r-xl);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+  border: 1px solid var(--glass-line);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+}
+
+.tourIntroTitle {
+  margin: 0 0 8px;
+  font: 500 26px/1.15 var(--font-display);
+  color: var(--ink);
+}
+
+.tourIntroText {
+  margin: 0 0 6px;
+  font: 400 15px/1.6 var(--font-text);
+  color: var(--text);
+}
+
+.tourIntroMeta {
+  margin: 0 0 10px;
+  font: 700 13px/1.3 var(--font-text);
+  color: var(--text-soft);
+}
+
+.disclaimer {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: #fbf6ec;
+  border: 1px dashed var(--gold);
+  font: 500 13px/1.5 var(--font-text);
+  color: var(--bronze);
+}
+
+/* GuideCard sits above the map layers too. */
+.stage :global([data-testid="guide-card"]) {
+  z-index: 700;
+}
+
+/* ---------- sidebar & legend ---------- */
+
+.side {
+  display: grid;
+  gap: 14px;
+}
+
+.legend {
+  padding: 16px;
+  border-radius: var(--r-lg);
+  background: var(--lighter);
+  border: 1px solid var(--line-3);
+}
+
+.legendHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.legendTitle {
+  margin: 0;
+  font: 600 18px/1.3 var(--font-display);
+  color: var(--ink);
+}
+
+.clear {
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-3);
+  background: var(--lighter);
+  color: var(--teal);
+  font: 700 12.5px/1 var(--font-text);
+}
+
+.legendHint {
+  margin: 4px 0 10px;
+  font: 400 13px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.legendList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.legendItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  font: 600 14px/1.2 var(--font-text);
+  text-align: left;
+}
+
+.legendItem:hover {
+  background: var(--mist);
+}
+
+.legendItem[aria-pressed="false"] {
+  color: var(--muted);
+}
+
+.legendItem[aria-pressed="false"] .swatch {
+  background: transparent !important;
+  box-shadow: inset 0 0 0 2px var(--muted-2);
+}
+
+.legendItem[aria-pressed="true"]::after {
+  content: "✓";
+  margin-left: 4px;
+  color: var(--teal-2);
+  font-weight: 800;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(15, 59, 63, 0.15);
+}
+
+.legendLabel {
+  flex: 1 1 auto;
+}
+
+.legendCount {
+  min-width: 26px;
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+  background: var(--mist);
+  font: 700 12px/1.3 var(--font-text);
+  color: var(--text-2);
+  text-align: center;
+}
+
+.shapes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 0;
+  font: 500 12.5px/1.3 var(--font-text);
+  color: var(--text-soft);
+}
+
+.shapeArea,
+.shapePoint {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.shapeArea {
+  border: 3px solid var(--teal);
+  background: #fff;
+}
+
+.shapePoint {
+  margin-left: 10px;
+  background: var(--teal);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--teal);
+}
+
+.counts,
+.mapNote {
+  margin: 10px 0 0;
+  font: 500 13px/1.5 var(--font-text);
+  color: var(--text-soft);
+}
+
+/* ---------- list view ---------- */
+
+.list {
+  display: grid;
+  gap: 22px;
+}
+
+.listGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.listHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font: 600 20px/1.3 var(--font-display);
+  color: var(--ink);
+}
+
+.listItems {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.listItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 16px;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  background: var(--lighter);
+  border: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+  .listItem {
+    grid-template-columns: 1fr;
+  }
+}
+
+.listItemActive {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(184, 137, 74, 0.35);
+}
+
+.listName {
+  font: 600 18px/1.3 var(--font-display);
+  color: var(--ink);
+}
+
+.listName:hover {
+  color: var(--teal-2);
+}
+
+.listMeta,
+.listLocation {
+  margin: 2px 0 0;
+  font: 600 12.5px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.listSummary {
+  margin: 6px 0 0;
+  font: 400 14.5px/1.55 var(--font-text);
+  color: var(--text);
+}
+
+.listActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 8px;
+}
+
+.empty {
+  margin: 0;
+  padding: 24px;
+  border-radius: var(--r-md);
+  background: var(--lighter);
+  border: 1px dashed var(--line-4);
+  text-align: center;
+  color: var(--text-soft);
+}
+
+/* ---------- tours ---------- */
+
+.tours {
+  margin-top: 24px;
+}
+
+.toursIntro {
+  margin: -6px 0 16px;
+}
+
+.tourList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+}
+
+.tourCard {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 18px;
+  border-radius: var(--r-lg);
+  background: var(--lighter);
+  border: 1px solid var(--line);
+}
+
+.tourTitle {
+  margin: 0;
+  font: 600 20px/1.25 var(--font-display);
+  color: var(--ink);
+}
+
+.tourText {
+  margin: 0;
+  font: 400 14.5px/1.55 var(--font-text);
+  color: var(--text);
+}
+
+.tourMeta {
+  margin: 0 0 4px;
+  font: 700 12.5px/1.3 var(--font-text);
+  color: var(--text-soft);
+}
+
+.disclaimerBelow {
+  margin: 14px 0 0;
+  font: 500 13.5px/1.55 var(--font-text);
+  color: var(--text-soft);
+}

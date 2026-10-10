@@ -116,6 +116,61 @@
   }
 }
 
+/* ---------- overall progress ---------- */
+
+.overall {
+  display: flex;
+  gap: 3px;
+  margin: -4px 0 12px;
+}
+
+.segment {
+  flex: 1 1 0;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(15, 59, 63, 0.12);
+}
+
+.segmentDone {
+  background: var(--teal-2);
+}
+
+/* ---------- photo (map view and no-3D fallback) ---------- */
+
+.photo {
+  margin: 0 0 12px;
+}
+
+.photoFrame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--mist);
+}
+
+.photoFrame > div {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+}
+
+.photoCredit {
+  margin-top: 4px;
+  font: 400 11.5px/1.35 var(--font-text);
+  color: var(--text-soft);
+}
+
+.photoCredit a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.withPhoto {
+  max-height: calc(100% - 24px);
+  overflow-y: auto;
+}
+
 /* ---------- narration ---------- */
 
 .kicker {
@@ -185,6 +240,7 @@
 
 .controls {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-top: 16px;

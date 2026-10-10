@@ -1,0 +1,22 @@
+.pilot {
+  margin: -16px 0 0;
+  padding: 16px 16px 16px 40px;
+  border-radius: var(--r-md);
+  background: var(--card);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 6px;
+  font: 500 15.5px/1.5 var(--font-text);
+  color: var(--ink);
+}
+
+.code {
+  margin: 0;
+  padding: 14px;
+  border-radius: var(--r-md);
+  background: var(--deeper);
+  color: var(--cream);
+  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

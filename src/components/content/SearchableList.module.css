@@ -1,0 +1,29 @@
+.wrap {
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  max-width: 560px;
+}
+
+.count {
+  margin: 0;
+  font: 600 13.5px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.cell {
+  display: grid;
+}
+
+.empty {
+  margin: 0;
+  padding: 20px;
+  border-radius: var(--r-md);
+  background: var(--lighter);
+  border: 1px dashed var(--line-4);
+  color: var(--text);
+}

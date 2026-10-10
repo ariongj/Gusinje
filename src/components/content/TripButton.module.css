@@ -1,0 +1,38 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--gold);
+  background: var(--lighter);
+  color: var(--bronze);
+  font: 700 14px/1 var(--font-text);
+}
+
+.button:hover {
+  background: #fbf6ec;
+}
+
+.saved {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--on-gold);
+}
+
+.saved:hover {
+  background: var(--gold-hover);
+}
+
+.compact {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+@media print {
+  .button {
+    display: none;
+  }
+}

@@ -1,0 +1,16 @@
+.prose {
+  display: grid;
+  gap: 32px;
+}
+
+.section {
+  display: grid;
+  gap: 4px;
+}
+
+.sources summary {
+  cursor: pointer;
+  margin-bottom: 8px;
+  font: 700 13.5px/1.4 var(--font-text);
+  color: var(--teal-2);
+}

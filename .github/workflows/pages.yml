@@ -1,16 +1,14 @@
-# Publishes a static preview of the site to GitHub Pages on every push to main:
-# https://<owner>.github.io/<repo>/
+# Builds the static site and (only when started by hand) publishes it to
+# GitHub Pages: https://<owner>.github.io/<repo>/
 #
-# Pages only serves files, so the preview is a static export without the API
-# route: the request form offers to send each request by email instead (or
-# posts to NEXT_PUBLIC_ENQUIRY_ENDPOINT if that repository variable is set).
-# For production with the server API, deploy the repository to Vercel.
+# Deliberately NOT triggered by pushes: publishing is a decision, not a side
+# effect. Start it from Actions → "Deploy preview to GitHub Pages" → Run
+# workflow, once the content and approvals in docs/LAUNCH.md are in place.
+# The preview is marked noindex so search engines skip it.
 
 name: Deploy preview to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -26,29 +24,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
           cache: npm
 
       - run: npm ci
 
       - name: Build static export
         run: |
-          rm -rf src/app/api   # server-only routes; not available on static hosting
           npm run build
           touch out/.nojekyll
         env:
           NEXT_TELEMETRY_DISABLED: "1"
-          NEXT_PUBLIC_STATIC_EXPORT: "true"
           NEXT_PUBLIC_NOINDEX: "true"
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
-          NEXT_PUBLIC_ENQUIRY_ENDPOINT: ${{ vars.NEXT_PUBLIC_ENQUIRY_ENDPOINT }}
 
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: out
 
@@ -60,4 +55,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4

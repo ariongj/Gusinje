@@ -1,34 +1,49 @@
+import type { Credit } from "@/content/types";
+import { fill } from "@/i18n/localize";
+import type { Messages } from "@/i18n/messages/en";
 import { cx } from "@/lib/cx";
 
 import styles from "./PhotoCredit.module.css";
 
-/** Attribution for a Wikimedia Commons photo (shown next to the image). */
-export type Credit = {
-  author: string;
-  license: string;
-  /** The file's Commons page. */
-  href: string;
-};
-
 type PhotoCreditProps = {
-  credit?: Credit;
-  /** "light" over photos and dark sections, "dark" on paper. */
+  credit: Credit;
+  /** Photo rights still being collected (owner photos). */
+  pending?: boolean;
+  t: Messages;
+  /** "light" over dark backgrounds, "dark" on paper. */
   tone?: "light" | "dark";
-  /** Extra space above, e.g. under a hero's buttons. */
-  spaced?: boolean;
   className?: string;
 };
 
-/** Attribution line for a Wikimedia Commons photo — required by its licence. */
-export function PhotoCredit({ credit, tone = "light", spaced = false, className }: PhotoCreditProps) {
-  if (!credit) return null;
+/** Attribution line: author (linked to the file page), licence (linked to its deed) and where it is from. */
+export function PhotoCredit({ credit, pending = false, t, tone = "dark", className }: PhotoCreditProps) {
+  const parts = t.common.photoBy.split(/(\{author\}|\{license\}|\{via\})/);
   return (
-    <p className={cx(styles.credit, tone === "dark" && styles.dark, spaced && styles.spaced, className)}>
-      Photo:{" "}
-      <a href={credit.href} target="_blank" rel="noopener noreferrer" className={styles.link}>
-        {credit.author}
-      </a>
-      , {credit.license}, via Wikimedia Commons
+    <p className={cx(styles.credit, tone === "dark" && styles.dark, className)}>
+      {parts.map((part, i) => {
+        if (part === "{author}")
+          return (
+            <a key={i} href={credit.href} target="_blank" rel="noopener noreferrer" className={styles.link}>
+              {credit.author}
+            </a>
+          );
+        if (part === "{license}")
+          return credit.licenseUrl ? (
+            <a key={i} href={credit.licenseUrl} target="_blank" rel="noopener noreferrer license" className={styles.link}>
+              {credit.license}
+            </a>
+          ) : (
+            credit.license
+          );
+        if (part === "{via}") return credit.via;
+        return part;
+      })}
+      {pending && <> · {t.common.rightsPending}</>}
     </p>
   );
+}
+
+/** The same credit as plain text (for alt-adjacent contexts and the map panel). */
+export function creditText(credit: Credit, t: Messages): string {
+  return fill(t.common.photoBy, { author: credit.author, license: credit.license, via: credit.via });
 }
