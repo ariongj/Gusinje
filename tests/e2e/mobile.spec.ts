@@ -21,6 +21,34 @@ test("touch: tap a 3D marker, then the panel scrolls into view", async ({ page, 
   await expect(page.getByTestId("info-panel").getByRole("heading", { name: "Vusanje" })).toBeInViewport();
 });
 
+test("guided tour on a phone: \"Next stop\" sits above the tab bar; swipe the card to move on", async ({ page, errors, isMobile }) => {
+  void errors;
+  test.skip(!isMobile, "phone layout");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/en/explore/");
+  await page.locator('button[data-tour="springs-and-waterfalls"]').tap();
+  await page.getByRole("button", { name: "Begin" }).tap();
+  const card = page.getByTestId("guide-card");
+  await expect(card.getByText("Stop 1 of 6")).toBeVisible();
+  // One screen: the model on top, the card below, the big button clear of the tab bar.
+  const next = (await card.getByRole("button", { name: /Next stop/ }).boundingBox())!;
+  const tabs = (await page.getByRole("navigation", { name: "Quick links" }).boundingBox())!;
+  expect(next.y + next.height).toBeLessThanOrEqual(tabs.y);
+  expect(next.y).toBeGreaterThan(0);
+
+  // Swipe left: next stop; swipe right: back.
+  const box = (await card.boundingBox())!;
+  const swipe = async (from: number, to: number) => {
+    const y = box.y + 30;
+    await card.dispatchEvent("touchstart", { touches: [{ identifier: 1, clientX: from, clientY: y }] });
+    await card.dispatchEvent("touchend", { changedTouches: [{ identifier: 1, clientX: to, clientY: y + 6 }] });
+  };
+  await swipe(box.x + box.width - 30, box.x + 40);
+  await expect(card.getByText("Stop 2 of 6")).toBeVisible();
+  await swipe(box.x + 40, box.x + box.width - 30);
+  await expect(card.getByText("Stop 1 of 6")).toBeVisible();
+});
+
 test("data saver: Explore opens on the map, 3D stays one tap away", async ({ page, errors, isMobile }) => {
   void errors;
   test.skip(!isMobile, "phone layout");

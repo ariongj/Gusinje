@@ -168,8 +168,16 @@ ridge. Panels over the map are solid rather than blurred (a blur is redrawn ever
 tip on how to move the map shows once, the legend starts closed (the chips filter), and "Show
 the whole valley" appears once there is something to reset.
 
+**Show where I am**: a button on the map asks the browser for the visitor's position and draws
+it as a blue dot with its accuracy ring (a map layer, like the places). In the valley the map
+flies there; elsewhere it says so and stays put. The position never leaves the device — no
+request carries it (tested). The base map's own points of interest (shops, cafés, bus stops) are
+hidden so only the guide's places show; roads, trails, rivers, village names and peaks stay. The
+map draws at most at twice the screen's resolution, which is what keeps 3D smooth on very sharp
+phone screens.
+
 **Guided tours** go one stop at a time: a big "Next stop" button names the next place, with
-"Play the tour", restart and voice as small extras. On wide screens the tour takes the whole
+"Play the tour", restart and voice as small extras; on phones a swipe on the card moves on or back. On wide screens the tour takes the whole
 screen; on phones the card docks under the model and both fit above the tab bar.
 
 **Useful services** (`/services`) and **History & culture** (`/about/history`) are sourced pages

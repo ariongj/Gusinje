@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useRef, type Ref, type RefObject } from "react";
+import { useLayoutEffect, useRef, type Ref, type RefObject, type TouchEvent } from "react";
 
 import { Photo } from "@/components/ui/Photo";
 import { useI18n } from "@/i18n/client";
@@ -82,6 +82,24 @@ export function GuideCard({
 
   const position = fill(t.explore.stopOf, { i: index + 1, n: total });
 
+  // Phones: swipe the card left for the next stop, right for the one before.
+  const swipeRef = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: TouchEvent) => {
+    const touch = e.touches[0];
+    swipeRef.current = e.touches.length === 1 ? { x: touch.clientX, y: touch.clientY } : null;
+  };
+  const onTouchEnd = (e: TouchEvent) => {
+    const start = swipeRef.current;
+    swipeRef.current = null;
+    if (!start) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (dx < 0 && !isLast) onNext();
+    else if (dx > 0 && index > 0) onBack();
+  };
+
   return (
     <div
       ref={(el) => {
@@ -93,6 +111,8 @@ export function GuideCard({
       role="region"
       aria-label={t.explore.guidedTour}
       data-testid="guide-card"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       <div className={styles.head}>
         <span className={styles.badge}>

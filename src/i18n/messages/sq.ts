@@ -266,6 +266,12 @@ export const sq: Messages = {
     nextUp: "Më pas:",
     autoplay: "Luaje turin",
     autoplayOff: "Ndalo luajtjen",
+    myLocation: "Trego ku jam",
+    hideLocation: "Mos e trego më ku jam",
+    locationPrivate: "Pozicioni juaj shfaqet vetëm në këtë ekran — nuk dërgohet askund.",
+    locationOutside: "Jeni jashtë luginës, ndaj harta mbetet ku është.",
+    locationDenied: "Vendndodhja është e çaktivizuar për këtë faqe. Mund ta lejoni te cilësimet e shfletuesit.",
+    locationUnavailable: "Pozicioni juaj nuk u gjet për momentin.",
   },
   place: {
     alsoKnownAs: "I njohur edhe si",

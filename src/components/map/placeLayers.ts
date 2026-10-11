@@ -18,6 +18,7 @@ import { MAP_ICONS, type MapIcon } from "./icons";
 export const SOURCE_PLACES = "guide-places";
 export const SOURCE_BUSINESSES = "guide-businesses";
 export const SOURCE_SELECTED = "guide-selected";
+export const SOURCE_ME = "guide-me";
 
 export const LAYER_CLUSTERS = "guide-clusters";
 export const LAYER_BUSINESS_PINS = "guide-business-pins";
@@ -27,6 +28,8 @@ export const LAYER_PLACE_LABELS = "guide-place-labels";
 export const LAYER_BUSINESS_LABELS = "guide-business-labels";
 export const LAYER_SELECTED = "guide-selected-pin";
 export const LAYER_SELECTED_LABEL = "guide-selected-label";
+export const LAYER_ME_ACCURACY = "guide-me-accuracy";
+export const LAYER_ME = "guide-me-dot";
 
 /** Layers a tap can pick a place from. */
 export const PICKABLE = [LAYER_SELECTED, LAYER_SELECTED_LABEL, LAYER_PLACE_PINS, LAYER_BUSINESS_PINS, LAYER_VILLAGE_LABELS, LAYER_PLACE_LABELS, LAYER_BUSINESS_LABELS];
@@ -115,6 +118,43 @@ export function addPlaceLayers(map: MLMap) {
   map.addLayer({ id: LAYER_BUSINESS_LABELS, type: "symbol", source: SOURCE_BUSINESSES, minzoom: 14.2, filter: ["!", ["has", "point_count"]], layout: labelLayout });
   map.addLayer({ id: LAYER_SELECTED, type: "symbol", source: SOURCE_SELECTED, layout: pinLayout });
   map.addLayer({ id: LAYER_SELECTED_LABEL, type: "symbol", source: SOURCE_SELECTED, layout: { ...labelLayout, "icon-allow-overlap": true, "icon-offset": [0, -22] } });
+
+  // The visitor's own position (only ever on their screen): a blue dot in a ring as wide as its accuracy.
+  map.addSource(SOURCE_ME, { type: "geojson", data: empty });
+  map.addLayer({
+    id: LAYER_ME_ACCURACY,
+    type: "circle",
+    source: SOURCE_ME,
+    paint: {
+      // Metres on the ground: "r0" is the radius in pixels at zoom 0, doubling with each zoom level.
+      "circle-radius": ["interpolate", ["exponential", 2], ["zoom"], 0, ["get", "r0"], 22, ["*", ["get", "r0"], 2 ** 22]],
+      "circle-color": "#2a7de1",
+      "circle-opacity": 0.12,
+      "circle-stroke-color": "#2a7de1",
+      "circle-stroke-opacity": 0.4,
+      "circle-stroke-width": 1,
+      "circle-pitch-alignment": "map",
+      "circle-pitch-scale": "map",
+    },
+  });
+  map.addLayer({ id: LAYER_ME, type: "symbol", source: SOURCE_ME, layout: { "icon-image": "me", "icon-allow-overlap": true, "icon-ignore-placement": true, "icon-pitch-alignment": "viewport" } });
+}
+
+export type MyPosition = { lng: number; lat: number; accuracy: number };
+
+/** Show (or, with null, clear) the visitor's position. */
+export function setMyPosition(map: MLMap, me: MyPosition | null) {
+  const source = map.getSource(SOURCE_ME) as GeoJSONSource | undefined;
+  if (!source) return;
+  if (!me) {
+    source.setData(collection([]));
+    return;
+  }
+  const metresPerPixelAtZoom0 = (40075016.7 * Math.cos((me.lat * Math.PI) / 180)) / 512;
+  source.setData({
+    type: "FeatureCollection",
+    features: [{ type: "Feature", geometry: { type: "Point", coordinates: [me.lng, me.lat] }, properties: { r0: Math.min(me.accuracy, 2000) / metresPerPixelAtZoom0 } }],
+  });
 }
 
 export function setPlaceData(map: MLMap, data: ReturnType<typeof placeData>) {
@@ -227,7 +267,25 @@ function cluster(count: number) {
   return c;
 }
 
-/** Draw a missing image by its id ("pin|…", "label|…", "cluster|…") and add it to the map. */
+function meDot() {
+  const size = 30;
+  const { c, ctx } = canvas(size, size);
+  ctx.shadowColor = "rgba(10, 42, 45, 0.35)";
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 1;
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, 9, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, 6.5, 0, Math.PI * 2);
+  ctx.fillStyle = "#2a7de1";
+  ctx.fill();
+  return c;
+}
+
+/** Draw a missing image by its id ("pin|…", "label|…", "cluster|…", "me") and add it to the map. */
 export function addMissingImage(map: MLMap, id: string) {
   if (map.hasImage(id)) return;
   const [type, a, b, c] = id.split("|");
@@ -235,6 +293,7 @@ export function addMissingImage(map: MLMap, id: string) {
   if (type === "pin") drawn = pin(a as MapIcon, b as LegendGroup, c as Style);
   else if (type === "label") drawn = label(a, id.slice(`label|${a}|`.length));
   else if (type === "cluster") drawn = cluster(Number(a));
+  else if (type === "me") drawn = meDot();
   if (!drawn) return;
   const ctx = drawn.getContext("2d")!;
   map.addImage(id, ctx.getImageData(0, 0, drawn.width, drawn.height), { pixelRatio: PR });

@@ -11,7 +11,7 @@ import { fill } from "@/i18n/localize";
 import { cx } from "@/lib/cx";
 import imageLoader from "@/lib/image-loader";
 
-import { addMissingImage, addPlaceLayers, LAYER_CLUSTERS, PICKABLE, placeData, setLabelFont, setPlaceData, SOURCE_BUSINESSES } from "./placeLayers";
+import { addMissingImage, addPlaceLayers, LAYER_CLUSTERS, type MyPosition, PICKABLE, placeData, setLabelFont, setMyPosition, setPlaceData, SOURCE_BUSINESSES } from "./placeLayers";
 import { BASE_STYLE_URL, demSources, EXAGGERATION, HILLSHADE_LAYER, hillshadeLayer, MAX_BOUNDS, reliefStyle, SKY, TERRAIN_SOURCE } from "./mapStyle";
 import styles from "./TerrainMap.module.css";
 
@@ -256,6 +256,11 @@ export function TerrainMap({
   const [fullscreen, setFullscreen] = useState(false);
   const [canFullscreen, setCanFullscreen] = useState(false);
   const [hint, setHint] = useState(false);
+  /** "Show where I am": on or off, and a short note about it. */
+  const [locating, setLocating] = useState(false);
+  const [locationNote, setLocationNote] = useState<"private" | "outside" | "denied" | "unavailable" | null>(null);
+  const watchRef = useRef<number | null>(null);
+  const meRef = useRef<MyPosition | null>(null);
   const needleRef = useRef<SVGSVGElement>(null);
   const popupRef = useRef<Popup | null>(null);
   const tRef = useRef(t);
@@ -306,6 +311,8 @@ export function TerrainMap({
               ? false
               : { compact: true, customAttribution: '<a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps</a> (businesses)' },
             fadeDuration: 150,
+            // Phones with very sharp screens would draw the 3D scene at up to 3× its size; 2× looks the same and runs smoothly.
+            pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
           });
         } catch {
           fail();
@@ -322,6 +329,11 @@ export function TerrainMap({
             const before = m.getStyle().layers.find((l) => l.type === "symbol" || /^(tunnel|road|bridge|highway|building|aeroway)/.test(l.id));
             m.addLayer(hillshadeLayer, before?.id);
           }
+          // The base map's own points of interest (shops, cafés, bus stops…) would crowd the
+          // guide's places with a second, unchecked set of icons: only the guide's are shown.
+          for (const layer of m.getStyle().layers) {
+            if (layer.type === "symbol" && "source-layer" in layer && layer["source-layer"] === "poi") m.setLayoutProperty(layer.id, "visibility", "none");
+          }
           m.setSky(SKY);
           m.setTerrain(showcase || modeRef.current === "3d" ? { source: TERRAIN_SOURCE, exaggeration: EXAGGERATION } : null);
           // The guide's places, drawn by the map; labels use the page's font once it has loaded.
@@ -331,6 +343,7 @@ export function TerrainMap({
               setLabelFont(host);
               addPlaceLayers(m);
               if (dataRef.current) setPlaceData(m, dataRef.current);
+              setMyPosition(m, meRef.current);
             };
             if (document.fonts?.status === "loaded") add();
             else void document.fonts?.ready.then(add);
@@ -507,6 +520,7 @@ export function TerrainMap({
       cancelled = true;
       observer?.disconnect();
       flightRef.current?.();
+      if (watchRef.current !== null) navigator.geolocation.clearWatch(watchRef.current);
       map?.remove();
       mapRef.current = null;
     };
@@ -558,6 +572,64 @@ export function TerrainMap({
     stopOrbit();
     moveCamera(map, { ...currentShot(map), bearing: 0 }, 700);
   };
+
+  // "Show where I am": the browser's position, drawn on this screen only (nothing is sent anywhere).
+  // The first fix flies there when it's in the valley; later fixes just move the dot.
+  const stopLocating = () => {
+    if (watchRef.current !== null) navigator.geolocation.clearWatch(watchRef.current);
+    watchRef.current = null;
+    meRef.current = null;
+    setLocating(false);
+    const map = mapRef.current;
+    if (map) setMyPosition(map, null);
+  };
+  const toggleLocation = () => {
+    if (watchRef.current !== null) {
+      stopLocating();
+      setLocationNote(null);
+      return;
+    }
+    if (!("geolocation" in navigator)) {
+      setLocationNote("unavailable");
+      return;
+    }
+    setLocating(true);
+    setHint(false);
+    let first = true;
+    watchRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        const me = { lng: pos.coords.longitude, lat: pos.coords.latitude, accuracy: pos.coords.accuracy };
+        meRef.current = me;
+        const map = mapRef.current;
+        if (map) setMyPosition(map, me);
+        if (!first || !map) return;
+        first = false;
+        const [[west, south], [east, north]] = MAX_BOUNDS;
+        const inside = me.lng > west && me.lng < east && me.lat > south && me.lat < north;
+        setLocationNote(inside ? "private" : "outside");
+        if (!inside) return;
+        if (orbitingRef.current) stopOrbit();
+        const { left = 0, right = 0, bottom = 0 } = insetsRef.current ?? {};
+        const camera = pointCamera({ kind: "point", lng: me.lng, lat: me.lat, area: false, zoom: 15 }, modeRef.current);
+        moveCamera(map, { ...camera, padding: { left, right, bottom, top: 0 } }, 1800);
+      },
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          stopLocating();
+          setLocationNote("denied");
+        } else if (first) {
+          setLocationNote("unavailable");
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 10_000, timeout: 20_000 },
+    );
+  };
+  // Notes fade after a few seconds.
+  useEffect(() => {
+    if (!locationNote) return;
+    const timer = window.setTimeout(() => setLocationNote(null), locationNote === "denied" ? 9000 : 6000);
+    return () => window.clearTimeout(timer);
+  }, [locationNote]);
 
   // Full screen: the whole stage (map, legend, card and strip), where the browser allows it.
   const stageOf = () => (hostRef.current?.closest("[data-map-stage]") as HTMLElement | null) ?? hostRef.current?.parentElement ?? null;
@@ -697,6 +769,20 @@ export function TerrainMap({
               <path d="M10 18l-3.2-8h6.4z" fill="currentColor" opacity="0.45" />
             </svg>
           </button>
+          <button
+            type="button"
+            className={styles.control}
+            aria-label={locating ? t.explore.hideLocation : t.explore.myLocation}
+            title={locating ? t.explore.hideLocation : t.explore.myLocation}
+            aria-pressed={locating}
+            onClick={toggleLocation}
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="5.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+              <circle cx="10" cy="10" r="2" fill="currentColor" />
+              <path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            </svg>
+          </button>
           {mode === "3d" && (
             <button type="button" className={cx(styles.control, styles.orbit)} aria-label={t.explore.orbit} title={t.explore.orbit} aria-pressed={orbiting} onClick={toggleOrbit}>
               <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
@@ -726,7 +812,19 @@ export function TerrainMap({
           )}
         </div>
       )}
-      {!showcase && hint && status === "ready" && (
+      {!showcase && locationNote && (
+        <p className={styles.hint} role="status">
+          {
+            {
+              private: t.explore.locationPrivate,
+              outside: t.explore.locationOutside,
+              denied: t.explore.locationDenied,
+              unavailable: t.explore.locationUnavailable,
+            }[locationNote]
+          }
+        </p>
+      )}
+      {!showcase && hint && !locationNote && status === "ready" && (
         <p className={styles.hint} role="status">
           {t.explore.mapTip}
         </p>

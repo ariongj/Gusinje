@@ -1,6 +1,6 @@
 import type { Locator } from "@playwright/test";
 
-import { expect, pinPoint, test } from "./fixtures";
+import { expect, pinPoint, test, trackWrites } from "./fixtures";
 
 // The 3D map draws with software WebGL on CI runners, where one of these tests
 // can take 40 seconds; they get twice the usual time.
@@ -231,6 +231,37 @@ test.describe("Map tools", () => {
     await page.mouse.move(box.x + box.width * 0.15, box.y + box.height * 0.55);
     await page.mouse.click(box.x + box.width * 0.15, box.y + box.height * 0.55);
     await expect(page.locator(".maplibregl-popup")).toContainText("≈ 1,000 m above sea level");
+  });
+});
+
+test.describe("Show where I am", () => {
+  test("the position is drawn on this screen only; inside the valley the map flies there", async ({ page, context, errors }) => {
+    void errors;
+    const writes = trackWrites(page);
+    await context.grantPermissions(["geolocation"]);
+    await context.setGeolocation({ latitude: 42.5294, longitude: 19.8403, accuracy: 30 });
+    await page.goto("/en/explore/");
+    await page.getByRole("button", { name: "Show where I am" }).click();
+    await expect(page.getByText("shown on this screen only")).toBeVisible();
+    const stop = page.getByRole("button", { name: "Stop showing where I am" });
+    await expect(stop).toHaveAttribute("aria-pressed", "true");
+    type Probe = { getCenter(): { lng: number; lat: number }; getSource(id: string): { getData(): Promise<{ features: unknown[] }> } };
+    await expect
+      .poll(() => page.evaluate(() => (window as unknown as { __valleyMap: Probe }).__valleyMap.getCenter()), { timeout: 30_000 })
+      .toMatchObject({ lng: expect.closeTo(19.8403, 2), lat: expect.closeTo(42.5294, 2) });
+    const dots = () => page.evaluate(async () => (await (window as unknown as { __valleyMap: Probe }).__valleyMap.getSource("guide-me").getData()).features.length);
+    expect(await dots()).toBe(1);
+
+    // Off again: the dot goes.
+    await stop.click();
+    await expect(page.getByRole("button", { name: "Show where I am" })).toHaveAttribute("aria-pressed", "false");
+    expect(await dots()).toBe(0);
+
+    // Far from the valley: a note, and the map stays put.
+    await context.setGeolocation({ latitude: 42.4304, longitude: 19.2594 });
+    await page.getByRole("button", { name: "Show where I am" }).click();
+    await expect(page.getByText("You're outside the valley")).toBeVisible();
+    expect(writes, "the position is never sent").toEqual([]);
   });
 });
 

@@ -265,6 +265,12 @@ export const en = {
     nextUp: "Next:",
     autoplay: "Play the tour",
     autoplayOff: "Stop playing",
+    myLocation: "Show where I am",
+    hideLocation: "Stop showing where I am",
+    locationPrivate: "Your position is shown on this screen only — it isn't sent anywhere.",
+    locationOutside: "You're outside the valley, so the map stays where it is.",
+    locationDenied: "Location is turned off for this site. You can allow it in your browser's settings.",
+    locationUnavailable: "Your position couldn't be found just now.",
   },
   place: {
     alsoKnownAs: "Also known as",

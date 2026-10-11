@@ -270,6 +270,12 @@ export const cnr: Messages = {
     nextUp: "Sljedeće:",
     autoplay: "Pusti turu",
     autoplayOff: "Zaustavi",
+    myLocation: "Prikaži gdje sam",
+    hideLocation: "Ne prikazuj više gdje sam",
+    locationPrivate: "Vaša pozicija prikazuje se samo na ovom ekranu — nigdje se ne šalje.",
+    locationOutside: "Van doline ste, pa karta ostaje gdje jeste.",
+    locationDenied: "Lokacija je isključena za ovaj sajt. Možete je dozvoliti u podešavanjima pretraživača.",
+    locationUnavailable: "Vaša pozicija trenutno ne može da se pronađe.",
   },
   place: {
     alsoKnownAs: "Poznato i kao",
