@@ -40,6 +40,8 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
           NEXT_PUBLIC_NOINDEX: "true"
+          # The preview shows a full guide with labelled demo listings (src/content/demo.ts).
+          NEXT_PUBLIC_DEMO: "true"
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
 

@@ -12,6 +12,7 @@
  * - No phone number, rating, price or opening time is ever estimated.
  */
 
+import { DEMO, demoBusinesses } from "./demo";
 import { OVERTURE_RELEASE, openDataListings } from "./openData";
 import { rosiPhotos as R } from "./photos";
 import type { Business, OpenDataListing, TranslationStatus, Verification } from "./types";
@@ -431,4 +432,4 @@ const curated: Business[] = [
   },
 ];
 
-export const businesses: Business[] = [...curated, ...openDataListings.map(fromOpenData)];
+export const businesses: Business[] = [...curated, ...openDataListings.map(fromOpenData), ...(DEMO ? demoBusinesses : [])];

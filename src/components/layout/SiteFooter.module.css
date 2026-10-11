@@ -2,8 +2,18 @@
   --focus-ring: var(--gold-light);
   background: var(--dark);
   color: var(--footer-text);
-  padding: clamp(48px, 6vw, 88px) var(--gutter) 32px;
+  padding: 0 var(--gutter) 32px;
 }
+
+/* The woven band along the top of the footer. */
+.footer::before {
+  content: "";
+  display: block;
+  height: 14px;
+  margin: 0 calc(-1 * var(--gutter)) clamp(48px, 6vw, 88px);
+  background: var(--motif) repeat-x center / auto 14px;
+}
+
 
 .grid {
   max-width: var(--max);

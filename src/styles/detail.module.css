@@ -75,3 +75,32 @@
     position: static;
   }
 }
+
+/* A menu, room or tour list: name left, price right, dotted between. */
+.menu {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px dotted var(--line-chip);
+  font: 500 16px/1.4 var(--font-text);
+  color: var(--ink);
+}
+
+.menu li > span:first-child {
+  flex: 1;
+}
+
+.menuPrice {
+  font: 700 15px/1 var(--font-text);
+  color: var(--bronze);
+  font-variant-numeric: tabular-nums;
+}

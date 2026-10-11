@@ -539,6 +539,33 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
               {t.explore.toursTitle}
             </a>
           </div>
+          {/* One tap to show one kind of place (the legend still mixes them). */}
+          {view !== "list" && (
+            <div className={styles.chips} role="group" aria-label={t.explore.quickFilters}>
+              <button type="button" className={styles.chip} aria-pressed={allOn} onClick={() => setGroups(new Set(legendGroups))}>
+                {t.explore.allGroups}
+              </button>
+              {legendGroups
+                .filter((g) => counts[g] > 0)
+                .map((g) => {
+                  const only = groups.size === 1 && groups.has(g);
+                  return (
+                    <button
+                      key={g}
+                      type="button"
+                      className={styles.chip}
+                      aria-pressed={only}
+                      data-group={g}
+                      onClick={() => setGroups(only ? new Set(legendGroups) : new Set([g]))}
+                    >
+                      <span className={styles.chipDot} style={{ background: groupColor[g] }} aria-hidden="true" />
+                      {t.legend[g]}
+                      <span className={styles.chipCount}>{counts[g]}</span>
+                    </button>
+                  );
+                })}
+            </div>
+          )}
         </div>
 
         {(notice || (webgl === "no" && !notice)) && (

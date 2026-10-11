@@ -37,7 +37,7 @@ export function DirectorySection({ lang, t, sections, empty, notes }: Props) {
     <div className={ui.stack}>
       <Notice tone="info" title={plural(lang, businesses.length, t.directory.coverage)}>
         <p>{t.directory.order}</p>
-        {businesses.some((b) => b.origin) && <p>{fill(t.directory.openDataCoverage, { n: businesses.filter((b) => b.origin).length })}</p>}
+        {businesses.some((b) => b.origin?.kind === "open-data") && <p>{fill(t.directory.openDataCoverage, { n: businesses.filter((b) => b.origin?.kind === "open-data").length })}</p>}
         {notes}
         <p>
           <Link href={href(lang, "/contribute")} className={ui.textLink}>

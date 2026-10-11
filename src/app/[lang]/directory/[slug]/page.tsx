@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { DemoBooking } from "@/components/demo/DemoBooking";
 import { BusinessCard, PlaceCard } from "@/components/content/cards";
 import { FactList } from "@/components/content/FactList";
 import { LocationBox } from "@/components/content/LocationBox";
@@ -146,9 +147,12 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
         )}
         <div className={ui.chips}>
           {b.disclosure === "platform-creator" && <span className={ui.badgeGold}>{t.directory.rosiBadge}</span>}
-          <span className={b.claimed ? ui.badge : ui.badgeMuted}>{b.claimed ? t.business.claimed : t.business.unclaimed}</span>
+          {b.origin?.kind !== "demo" && (
+            <span className={b.claimed ? ui.badge : ui.badgeMuted}>{b.claimed ? t.business.claimed : t.business.unclaimed}</span>
+          )}
           {b.verification.status === "self-reported" && <span className={ui.badge}>{t.directory.selfReportedBadge}</span>}
-          {b.origin && <span className={ui.badgeWarn}>{t.common.openData}</span>}
+          {b.origin?.kind === "open-data" && <span className={ui.badgeWarn}>{t.common.openData}</span>}
+          {b.origin?.kind === "demo" && <span className={ui.badgeGold}>{t.common.demo}</span>}
         </div>
         <TranslationNotice status={b.translations} lang={lang} t={t} />
         <div className={ui.actions}>
@@ -160,7 +164,15 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
         <div className={detail.layout}>
           <div className={detail.main}>
             {b.disclosure === "platform-creator" && <Notice tone="info">{t.business.disclosureCreator}</Notice>}
-            {b.origin && (
+            {b.origin?.kind === "demo" && (
+              <Notice tone="preview" title={t.directory.demoTitle}>
+                <p>{t.directory.demoText}</p>
+              </Notice>
+            )}
+            {b.origin?.kind === "demo" && (
+              <DemoBooking kind={b.categories.some((c) => c === "restaurant" || c === "cafe") ? "table" : b.categories.some((c) => c === "guide" || c === "activity" || c === "rental") ? "tour" : "stay"} />
+            )}
+            {b.origin?.kind === "open-data" && (
               <Notice tone="warning" title={t.directory.openDataTitle}>
                 <p>{t.directory.openDataText}</p>
                 <p>
@@ -240,6 +252,23 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
                 {loc(b.description, lang).map((p) => (
                   <p key={p}>{p}</p>
                 ))}
+              </section>
+            )}
+
+            {b.highlights && (
+              <section className={detail.block} aria-labelledby="highlights">
+                <h2 id="highlights" className={ui.h2}>
+                  {loc(b.highlights.title, lang)}
+                </h2>
+                <ul className={detail.menu}>
+                  {b.highlights.items.map((item) => (
+                    <li key={item.label.en}>
+                      <span>{loc(item.label, lang)}</span>
+                      {item.detail && <span className={detail.menuPrice}>{item.detail}</span>}
+                    </li>
+                  ))}
+                </ul>
+                {b.origin?.kind === "demo" && <p className={ui.small + " " + ui.muted}>{t.directory.examples}</p>}
               </section>
             )}
 
@@ -338,7 +367,7 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/direct
 
             <section className={detail.block}>
               <div className={ui.actions}>
-                {!b.claimed && (
+                {!b.claimed && b.origin?.kind !== "demo" && (
                   <Link className={ui.buttonGhost} href={`${href(lang, "/contribute")}?type=claim&listing=${b.slug}`}>
                     {t.business.claim}
                   </Link>

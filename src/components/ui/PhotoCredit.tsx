@@ -17,6 +17,7 @@ type PhotoCreditProps = {
 
 /** Attribution line: author (linked to the file page), licence (linked to its deed) and where it is from. */
 export function PhotoCredit({ credit, pending = false, t, tone = "dark", className }: PhotoCreditProps) {
+  if (credit.kind === "illustration") return <p className={cx(styles.credit, tone === "dark" && styles.dark, className)}>{t.common.illustration}</p>;
   const parts = t.common.photoBy.split(/(\{author\}|\{license\}|\{via\})/);
   return (
     <p className={cx(styles.credit, tone === "dark" && styles.dark, className)}>
@@ -45,5 +46,6 @@ export function PhotoCredit({ credit, pending = false, t, tone = "dark", classNa
 
 /** The same credit as plain text (for alt-adjacent contexts and the map panel). */
 export function creditText(credit: Credit, t: Messages): string {
+  if (credit.kind === "illustration") return t.common.illustration;
   return fill(t.common.photoBy, { author: credit.author, license: credit.license, via: credit.via });
 }

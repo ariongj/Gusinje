@@ -5,7 +5,10 @@
  */
 import { expect, test } from "@playwright/test";
 
+import { existsSync } from "node:fs";
+
 import { businesses, guides, itineraries, places, routes, tours } from "../src/content";
+import { demoBusinesses, demoEvents } from "../src/content/demo";
 import { aboutPlatform, aboutRegion, partners } from "../src/content/pages";
 import { culture, timeline } from "../src/content/history";
 import { services } from "../src/content/services";
@@ -117,7 +120,7 @@ test("listings follow the directory rules", () => {
 });
 
 test("businesses from open map data say so and carry nothing copied beyond name, type, position and own pages", () => {
-  const open = businesses.filter((b) => b.origin);
+  const open = businesses.filter((b) => b.origin?.kind === "open-data");
   expect(open.length).toBeGreaterThan(0);
   for (const b of open) {
     expect(b.verification.status, b.slug).toBe("unverified");
@@ -140,6 +143,37 @@ test("businesses from open map data say so and carry nothing copied beyond name,
   // No business is listed twice (curated and open data).
   const names = businesses.map((b) => b.name.toLowerCase().replace(/[^a-z]/g, ""));
   expect(new Set(names).size).toBe(names.length);
+});
+
+test("demo content (preview builds) is labelled, invents no contacts or ratings, and stays apart from real listings", () => {
+  const real = new Set(businesses.filter((b) => b.origin?.kind !== "demo").map((b) => b.name.toLowerCase().replace(/[^a-z]/g, "")));
+  const slugs = new Set(businesses.filter((b) => b.origin?.kind !== "demo").map((b) => b.slug));
+  for (const b of demoBusinesses) {
+    expect(b.origin?.kind, b.slug).toBe("demo");
+    expect(b.slug.startsWith("demo-"), b.slug).toBe(true);
+    expect(slugs.has(b.slug)).toBe(false);
+    expect(real.has(b.name.toLowerCase().replace(/[^a-z]/g, "")), `${b.name} looks like a real listing`).toBe(false);
+    expect(b.contact.phones).toBeUndefined();
+    expect(b.contact.email).toBeUndefined();
+    expect(b.contact.website).toBeUndefined();
+    expect(b.verification.status).toBe("unverified");
+    for (const photo of b.photos) {
+      expect(photo.rights).toBe("illustration");
+      expect(existsSync(`public${photo.src.replace(/^\/[^/]+(?=\/illustrations)/, "")}`), photo.src).toBe(true);
+    }
+    expect(b.location, b.slug).not.toBeNull();
+    expect(b.location!.lat).toBeGreaterThan(42.44);
+    expect(b.location!.lat).toBeLessThan(42.62);
+    for (const field of [b.summary, ...(b.prices ? [b.prices.text] : []), ...(b.hours ? [b.hours.text] : [])]) {
+      expect(field.sq, b.slug).toBeTruthy();
+      expect(field.cnr, b.slug).toBeTruthy();
+    }
+    // Prices and hours are examples, and say so.
+    if (b.prices) expect(b.prices.text.en).toMatch(/^Example/);
+    if (b.hours) expect(b.hours.text.en).toMatch(/^Example/);
+    for (const n of b.nearby) expect(placeSlugs.has(n), `${b.slug} → ${n}`).toBe(true);
+  }
+  for (const e of demoEvents) expect(e.when.en).toMatch(/^Example/);
 });
 
 test("routes never imply navigable tracks or unverified status", () => {
@@ -197,7 +231,8 @@ test("UI translations are complete and not just English copies", () => {
     const keys = new Set(entries.map(([k]) => k.replace(/\[\d+\]$/, "")));
     for (const k of english.keys()) expect(keys.has(k.replace(/\[\d+\]$/, "")), `${name} missing ${k}`).toBe(true);
     // Allow identical short strings (codes, names like "Wi-Fi"); flag long untranslated ones.
-    const same = entries.filter(([k, v]) => english.get(k) === v && v.length > 18 && !k.startsWith("verification.owners"));
+    // home.welcome greets in all three languages at once.
+    const same = entries.filter(([k, v]) => english.get(k) === v && v.length > 18 && !k.startsWith("verification.owners") && k !== "home.welcome");
     expect(same.map(([k]) => k), `${name}: strings still in English`).toEqual([]);
     expect(dict.meta.status, `${name} must stay marked for review until a fluent editor checks it`).toBe("unreviewed");
   }

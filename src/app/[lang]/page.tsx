@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { PlaceCard } from "@/components/content/cards";
+import { BusinessCard, PlaceCard } from "@/components/content/cards";
 import { HeroSlides, type HeroSlide } from "@/components/home/HeroSlides";
 import { Ridgeline } from "@/components/home/Ridgeline";
 import { ValleyShowcase } from "@/components/home/ValleyShowcase";
@@ -10,6 +10,7 @@ import { photoAlt } from "@/components/ui/PhotoFigure";
 import { PhotoCredit } from "@/components/ui/PhotoCredit";
 import { brand } from "@/config/brand";
 import { businesses, guides, inSection, itineraries, places, recordPath, routes, tours } from "@/content";
+import { DEMO, demoEvents, illustration } from "@/content/demo";
 import { commonsPhotos } from "@/content/photos";
 import type { Photo as PhotoRecord, Place } from "@/content/types";
 import { getMessages, resolveLocale } from "@/i18n";
@@ -89,6 +90,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <HeroSlides slides={heroSlides.map(([photo, p]) => slideOf(photo, p))} />
           <div className={styles.heroShade} aria-hidden="true" />
           <div className={styles.heroInner}>
+            <p className={styles.heroWelcome} lang="sq">
+              {t.home.welcome}
+            </p>
             <p className={styles.heroRegion}>{brand.region}</p>
             <h1 id="hero-title" className={styles.heroTitle}>
               {t.home.heroTitle}
@@ -111,6 +115,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <section className={styles.intro} aria-label={brand.region}>
         <p className={styles.introText}>{t.home.intro}</p>
       </section>
+
+      <div className={styles.motif} aria-hidden="true" />
 
       {/* ---------------------------------------------- how long do you have */}
       <section className={styles.block} aria-labelledby="time">
@@ -143,6 +149,37 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           ))}
         </ol>
       </section>
+
+      {/* ------------------------------------- where to stay / eat (demo builds) */}
+      {DEMO &&
+        (
+          [
+            ["stay", t.home.stayTitle, t.home.stayIntro, "/stay"],
+            ["eat-drink", t.home.eatTitle, t.home.eatIntro, "/eat-drink"],
+          ] as const
+        ).map(([section, title, intro, path]) => (
+          <section key={section} className={styles.block} aria-labelledby={`home-${section}`}>
+            <div className={styles.head}>
+              <div>
+                <h2 id={`home-${section}`} className={styles.h2}>
+                  {title}
+                </h2>
+                <p className={styles.lede}>{intro}</p>
+              </div>
+              <Link href={href(lang, path)} className={styles.more}>
+                {t.common.seeAll}
+              </Link>
+            </div>
+            <div className={styles.row}>
+              {businesses
+                .filter((b) => inSection(b, section) && b.origin?.kind === "demo")
+                .slice(0, 4)
+                .map((b) => (
+                  <BusinessCard key={b.slug} business={b} lang={lang} t={t} />
+                ))}
+            </div>
+          </section>
+        ))}
 
       {/* -------------------------------------------------------- places */}
       <section className={styles.block} aria-labelledby="places">
@@ -205,6 +242,37 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </ul>
       </section>
 
+      {/* ------------------------------------------- taste of the valley (demo) */}
+      {DEMO && (
+        <section className={styles.tasteBand} aria-labelledby="taste">
+          <div className={styles.blockInner}>
+            <div className={styles.head}>
+              <div>
+                <h2 id="taste" className={styles.h2}>
+                  {t.home.tasteTitle}
+                </h2>
+                <p className={styles.lede}>{t.home.tasteIntro}</p>
+              </div>
+            </div>
+            <ul className={styles.taste}>
+              {(["dish-flija", "dish-burek", "dish-trout", "dish-board"] as const).map((name, i) => {
+                const picture = illustration(name);
+                const [dish, ...rest] = t.home.taste[i].split(" — ");
+                return (
+                  <li key={name} className={styles.tasteItem}>
+                    <div className={styles.tastePhoto}>
+                      <Photo src={picture.src} alt={photoAlt(picture, lang)} sizes="(max-width: 700px) 80vw, 25vw" />
+                    </div>
+                    <h3 className={styles.tasteTitle}>{dish}</h3>
+                    <p className={styles.tasteText}>{rest.join(" — ")}</p>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* --------------------------------------------------- hidden gems */}
       <section className={styles.block} aria-labelledby="gems">
         <div className={styles.head}>
@@ -242,6 +310,36 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </div>
         </div>
       </section>
+
+      {/* ------------------------------------------------- what's on (demo) */}
+      {DEMO && (
+        <section className={styles.block} aria-labelledby="events">
+          <div className={styles.head}>
+            <div>
+              <h2 id="events" className={styles.h2}>
+                {t.home.eventsTitle} <span className={ui.badgeGold}>{t.common.demo}</span>
+              </h2>
+              <p className={styles.lede}>{t.home.eventsIntro}</p>
+            </div>
+          </div>
+          <ul className={styles.events}>
+            {demoEvents.map((e) => {
+              const picture = illustration(e.picture);
+              return (
+                <li key={e.slug} className={styles.event}>
+                  <div className={styles.eventPhoto}>
+                    <Photo src={picture.src} alt={photoAlt(picture, lang)} sizes="(max-width: 700px) 80vw, 25vw" />
+                  </div>
+                  <p className={styles.eventWhen}>{loc(e.when, lang)}</p>
+                  <h3 className={styles.eventTitle}>{loc(e.title, lang)}</h3>
+                  <p className={styles.eventWhere}>{loc(e.where, lang)}</p>
+                  <p className={styles.eventText}>{loc(e.text, lang)}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       {/* --------------------------------------------------------- tours */}
       <section className={styles.toursBand} aria-labelledby="tours">

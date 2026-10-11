@@ -39,6 +39,8 @@ export type ExploreItem = {
   openData?: boolean;
   /** Marker icon. */
   icon?: MapIcon;
+  /** A demo listing (preview builds only): says so in the card. */
+  demo?: boolean;
 };
 
 /** Colours per legend group (kept in sync with Legend.module.css). */

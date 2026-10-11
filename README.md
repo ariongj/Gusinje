@@ -121,6 +121,25 @@ overlap: towns and villages win, then the selected place, and a crowded label sh
 focus. Virtual tours and **journeys** (each trip plan, stop by stop) fly the same camera with a
 narrator card; `?tour=<slug>` opens either.
 
+**Demo mode** (`NEXT_PUBLIC_DEMO=true`, on in the preview deploy only): `src/content/demo.ts` adds 18
+invented businesses (places to stay, restaurants and cafés, a farm shop, guides and activities) with
+map positions, example menus, rooms and prices, plus four example events, "Where to stay / eat",
+"A taste of the valley" and "What's on" on the home page, and illustrations for places that have no
+photo yet. Every view says "Demo" (a line above the header on every page, badges, a notice on each
+listing); there are no phone numbers, emails or ratings, prices and hours start with "Example", and
+the booking box takes dates and party size only and sends nothing. A public launch builds without
+the flag, and none of it appears.
+
+**Illustrations**: `node scripts/illustrations.mjs` draws the pictures in `public/illustrations/`
+(SVG): layered scenes in front of the real peaks around Vusanje (from `skyline.ts`), at different
+times of day — a wooden guest house, a stone kula, a katun with sheep and haystacks, tents, a dinner
+terrace, coffee with a view, a hiker at a red-and-white trail mark, a waterfall, a lake, food from
+above. They're credited as "Illustration made for this guide", never as photos.
+
+**Phones**: a tab bar at the bottom (Home, Map, Stay, Eat, My trip); on Explore the title folds away,
+quick filters sit above the map (Everything, Town & villages, Springs & waterfalls …), the place card
+is a sheet and the strip stays above the tab bar.
+
 **Businesses from open data**: `scripts/import-overture.py` reads the valley from Overture Maps'
 open "places" data (CDLA Permissive 2.0 — records from Meta, Microsoft and others) and writes
 `src/content/openData.ts`: name, type, position and a link to the business's own website or

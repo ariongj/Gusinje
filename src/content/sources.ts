@@ -572,6 +572,14 @@ const list: Source[] = [
   { id: "ekip-numbers", title: "Important numbers (emergency services)", publisher: "EKIP — Agency for Electronic Communications and Postal Services", url: "https://ekip.me/important-numbers", kind: "official", accessed: OCT_2026 },
   { id: "gov-112", title: "Day of the single European emergency number 112", publisher: "Government of Montenegro (gov.me)", url: "https://www.gov.me/clanak/dan-jedinstvenog-evropskog-broja-za-pozive-u-hitnim-situacijama-112", kind: "official", accessed: OCT_2026 },
   {
+    id: "demo-content",
+    title: "Demo content — invented to show how the guide works (preview only)",
+    publisher: "Valley Guide",
+    url: "https://ariongj.github.io/Gusinje/",
+    kind: "reference",
+    accessed: OCT_2026,
+  },
+  {
     id: "overture-places",
     title: "Places — open map data (release 2026-09-23.1)",
     publisher: "Overture Maps Foundation (CDLA Permissive 2.0; records from Meta, Microsoft and others)",

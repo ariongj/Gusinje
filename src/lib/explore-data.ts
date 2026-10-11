@@ -3,6 +3,7 @@ import "server-only";
 import type { ExploreTour, ExploreTourStop } from "@/components/explore/Explorer";
 import type { CameraTarget, ExploreItem } from "@/components/explore/types";
 import { creditText } from "@/components/ui/PhotoCredit";
+import { placeholderPicture } from "@/content/demo";
 import { photoAlt } from "@/components/ui/PhotoFigure";
 import { businesses, businessLegendGroup, getBusiness, getPlace, getRoute, itineraries, places, placeGroup, recordPath, tours } from "@/content";
 import type { MapIcon } from "@/components/map/icons";
@@ -62,7 +63,7 @@ export function placeItem(place: Place, lang: Locale): ExploreItem {
     summary: loc(place.summary, lang),
     search: fold([place.name.en, place.name.sq, place.name.cnr, ...place.altNames.map((a) => a.name), t.placeCategory[place.category]].filter(Boolean).join(" ")),
     href: href(lang, recordPath("place", place.slug)),
-    photo: photoData(place.photos[0], lang),
+    photo: photoData(place.photos[0] ?? placeholderPicture(place.category), lang),
     photos: place.photos.slice(0, 5).map((p) => photoData(p, lang)!),
     location: place.location ? { lat: place.location.lat, lng: place.location.lng, precision: place.location.precision, status: place.location.status } : undefined,
   };
@@ -90,7 +91,8 @@ export function businessItem(business: Business, lang: Locale): ExploreItem {
     hostKey: host ? `business:${host.slug}` : undefined,
     hostName: host?.name,
     disclosure: business.disclosure === "platform-creator" ? t.directory.rosiBadge : undefined,
-    openData: business.origin ? true : undefined,
+    openData: business.origin?.kind === "open-data" ? true : undefined,
+    demo: business.origin?.kind === "demo" ? true : undefined,
   };
 }
 

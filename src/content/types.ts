@@ -97,7 +97,9 @@ export type MediaRights =
   /** The owner has given written permission. */
   | "owner-permission"
   /** Supplied by the owner; written permission and originals still to be collected. */
-  | "owner-pending";
+  | "owner-pending"
+  /** Drawn for this guide (scripts/illustrations.mjs) — an illustration, never presented as a photo. */
+  | "illustration";
 
 export type Credit = {
   author: string;
@@ -108,6 +110,8 @@ export type Credit = {
   href: string;
   /** "Wikimedia Commons", or the owner's name. */
   via: string;
+  /** An illustration made for this guide: credited as such, without a licence line. */
+  kind?: "illustration";
 };
 
 export type Photo = {
@@ -244,8 +248,14 @@ export type Business = {
   claimed: boolean;
   verification: Verification;
   translations: TranslationStatus;
-  /** Created from open map data (name, type, position) and not checked: said on every view of it. */
-  origin?: { kind: "open-data"; dataset: "overture"; id: string };
+  /**
+   * Created from open map data (name, type, position) and not checked, or a
+   * demo listing invented to show how the guide works (demo builds only).
+   * Either way it is said on every view of it.
+   */
+  origin?: { kind: "open-data"; dataset: "overture"; id: string } | { kind: "demo" };
+  /** Menu, rooms or tours — demo listings only, every price an example. */
+  highlights?: { title: Localized; items: { label: Localized; detail?: string }[] };
 };
 
 /** A business as imported from open map data (scripts/import-overture.py → openData.ts). */

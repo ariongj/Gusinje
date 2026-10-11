@@ -32,6 +32,10 @@
 
   /* Brass (the historic token names say "gold") */
   --gold: #b8894a;
+  /* Red of the valley's woven rugs and socks — accents and the motif band only. */
+  --kilim: #a8432c;
+  /* A woven band (diamonds in rug colours) used as a divider. */
+  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='24' viewBox='0 0 56 24'%3E%3Crect width='56' height='24' fill='%232a1d14'/%3E%3Cpath d='M0 12 L14 1 L28 12 L14 23 Z' fill='%23a8432c'/%3E%3Cpath d='M28 12 L42 1 L56 12 L42 23 Z' fill='%23b8894a'/%3E%3Cpath d='M14 6.5 L19.5 12 L14 17.5 L8.5 12 Z' fill='%23f2efe9'/%3E%3Cpath d='M42 6.5 L47.5 12 L42 17.5 L36.5 12 Z' fill='%232a1d14'/%3E%3Cpath d='M14 10 L16 12 L14 14 L12 12 Z' fill='%23a8432c'/%3E%3Cpath d='M42 10 L44 12 L42 14 L40 12 Z' fill='%23b8894a'/%3E%3C/svg%3E");
   --gold-hover: #a0733a;
   --gold-dark: #8c6532;
   --gold-deep: #87612d;
@@ -310,4 +314,27 @@ input[type="range"]:focus-visible::-moz-range-thumb {
 
 main:focus {
   outline: none;
+}
+
+
+/* Phones: room for the tab bar at the bottom (TabBar). */
+@media (max-width: 760px) {
+  :root {
+    --tabbar-h: calc(61px + env(safe-area-inset-bottom));
+  }
+
+  body {
+    padding-bottom: var(--tabbar-h);
+  }
+}
+
+/* Demo builds: the one-line banner above the header (DemoBanner) is part of the screen. */
+body[data-demo] {
+  --banner-h: 34px;
+}
+
+@media (max-width: 760px) {
+  body[data-demo] {
+    --banner-h: 32px;
+  }
 }

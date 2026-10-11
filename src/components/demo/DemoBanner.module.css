@@ -1,0 +1,73 @@
+.banner {
+  box-sizing: border-box;
+  min-height: var(--banner-h, 34px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 10px;
+  padding: 4px var(--gutter-tight);
+  background: #2a1d14;
+  color: #f3e7d6;
+  font: 500 12.5px/1.45 var(--font-text);
+  text-align: center;
+  --focus-ring: var(--gold-light);
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--gold);
+  color: var(--on-gold);
+  font: 800 10.5px/1.4 var(--font-text);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.link {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.short {
+  display: none;
+}
+
+/* Phones: one line. */
+@media (max-width: 760px) {
+  .banner {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    text-align: left;
+  }
+
+  .text {
+    display: none;
+  }
+
+  .short {
+    display: inline;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .short {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .banner {
+    height: var(--banner-h, 32px);
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 12px;
+  }
+
+  .link {
+    display: none;
+  }
+}

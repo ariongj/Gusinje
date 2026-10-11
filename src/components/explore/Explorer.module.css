@@ -7,8 +7,8 @@
 .immersive .screen {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--header-h));
-  height: calc(100svh - var(--header-h));
+  height: calc(100vh - var(--header-h) - var(--tabbar-h, 0px) - var(--banner-h, 0px));
+  height: calc(100svh - var(--header-h) - var(--tabbar-h, 0px) - var(--banner-h, 0px));
   min-height: 560px;
 }
 
@@ -270,6 +270,71 @@
   backdrop-filter: saturate(160%) blur(18px);
 }
 
+/* ---------- quick filters: one kind of place at a time ---------- */
+
+.chips {
+  flex-basis: 100%;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 2px calc(-1 * var(--gutter-tight)) -4px;
+  padding: 2px var(--gutter-tight) 4px;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line-3);
+  border-radius: var(--r-pill);
+  background: var(--lighter);
+  color: var(--ink);
+  font: 600 13.5px/1 var(--font-text);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--mist);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #fff;
+}
+
+.chipDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.chipCount {
+  color: var(--muted);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip[aria-pressed="true"] .chipCount {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@media (pointer: coarse) {
+  .chip {
+    min-height: 44px;
+  }
+}
+
 /* ---------- the selected place ---------- */
 
 .panelSlot {
@@ -490,9 +555,14 @@
     flex-basis: 100%;
   }
 
-  /* Phones: the map gets the room — title on one line, the lead for screen readers only. */
-  .title {
-    font-size: 21px;
+  /* Phones: the map gets the room — the title and lead are for screen readers only. */
+  .heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .lead {

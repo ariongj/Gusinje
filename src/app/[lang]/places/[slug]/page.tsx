@@ -15,6 +15,7 @@ import { VerificationPanel } from "@/components/content/VerificationPanel";
 import { Notice } from "@/components/ui/Notice";
 import { PhotoFigure } from "@/components/ui/PhotoFigure";
 import { absoluteUrl, brand } from "@/config/brand";
+import { placeholderPicture } from "@/content/demo";
 import { businessesNear, places, routesForPlace, toursForPlace } from "@/content";
 import { getMessages, resolveLocale } from "@/i18n";
 import { href, locales } from "@/i18n/config";
@@ -52,7 +53,7 @@ export default async function PlacePage({ params }: PageProps<"/[lang]/places/[s
   const nearby = businessesNear(slug);
   const placeRoutes = routesForPlace(slug);
   const placeTours = toursForPlace(slug);
-  const [lead, ...gallery] = place.photos;
+  const [lead = placeholderPicture(place.category), ...gallery] = place.photos;
 
   const structured = {
     "@context": "https://schema.org",

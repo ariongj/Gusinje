@@ -3,7 +3,10 @@ import { Fraunces, Manrope } from "next/font/google";
 
 import { OfflineSupport } from "@/components/layout/OfflineSupport";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { DemoBanner } from "@/components/demo/DemoBanner";
+import { DEMO } from "@/content/demo";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { TabBar } from "@/components/layout/TabBar";
 import { RevealObserver } from "@/components/ui/RevealObserver";
 import { brand } from "@/config/brand";
 import { getMessages, resolveLocale } from "@/i18n";
@@ -57,16 +60,18 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const t = getMessages(lang);
   return (
     <html lang={lang} className={`${fraunces.variable} ${manrope.variable}`}>
-      <body>
+      <body data-demo={DEMO ? "" : undefined}>
         <a href="#content" className="skip-link">
           {t.meta.skipToContent}
         </a>
         <I18nProvider lang={lang} messages={t}>
+          <DemoBanner lang={lang} t={t} />
           <SiteHeader />
           <main id="content" tabIndex={-1}>
             {children}
           </main>
           <SiteFooter lang={lang} />
+          <TabBar />
         </I18nProvider>
         <RevealObserver />
         <OfflineSupport />

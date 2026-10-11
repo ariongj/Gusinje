@@ -1,4 +1,5 @@
 import { getPlace, recordPath } from "@/content";
+import { placeholderPicture } from "@/content/demo";
 import type { Business, Guide, Itinerary, Place, Route, VirtualTour } from "@/content/types";
 import { href, type Locale } from "@/i18n/config";
 import { loc, plural } from "@/i18n/localize";
@@ -17,7 +18,7 @@ export function PlaceCard({ place, lang, t, headingLevel }: Common & { place: Pl
       title={loc(place.name, lang)}
       kicker={`${t.placeCategory[place.category]} · ${t.area[place.area]}`}
       text={loc(place.summary, lang)}
-      photo={place.photos[0]}
+      photo={place.photos[0] ?? placeholderPicture(place.category)}
       placeholder={t.common.noPhoto}
       lang={lang}
       headingLevel={headingLevel}
@@ -50,7 +51,9 @@ export function BusinessCard({ business, lang, t, headingLevel }: Common & { bus
         <>
           {business.disclosure === "platform-creator" && <span className={ui.badgeGold}>{t.directory.rosiBadge}</span>}
           {selfReported && <span className={ui.badge}>{t.directory.selfReportedBadge}</span>}
-          {business.origin ? (
+          {business.origin?.kind === "demo" ? (
+            <span className={ui.badgeGold}>{t.common.demo}</span>
+          ) : business.origin?.kind === "open-data" ? (
             <span className={ui.badgeWarn}>{t.common.openData}</span>
           ) : (
             !business.claimed && <span className={ui.badgeMuted}>{t.directory.unclaimedBadge}</span>

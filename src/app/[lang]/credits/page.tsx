@@ -37,7 +37,8 @@ export default async function CreditsPage({ params }: PageProps<"/[lang]/credits
   for (const b of businesses) for (const photo of b.photos) add(photo, b.name, recordPath("business", b.slug));
   const all = [...used.values()];
   const free = all.filter((x) => x.photo.rights === "free-licence");
-  const owner = all.filter((x) => x.photo.rights !== "free-licence");
+  const owner = all.filter((x) => x.photo.rights === "owner-pending" || x.photo.rights === "owner-permission");
+  const drawn = all.filter((x) => x.photo.rights === "illustration");
 
   const list = (items: typeof all) => (
     <ul className={styles.list}>
@@ -74,6 +75,14 @@ export default async function CreditsPage({ params }: PageProps<"/[lang]/credits
             {t.credits.photos} · ROSI ({t.common.rightsPending})
           </h2>
           {list(owner)}
+          {drawn.length > 0 && (
+            <>
+              <h2 className={ui.h2} style={{ marginTop: 32 }}>
+                {t.credits.illustrations}
+              </h2>
+              {list(drawn)}
+            </>
+          )}
         </section>
         <section className={ui.sectionTight} aria-labelledby="map-data">
           <h2 id="map-data" className={ui.h2}>
