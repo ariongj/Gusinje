@@ -1,22 +1,15 @@
 import type { Locator } from "@playwright/test";
 
-import { expect, test } from "./fixtures";
+import { expect, pinPoint, test } from "./fixtures";
 
 // The 3D map draws with software WebGL on CI runners, where one of these tests
 // can take 40 seconds; they get twice the usual time.
 test.describe.configure({ timeout: 90_000 });
 
-/**
- * Pause a running tour and go back to its first stop. The tour moves on by
- * itself, and on a slow machine it can do so before the pause lands.
- */
-async function pauseAtFirstStop(card: Locator) {
-  await card.getByRole("button", { name: "Pause" }).click();
-  await expect(card.getByRole("button", { name: "Play" })).toBeVisible();
-  for (let i = 0; i < 6 && !(await card.getByText(/^Stop 1 of \d+$/).isVisible()); i++) {
-    await card.getByRole("button", { name: "Previous stop" }).click();
-  }
+/** Tours go one stop at a time until the visitor presses play: the first stop, waiting. */
+async function atFirstStop(card: Locator) {
   await expect(card.getByText(/^Stop 1 of \d+$/)).toBeVisible();
+  await expect(card.getByRole("button", { name: "Play the tour" })).toBeVisible();
 }
 
 test.describe("Explore: 3D, map and list share the same records", () => {
@@ -26,9 +19,9 @@ test.describe("Explore: 3D, map and list share the same records", () => {
     await expect(page.getByRole("region", { name: "Map of places and listings" })).toBeVisible();
     // Places without a verified location are listed, never placed on the map.
     await expect(page.locator('button[data-key="place:volusnica"]')).toHaveCount(0);
-    const pin = page.locator('button[data-key="place:grlja"]');
+    // The map draws its pins; each also has a button in the map's place list, for keyboards and screen readers.
+    const pin = page.getByRole("list", { name: "Places on the map" }).locator('button[data-key="place:grlja"]');
     await expect(pin).toBeAttached({ timeout: 20_000 });
-    // Pins are buttons: keyboard activation must work.
     await pin.focus();
     await page.keyboard.press("Enter");
     const panel = page.getByTestId("info-panel");
@@ -98,6 +91,8 @@ test.describe("Explore: 3D, map and list share the same records", () => {
     await expect(page.getByTestId("info-panel").getByRole("heading", { name: "Ali Pasha's Springs" })).toBeVisible();
     // Map tiles are blocked in tests: the map says so but keeps working.
     await expect(page.getByText("The map background couldn't load")).toBeVisible();
+    // The legend starts closed; it says what the map leaves out.
+    await page.getByRole("button", { name: "Legend & filters" }).click();
     await expect(page.getByText(/no verified location yet/)).toBeVisible();
   });
 
@@ -113,11 +108,8 @@ test.describe("Explore: 3D, map and list share the same records", () => {
   test("a mouse click on a 3D marker selects that marker, not its neighbour", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/explore/");
-    const dot = page.locator('button[data-key="place:oko-skakavice"] [data-part="dot"]');
-    await expect(dot).toBeAttached({ timeout: 20_000 });
-    await page.waitForTimeout(1500);
-    const box = await dot.boundingBox();
-    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    const { x, y } = await pinPoint(page, "place:oko-skakavice");
+    await page.mouse.click(x, y);
     await expect(page.getByTestId("info-panel").getByRole("heading", { name: "Oko Skakavice" })).toBeVisible();
   });
 
@@ -158,8 +150,7 @@ test.describe("Virtual tours", () => {
     await intro.getByRole("button", { name: "Begin" }).click();
 
     const card = page.getByTestId("guide-card");
-    await expect(card.getByText(/^Stop \d of 6$/)).toBeVisible();
-    await pauseAtFirstStop(card);
+    await atFirstStop(card);
     await card.getByRole("button", { name: "Next stop" }).click();
     await expect(card.getByText("Stop 2 of 6")).toBeVisible();
     await expect(card.getByRole("heading", { name: "Ali Pasha's Springs" })).toBeVisible();
@@ -168,6 +159,10 @@ test.describe("Virtual tours", () => {
     await expect(card.getByText("Stop 3 of 6")).toBeVisible();
     await card.getByRole("button", { name: "Previous stop" }).click();
     await expect(card.getByText("Stop 2 of 6")).toBeVisible();
+    // Play moves on by itself; stopping keeps the stop.
+    await card.getByRole("button", { name: "Play the tour" }).click();
+    await card.getByRole("button", { name: "Stop playing" }).click();
+    await expect(card.getByRole("button", { name: "Play the tour" })).toBeVisible();
     await card.getByRole("button", { name: "Restart" }).click();
     await expect(card.getByText("Stop 1 of 6")).toBeVisible();
     await expect(card.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
@@ -196,7 +191,7 @@ test.describe("Journeys", () => {
     await expect(intro).toBeVisible();
     await intro.getByRole("button", { name: "Begin" }).click();
     const card = page.getByTestId("guide-card");
-    await pauseAtFirstStop(card);
+    await atFirstStop(card);
     await card.getByRole("button", { name: "Next stop" }).click();
     await expect(card.getByText(/Stop 2 of \d+/)).toBeVisible();
     await expect(card.getByText("Day 1", { exact: false }).first()).toBeVisible();
@@ -215,13 +210,12 @@ test.describe("Map tools", () => {
     void errors;
     await page.route(/elevation-tiles-prod/, (route) => route.fulfill({ status: 200, contentType: "image/png", body: FLAT_1000M }));
     await page.goto("/en/explore/");
-    const marker = page.locator('button[data-key="place:ali-pashas-springs"]');
-    await expect(marker).toBeVisible();
-
     // A photo card on hover.
-    await marker.hover();
-    await expect(marker.locator('[data-part="preview"]')).toBeVisible();
-    await expect(marker.locator('[data-part="preview"]')).toContainText("Spring");
+    const { x, y } = await pinPoint(page, "place:ali-pashas-springs");
+    await page.mouse.move(x, y);
+    const preview = page.locator('.maplibregl-popup [data-part="preview"]');
+    await expect(preview).toBeVisible();
+    await expect(preview).toContainText("Spring");
 
     // Orbit on, then any touch of the map turns it off; the compass faces north.
     const orbit = page.getByRole("button", { name: "Circle around this view" });
@@ -233,8 +227,9 @@ test.describe("Map tools", () => {
     // Tap the ground: about 1,000 m here (the drawing's ×1.35 height is taken out).
     const stage = page.getByTestId("explore-stage");
     const box = (await stage.boundingBox())!;
-    await page.mouse.move(box.x + box.width * 0.55, box.y + box.height * 0.3);
-    await page.mouse.click(box.x + box.width * 0.55, box.y + box.height * 0.3);
+    // (Open slopes on the left, away from any pin: a tap near a pin picks the place.)
+    await page.mouse.move(box.x + box.width * 0.15, box.y + box.height * 0.55);
+    await page.mouse.click(box.x + box.width * 0.15, box.y + box.height * 0.55);
     await expect(page.locator(".maplibregl-popup")).toContainText("≈ 1,000 m above sea level");
   });
 });

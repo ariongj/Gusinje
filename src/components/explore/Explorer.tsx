@@ -80,6 +80,8 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
   const [query, setQuery] = useState("");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [mapFocus, setMapFocus] = useState<MapFocus>({ key: null, nonce: 0 });
+  /** The visitor moved the 3D map themselves (the reset button only shows once there is something to reset). */
+  const [moved, setMoved] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [tour, setTour] = useState<{
     data: ExploreTour;
@@ -212,11 +214,11 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
       setSelectedKey(null);
       if (viewRef.current === "list") switchView(webgl === "no" ? "map" : "3d");
       setTour({ data, phase: "intro" });
-      // Right under the header: the whole explorer on wide screens (it fits),
-      // the map itself on phones. (scrollIntoView would add the page's anchor padding.)
+      // The explorer right under the header: it fills the screen, and on the tour
+      // the model takes it all. (scrollIntoView would add the page's anchor padding.)
       const stage = stageRef.current;
       if (stage) {
-        const target = stage.clientWidth >= 900 && stage.parentElement ? stage.parentElement : stage;
+        const target = stage.parentElement ?? stage;
         window.scrollTo({
           top: target.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(stage).scrollMarginTop) || 0),
           behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
@@ -259,7 +261,6 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
     // WebGL support and the query string are only known in the browser, after hydration.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setWebgl(supported ? "ok" : "no");
-    setLegendOpen(window.innerWidth >= 1100);
     const params = new URLSearchParams(window.location.search);
     let initialView = (params.get("view") as ExploreView) || "3d";
     if (!VIEWS.includes(initialView)) initialView = "3d";
@@ -591,6 +592,7 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
                     if (touring) guide.pause();
                     select(key);
                   }}
+                  onInteract={() => setMoved(true)}
                   onFailed={() => {
                     setWebgl("no");
                     setView("map");
@@ -611,16 +613,19 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
                   focus={mapFocus}
                 />
               )}
-              <button
-                type="button"
-                className={styles.mapReset}
-                onClick={() => {
-                  setSelectedKey(null);
-                  setMapFocus((f) => ({ key: null, nonce: f.nonce + 1 }));
-                }}
-              >
-                {t.explore.resetView}
-              </button>
+              {!touring && (selectedKey || moved || mapFocus.key || mapFocus.camera) && (
+                <button
+                  type="button"
+                  className={styles.mapReset}
+                  onClick={() => {
+                    setSelectedKey(null);
+                    setMoved(false);
+                    setMapFocus((f) => ({ key: null, nonce: f.nonce + 1 }));
+                  }}
+                >
+                  {t.explore.resetView}
+                </button>
+              )}
             </div>
           )}
 
@@ -768,6 +773,7 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
               index={guide.index}
               total={guide.total}
               isLast={guide.isLast}
+              nextTitle={tourStops[guide.index + 1]?.title}
               playing={guide.playing}
               voice={guide.voice}
               voiceAvailable={guide.voiceAvailable}

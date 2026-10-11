@@ -7,9 +7,7 @@
   width: min(410px, calc(100% - 24px));
   padding: 16px 20px 22px;
   overflow: hidden;
-  background: var(--glass-strong);
-  -webkit-backdrop-filter: saturate(160%) blur(22px);
-  backdrop-filter: saturate(160%) blur(22px);
+  background: var(--panel);
   border: 1px solid var(--glass-line);
   border-radius: var(--r-xl);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
@@ -35,8 +33,6 @@
     margin-top: 10px;
     padding: 14px 16px 20px;
     background: var(--light);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
     border: none;
     border-radius: var(--r-lg);
     box-shadow: none;
@@ -240,7 +236,6 @@
 
 .controls {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-top: 16px;
@@ -272,61 +267,6 @@
   opacity: 0.35;
   cursor: default;
 }
-
-.play,
-.finish {
-  background: var(--gold);
-  color: var(--on-gold);
-  box-shadow: 0 8px 20px rgba(184, 137, 74, 0.3);
-}
-
-.play {
-  width: 50px;
-  height: 50px;
-}
-
-.play:hover:not(:disabled),
-.finish:hover:not(:disabled) {
-  background: var(--gold-hover);
-  transform: translateY(-1px);
-}
-
-/* "Done" on the last stop: a pill rather than a disc. */
-.finish {
-  width: auto;
-  padding: 0 20px;
-  border-radius: var(--r-pill);
-}
-
-.voice {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 16px 0 14px;
-  background: rgba(15, 59, 63, 0.07);
-  border: none;
-  border-radius: var(--r-pill);
-  color: var(--ink);
-  font: 600 14px/1 var(--font-text);
-  white-space: nowrap;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-}
-
-.voice:hover {
-  background: rgba(15, 59, 63, 0.14);
-}
-
-.voiceOn,
-.voiceOn:hover {
-  background: var(--teal);
-  color: var(--cream-2);
-}
-
-/* ---------- auto-advance timer ---------- */
 
 .progress {
   position: absolute;
@@ -370,6 +310,96 @@
   }
 
   .link {
+    min-height: 44px;
+  }
+}
+
+/* ---------- step forward ---------- */
+
+.next {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  min-height: 56px;
+  padding: 8px 18px 8px 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--teal);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.next:hover {
+  background: var(--teal-2);
+}
+
+.finish {
+  justify-content: center;
+  background: var(--gold);
+  color: var(--on-gold);
+}
+
+.finish:hover {
+  background: var(--gold-hover);
+}
+
+.nextText {
+  display: grid;
+  min-width: 0;
+}
+
+.nextLabel {
+  font: 700 15.5px/1.2 var(--font-text);
+}
+
+.nextName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 500 12.5px/1.3 var(--font-text);
+  opacity: 0.82;
+}
+
+.extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin-top: 10px;
+}
+
+.small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line-3);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-soft);
+  font: 600 12.5px/1 var(--font-text);
+  cursor: pointer;
+}
+
+.small:hover {
+  color: var(--ink);
+  background: var(--mist);
+}
+
+.smallOn,
+.smallOn:hover {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: #fff;
+}
+
+@media (pointer: coarse) {
+  .small {
     min-height: 44px;
   }
 }

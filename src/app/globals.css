@@ -78,6 +78,8 @@
   --shadow-lift: 0 30px 80px rgba(12, 44, 48, 0.16);
   --glass: rgba(251, 250, 247, 0.72);
   --glass-strong: rgba(251, 250, 247, 0.88);
+  /* Panels over the moving 3D map: nearly opaque and never blurred (a blur is redrawn every frame). */
+  --panel: rgba(251, 250, 247, 0.96);
   --glass-dark: rgba(8, 36, 39, 0.55);
   --glass-line: rgba(255, 255, 255, 0.55);
 

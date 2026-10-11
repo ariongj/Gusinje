@@ -266,6 +266,10 @@ export const cnr: Messages = {
     photoOf: "Fotografija {i} od {n}",
     quickFilters: "Prikaži na mapi",
     allGroups: "Sve",
+    mapPlaces: "Mjesta na mapi",
+    nextUp: "Sljedeće:",
+    autoplay: "Pusti turu",
+    autoplayOff: "Zaustavi",
   },
   place: {
     alsoKnownAs: "Poznato i kao",

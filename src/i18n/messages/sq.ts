@@ -262,6 +262,10 @@ export const sq: Messages = {
     photoOf: "Fotografia {i} nga {n}",
     quickFilters: "Shfaq në hartë",
     allGroups: "Gjithçka",
+    mapPlaces: "Vendet në hartë",
+    nextUp: "Më pas:",
+    autoplay: "Luaje turin",
+    autoplayOff: "Ndalo luajtjen",
   },
   place: {
     alsoKnownAs: "I njohur edhe si",

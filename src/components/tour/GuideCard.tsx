@@ -24,6 +24,8 @@ type GuideCardProps = {
   index: number;
   total: number;
   isLast: boolean;
+  /** The next stop's title, shown on the Next button. */
+  nextTitle?: string;
   playing: boolean;
   voice: boolean;
   voiceAvailable: boolean;
@@ -49,6 +51,7 @@ export function GuideCard({
   index,
   total,
   isLast,
+  nextTitle,
   playing,
   voice,
   voiceAvailable,
@@ -141,46 +144,51 @@ export function GuideCard({
         </Link>
       )}
 
+      {/* One big step forward; everything else stays small. */}
       <div className={styles.controls}>
         <button type="button" className={styles.round} aria-label={t.explore.previous} title={t.explore.previous} disabled={index === 0} onClick={onBack}>
-          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-            <path d="M8.5 2.5 4 7l4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          <svg width="16" height="16" viewBox="0 0 14 14" aria-hidden="true">
+            <path d="M8.5 2.5 4 7l4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </svg>
         </button>
-        <button
-          type="button"
-          className={cx(styles.round, styles.play)}
-          aria-label={playing ? t.explore.pause : t.explore.play}
-          title={playing ? t.explore.pause : t.explore.play}
-          onClick={onTogglePlay}
-        >
+        <button type="button" className={cx(styles.next, isLast && styles.finish)} onClick={onNext}>
+          <span className={styles.nextText}>
+            <span className={styles.nextLabel}>{isLast ? t.explore.finish : t.explore.next}</span>
+            {!isLast && nextTitle && (
+              <span className={styles.nextName}>
+                {t.explore.nextUp} {nextTitle}
+              </span>
+            )}
+          </span>
+          {!isLast && (
+            <svg width="18" height="18" viewBox="0 0 14 14" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
+          )}
+        </button>
+      </div>
+      <div className={styles.extras}>
+        <button type="button" className={cx(styles.small, playing && styles.smallOn)} onClick={onTogglePlay}>
           {playing ? (
-            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
               <path d="M4.5 2.5v9M9.5 2.5v9" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
             </svg>
           ) : (
-            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
               <path d="M4.5 2.3v9.4l7.2-4.7z" fill="currentColor" />
             </svg>
           )}
+          {playing ? t.explore.autoplayOff : t.explore.autoplay}
         </button>
-        <button type="button" className={cx(styles.round, isLast && styles.finish)} aria-label={isLast ? undefined : t.explore.next} title={isLast ? undefined : t.explore.next} onClick={onNext}>
-          {isLast ? (
-            t.explore.finish
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-              <path d="M5.5 2.5 10 7l-4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            </svg>
-          )}
-        </button>
-        <button type="button" className={styles.round} aria-label={t.explore.restart} title={t.explore.restart} onClick={onRestart}>
-          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-            <path d="M2.5 7a4.5 4.5 0 1 0 1.3-3.2M2.5 1.5v2.8h2.8" stroke="currentColor" fill="none" strokeWidth="1.5" />
+        <button type="button" className={styles.small} onClick={onRestart}>
+          <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
+            <path d="M2.5 7a4.5 4.5 0 1 0 1.3-3.2M2.5 1.5v2.8h2.8" stroke="currentColor" fill="none" strokeWidth="1.6" />
           </svg>
+          {t.explore.restart}
         </button>
         {voiceAvailable && (
-          <button type="button" className={cx(styles.voice, voice && styles.voiceOn)} aria-pressed={voice} onClick={onToggleVoice}>
-            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+          <button type="button" className={cx(styles.small, voice && styles.smallOn)} aria-pressed={voice} onClick={onToggleVoice}>
+            <svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M2.5 6v4h2.8L9 13V3L5.3 6z" fill="currentColor" />
               {voice && <path d="M11 5.2a3.6 3.6 0 0 1 0 5.6M12.8 3.4a6.2 6.2 0 0 1 0 9.2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" fill="none" />}
             </svg>
@@ -189,7 +197,7 @@ export function GuideCard({
         )}
       </div>
 
-      {!voice && !isLast && (
+      {playing && !voice && !isLast && (
         <div className={styles.progress} aria-hidden="true">
           <span key={runKey} className={styles.progressFill} style={{ animationDuration: `${duration}ms`, animationPlayState: playing ? "running" : "paused" }} />
         </div>

@@ -27,8 +27,3 @@ export const MAP_ICONS = {
 } as const;
 
 export type MapIcon = keyof typeof MAP_ICONS;
-
-/** The marker's SVG (aria-hidden: the button carries the name). */
-export function iconSvg(icon: MapIcon): string {
-  return `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="${MAP_ICONS[icon]}"/></svg>`;
-}

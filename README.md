@@ -151,12 +151,26 @@ source fell back to — are listed without a pin); guides and activity providers
 `pip install pyarrow fsspec aiohttp requests && python3 scripts/import-overture.py`.
 
 **Map tools**: a photo card when hovering a marker, a compass (tap to face north), an orbit
-button that circles the view, full screen (where the browser allows it) and, in 3D, a tap on the
-ground shows its height from the elevation data (approximate; the ×1.35 drawing exaggeration is
-taken out). Markers carry an icon for what they are (village, waterfall, peak, bed, fork and
-knife, café, pharmacy, cash machine, fuel…); picking one flies the camera down into it, and its card
-has a photo gallery, the distance from Gusinje and what's within 2 km. On phones the place card is a sheet — swipe down to close, up for more — and the
+button that circles the view (not on phones, where a finger turns the view), full screen (where
+the browser allows it) and, in 3D, a tap on the ground shows its height from the elevation data
+(approximate; the ×1.35 drawing exaggeration is taken out). Markers carry an icon for what they
+are (village, waterfall, peak, bed, fork and knife, café, pharmacy, cash machine, fuel…); picking
+one flies the camera down into it, and its card has a photo gallery, the distance from Gusinje and
+what's within 2 km. On phones the place card is a sheet — swipe down to close, up for more — and the
 title bar shrinks so the map gets the room.
+
+**Smooth on phones**: the map draws its markers, labels and numbered business bubbles itself
+(WebGL symbol layers, `src/components/map/placeLayers.ts`) instead of one HTML element each, so
+hundreds of places don't slow it down; labels make room for each other, town and village names
+first. Each marker also has a button in a hidden list for keyboards and screen readers. Camera
+flights follow one smooth curve and glide over the ground's height instead of riding every
+ridge. Panels over the map are solid rather than blurred (a blur is redrawn every frame). The
+tip on how to move the map shows once, the legend starts closed (the chips filter), and "Show
+the whole valley" appears once there is something to reset.
+
+**Guided tours** go one stop at a time: a big "Next stop" button names the next place, with
+"Play the tour", restart and voice as small extras. On wide screens the tour takes the whole
+screen; on phones the card docks under the model and both fit above the tab bar.
 
 **Useful services** (`/services`) and **History & culture** (`/about/history`) are sourced pages
 like the rest: every entry shows its sources and check date, contested history is marked as such,

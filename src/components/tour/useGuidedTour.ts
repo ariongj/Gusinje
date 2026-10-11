@@ -70,14 +70,14 @@ export function useGuidedTour<S extends TimedStop>(stops: readonly S[], onStop: 
     [stops],
   );
 
+  // Step by step unless the visitor presses Play: the tour waits for "Next".
   const start = useCallback(() => {
     setActive(true);
-    setPlaying(true);
+    setPlaying(false);
     goTo(0);
   }, [goTo]);
 
   const restart = useCallback(() => {
-    setPlaying(true);
     goTo(0);
   }, [goTo]);
 

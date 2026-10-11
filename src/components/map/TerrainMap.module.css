@@ -48,147 +48,96 @@
   outline-offset: -3px;
 }
 
-/* ---------- place markers (a coloured dot per legend group; areas are rings) ---------- */
+/* ---------- the places as a list (keyboards and screen readers) ---------- */
 
-.marker {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.marker:focus-visible {
-  outline: none;
-}
-
-/* Finger-sized on touch screens (the dot stays the same size). */
-@media (pointer: coarse) {
-  .marker {
-    width: 44px;
-    height: 44px;
-  }
-}
-
-.marker[data-group="villages"] { --group: #0f3b3f; }
-.marker[data-group="water"] { --group: #1f7a9a; }
-.marker[data-group="nature"] { --group: #4f7a3a; }
-.marker[data-group="culture"] { --group: #8a3b4a; }
-.marker[data-group="stay"] { --group: #b8894a; }
-.marker[data-group="food"] { --group: #c0612b; }
-.marker[data-group="services"] { --group: #5b5a8f; }
-
-/* A coloured disc with the place's icon; areas (villages, valleys) are white with a coloured ring. */
-.dot {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--group, var(--teal));
-  border: 2.5px solid #fff;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(10, 42, 45, 0.38);
-  transition: transform 0.2s var(--ease-soft);
-}
-
-.dot svg {
-  display: block;
-}
-
-.marker[data-precision="area"] .dot {
-  width: 30px;
-  height: 30px;
-  background: #fff;
-  border: 3px solid var(--group, var(--teal));
-  color: var(--group, var(--teal));
-}
-
-/* From open map data, not checked: smaller and hollow. */
-.marker[data-open] .dot {
-  width: 24px;
-  height: 24px;
-  background: #fff;
-  border: 2px solid var(--group, var(--teal));
-  color: var(--group, var(--teal));
-  box-shadow: 0 2px 8px rgba(10, 42, 45, 0.28);
-}
-
-.marker[data-open] .dot svg {
-  width: 12px;
-  height: 12px;
-}
-
-.label {
+/* Out of sight until a key reaches it; then a small list over the map's corner. */
+.keyList {
   position: absolute;
-  left: 50%;
-  bottom: calc(100% + 1px);
-  transform: translateX(-50%);
-  padding: 6px 12px;
-  border-radius: var(--r-pill);
-  background: rgba(6, 26, 29, 0.72);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  color: #f6f9f8;
-  font: 600 12.5px/1 var(--font-text);
-  white-space: nowrap;
+  left: var(--map-notice-left, 12px);
+  bottom: calc(var(--inset-bottom, 0px) + 12px);
+  z-index: 6;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  list-style: none;
+}
+
+.keyList:focus-within {
+  width: min(280px, calc(100% - 24px));
+  height: auto;
+  max-height: 40%;
+  padding: 6px;
+  overflow: auto;
+  clip-path: none;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: var(--shadow-lift);
+}
+
+.keyList button {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ink);
+  font: 600 13.5px/1.3 var(--font-text);
+  text-align: left;
+}
+
+.keyList button[aria-pressed="true"] {
+  background: var(--gold-chip);
+}
+
+.keyList button:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: -3px;
+}
+
+/* ---------- photo card on hover (mouse) ---------- */
+
+.preview :global(.maplibregl-popup-content) {
+  padding: 6px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lift);
+}
+
+.preview :global(.maplibregl-popup-tip) {
+  display: none;
+}
+
+.previewCard {
+  display: grid;
+  gap: 2px;
+  width: 184px;
   pointer-events: none;
-  opacity: 0;
-  transition:
-    opacity 0.2s,
-    background-color 0.2s;
 }
 
-/* Labels: towns and villages always; everything once zoomed in; any marker on hover or focus. */
-.marker[data-group="villages"] .label,
-.detail .label,
-.marker:hover .label,
-.marker:focus-visible .label {
-  opacity: 1;
+.previewCard img {
+  display: block;
+  width: 100%;
+  height: 104px;
+  margin-bottom: 6px;
+  border-radius: 11px;
+  object-fit: cover;
+  background: var(--glacier);
 }
 
-/* Would overlap a more important label: shown on hover or focus only. */
-.marker.crowded .label {
-  opacity: 0;
+.previewCard strong {
+  padding: 0 6px;
+  color: var(--ink);
+  font: 700 13.5px/1.25 var(--font-text);
 }
 
-.marker:hover .label,
-.marker:focus-visible .label {
-  opacity: 1;
-}
-
-.marker:hover .dot {
-  transform: scale(1.2);
-}
-
-.marker:focus-visible .dot {
-  box-shadow:
-    0 0 0 3px #fff,
-    0 0 0 6px var(--focus-ring);
-}
-
-.labelled {
-  z-index: 2;
-}
-
-.selected {
-  z-index: 3;
-}
-
-.selected .dot {
-  transform: scale(1.35);
-  box-shadow:
-    0 0 0 4px var(--gold),
-    0 4px 14px rgba(0, 0, 0, 0.4);
-}
-
-.selected .label {
-  opacity: 1;
-  background: var(--gold);
-  color: var(--on-gold);
+.previewCard span {
+  padding: 0 6px 4px;
+  color: var(--muted);
+  font: 500 12px/1.3 var(--font-text);
 }
 
 /* ---------- controls and notices ---------- */
@@ -207,9 +156,7 @@
   height: 44px;
   border-radius: 14px;
   border: 1px solid var(--glass-line);
-  background: var(--glass-strong);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  background: var(--panel);
   color: var(--ink);
   font-size: 22px;
   line-height: 1;
@@ -239,7 +186,7 @@
   z-index: 5;
   padding: 8px 12px;
   border-radius: 12px;
-  background: var(--glass-strong);
+  background: var(--panel);
   color: var(--text);
   font: 500 13px/1.4 var(--font-text);
   box-shadow: var(--shadow-soft);
@@ -249,79 +196,18 @@
   transition: transform 0.1s linear;
 }
 
+/* Phones: one finger turns the view already; fewer buttons. */
+@media (pointer: coarse) and (max-width: 720px) {
+  .orbit {
+    display: none;
+  }
+}
+
 .orbit[aria-pressed="true"],
 .control[aria-pressed="true"] {
   background: var(--teal);
   border-color: var(--teal);
   color: #fff;
-}
-
-/* ---------- photo card on hover (mouse) ---------- */
-
-.preview {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 2px);
-  display: none;
-  width: 184px;
-  padding: 6px 6px 10px;
-  border-radius: 16px;
-  background: var(--lighter);
-  box-shadow: var(--shadow-lift);
-  text-align: left;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.preview img {
-  display: block;
-  width: 100%;
-  height: 104px;
-  margin-bottom: 8px;
-  border-radius: 11px;
-  object-fit: cover;
-  background: var(--glacier);
-}
-
-.previewName {
-  display: block;
-  padding: 0 6px;
-  color: var(--ink);
-  font: 700 13.5px/1.25 var(--font-text);
-  white-space: normal;
-}
-
-.previewMeta {
-  display: block;
-  padding: 2px 6px 0;
-  color: var(--muted);
-  font: 500 12px/1.3 var(--font-text);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hasPreview:hover {
-    z-index: 4;
-  }
-
-  .hasPreview:hover .preview {
-    display: block;
-    animation: pop 0.18s var(--ease-soft) both;
-  }
-
-  .hasPreview:hover .label {
-    opacity: 0;
-  }
-}
-
-@keyframes pop {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 6px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
 }
 
 /* ---------- tip and height readout ---------- */
@@ -336,9 +222,7 @@
   margin: 0;
   padding: 10px 16px;
   border-radius: 16px;
-  background: rgba(6, 26, 29, 0.78);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: rgba(6, 26, 29, 0.88);
   color: #fff;
   font: 500 13px/1.45 var(--font-text);
   text-align: center;

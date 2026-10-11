@@ -2,7 +2,7 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import type { Map as MLMap, Marker, Popup, StyleSpecification } from "maplibre-gl";
+import type { GeoJSONSource, Map as MLMap, MapGeoJSONFeature, PointLike, Popup, StyleSpecification } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 
 import type { CameraTarget, ExploreItem } from "@/components/explore/types";
@@ -11,7 +11,7 @@ import { fill } from "@/i18n/localize";
 import { cx } from "@/lib/cx";
 import imageLoader from "@/lib/image-loader";
 
-import { iconSvg } from "./icons";
+import { addMissingImage, addPlaceLayers, LAYER_CLUSTERS, PICKABLE, placeData, setLabelFont, setPlaceData, SOURCE_BUSINESSES } from "./placeLayers";
 import { BASE_STYLE_URL, demSources, EXAGGERATION, HILLSHADE_LAYER, hillshadeLayer, MAX_BOUNDS, reliefStyle, SKY, TERRAIN_SOURCE } from "./mapStyle";
 import styles from "./TerrainMap.module.css";
 
@@ -36,6 +36,8 @@ type Props = {
   insets?: Insets;
   /** WebGL could not start. */
   onFailed?: () => void;
+  /** The visitor moved the map themselves. */
+  onInteract?: () => void;
   className?: string;
 };
 
@@ -49,6 +51,7 @@ const OVERVIEW_FLAT: Camera = { center: [19.83, 42.52], zoom: 11.7, bearing: 0, 
 const VALLEY: Camera = { center: [19.836, 42.538], zoom: 12.7, bearing: 190, pitch: 72 };
 
 const NO_ITEMS: ExploreItem[] = [];
+const HINT_SEEN = "gusinje:map-tip-seen";
 const NO_FOCUS: MapFocus = { key: null, nonce: 0 };
 
 /** Kilometres east/north between two points (good enough at this scale). */
@@ -106,15 +109,28 @@ const paddingOf = (map: MLMap): Padding => {
   return { left: px(p.left), right: px(p.right), bottom: px(p.bottom), top: px(p.top) };
 };
 
-const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+/** CSS "ease" (cubic-bezier(0.25, 0.1, 0.25, 1)): moves at once, settles slowly. */
+function ease(t: number) {
+  const [x1, y1, x2, y2] = [0.25, 0.1, 0.25, 1];
+  const bez = (a: number, b: number, u: number) => 3 * a * u * (1 - u) ** 2 + 3 * b * u * u * (1 - u) + u ** 3;
+  let u = t;
+  for (let i = 0; i < 6; i++) {
+    const dx = 3 * x1 * (1 - u) ** 2 + 6 * (x2 - x1) * u * (1 - u) + 3 * (1 - x2) * u * u;
+    if (Math.abs(dx) < 1e-6) break;
+    u = Math.min(1, Math.max(0, u - (bez(x1, x2, u) - t) / dx));
+  }
+  return bez(y1, y2, u);
+}
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /**
- * Fly the camera as a sequence of jumps. Each jump lets MapLibre read the
- * ground height under the new centre, so the camera rises with the
- * mountains instead of carrying the valley's height up to a 2,500 m summit
- * (its own animated flights keep the starting height). Longer hops pull back
- * a little in the middle. Returns a function that stops the flight.
+ * Fly the camera along one smooth curve: the path a viewer's eye finds
+ * natural (van Wijk & Nuij), zooming out on long hops only as far as needed
+ * to keep both ends in view. The height of the point looked at glides from
+ * the ground at the start to the ground at the place — MapLibre would
+ * otherwise lift and drop the camera over every ridge and with every finer
+ * elevation tile, which is what made flights shake. Returns a function that
+ * stops the flight.
  */
 function fly(map: MLMap, to: Shot, duration: number, done?: () => void): () => void {
   const from = map.getCenter();
@@ -122,22 +138,68 @@ function fly(map: MLMap, to: Shot, duration: number, done?: () => void): () => v
   const startBearing = map.getBearing();
   const startPitch = map.getPitch();
   const startPadding = paddingOf(map);
+  const startElevation = map.getCenterElevation();
   const turn = ((to.bearing - startBearing + 540) % 360) - 180;
+
+  // The curve, in screen pixels at the starting zoom.
   const [east, north] = offsetKm([from.lng, from.lat], to.center);
-  // Only a long hop rises a little in the middle; a short one goes straight in.
-  const pullBack = Math.max(0, Math.min(1.2, (Math.hypot(east, north) - 2.5) / 5));
+  const metresPerPixel = (40075016.7 * Math.cos((from.lat * Math.PI) / 180)) / (512 * 2 ** startZoom);
+  const u1 = (Math.hypot(east, north) * 1000) / metresPerPixel;
+  const canvas = map.getCanvas();
+  const w0 = Math.max(canvas.clientWidth, canvas.clientHeight, 1);
+  const w1 = w0 / 2 ** (to.zoom - startZoom);
+  const rho = 1.25;
+  const rho2 = rho * rho;
+  let width: (s: number) => number;
+  let travelled: (s: number) => number;
+  let length: number;
+  if (u1 < 0.5) {
+    // Turning or zooming on the spot.
+    length = Math.abs(Math.log(w1 / w0)) / rho;
+    width = (s) => Math.exp((w1 < w0 ? -1 : 1) * rho * s);
+    travelled = () => 1;
+  } else {
+    const r = (i: 0 | 1) => {
+      const w = i ? w1 : w0;
+      const b = (w1 * w1 - w0 * w0 + (i ? -1 : 1) * rho2 * rho2 * u1 * u1) / (2 * w * rho2 * u1);
+      return Math.log(Math.sqrt(b * b + 1) - b);
+    };
+    const r0 = r(0);
+    length = (r(1) - r0) / rho;
+    width = (s) => Math.cosh(r0) / Math.cosh(r0 + rho * s);
+    travelled = (s) => (w0 * ((Math.cosh(r0) * Math.tanh(r0 + rho * s) - Math.sinh(r0)) / rho2)) / u1;
+  }
+  if (!Number.isFinite(length) || length <= 0) length = 0;
+  // Short hops are quick; long ones take up to the given time.
+  const ms = Math.round(Math.max(duration * 0.5, Math.min(duration, length * 750)));
+
+  const clamped = map.getCenterClampedToGround();
+  map.setCenterClampedToGround(false);
+  let ground = map.queryTerrainElevation(to.center) ?? startElevation;
   const start = performance.now();
   let frame = 0;
   let stopped = false;
+  const finish = () => {
+    stopped = true;
+    cancelAnimationFrame(frame);
+    map.setCenterClampedToGround(clamped);
+  };
   const step = (now: number) => {
     if (stopped) return;
-    const k = Math.min(1, (now - start) / duration);
-    const e = easeInOut(k);
+    const k = Math.min(1, (now - start) / ms);
+    const e = ease(k);
+    const s = e * length;
+    const u = length ? Math.min(1, travelled(s)) : e;
+    const zoom = length ? startZoom - Math.log2(width(s)) : lerp(startZoom, to.zoom, e);
+    // The place's ground sharpens as finer elevation tiles arrive: follow it gently.
+    const latest = map.queryTerrainElevation(to.center);
+    if (latest !== null) ground += (latest - ground) * (k < 1 ? 0.12 : 1);
     map.jumpTo({
-      center: [lerp(from.lng, to.center[0], e), lerp(from.lat, to.center[1], e)],
-      zoom: lerp(startZoom, to.zoom, e) - pullBack * Math.sin(Math.PI * e),
+      center: [lerp(from.lng, to.center[0], u), lerp(from.lat, to.center[1], u)],
+      zoom: k < 1 ? zoom : to.zoom,
       bearing: startBearing + turn * e,
       pitch: lerp(startPitch, to.pitch, e),
+      elevation: lerp(startElevation, ground, e),
       padding: {
         left: px(lerp(startPadding.left, to.padding.left, e)),
         right: px(lerp(startPadding.right, to.padding.right, e)),
@@ -146,13 +208,13 @@ function fly(map: MLMap, to: Shot, duration: number, done?: () => void): () => v
       },
     });
     if (k < 1) frame = requestAnimationFrame(step);
-    else done?.();
+    else {
+      finish();
+      done?.();
+    }
   };
   frame = requestAnimationFrame(step);
-  return () => {
-    stopped = true;
-    cancelAnimationFrame(frame);
-  };
+  return finish;
 }
 
 /**
@@ -170,19 +232,23 @@ export function TerrainMap({
   touring = false,
   insets,
   onFailed,
+  onInteract,
   className,
 }: Props) {
   const { t } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap | null>(null);
   const libRef = useRef<typeof import("maplibre-gl") | null>(null);
-  const markersRef = useRef(new Map<string, { marker: Marker; el: HTMLButtonElement }>());
+  /** What the place layers show now (read when the layers are (re)added). */
+  const dataRef = useRef<ReturnType<typeof placeData> | null>(null);
+  const itemsRef = useRef(items);
   /** Stops the camera flight in progress, if any. */
   const flightRef = useRef<(() => void) | null>(null);
   const modeRef = useRef(mode);
   const insetsRef = useRef(insets);
   const onSelectRef = useRef(onSelect);
   const onFailedRef = useRef(onFailed);
+  const onInteractRef = useRef(onInteract);
   const [status, setStatus] = useState<"loading" | "ready" | "failed">("loading");
   const [tilesFailed, setTilesFailed] = useState(false);
   const [orbiting, setOrbiting] = useState(false);
@@ -193,16 +259,16 @@ export function TerrainMap({
   const needleRef = useRef<SVGSVGElement>(null);
   const popupRef = useRef<Popup | null>(null);
   const tRef = useRef(t);
-  const [detail, setDetail] = useState(false);
-  const detailRef = useRef(false);
-  const selectedRef = useRef<string | null>(null);
+  const previewRef = useRef<Popup | null>(null);
   const showcase = variant === "showcase";
 
   useEffect(() => {
     onSelectRef.current = onSelect;
     onFailedRef.current = onFailed;
+    onInteractRef.current = onInteract;
     insetsRef.current = insets;
     tRef.current = t;
+    itemsRef.current = items;
   });
 
   // Create the map once.
@@ -210,7 +276,6 @@ export function TerrainMap({
     let cancelled = false;
     let map: MLMap | null = null;
     let observer: IntersectionObserver | null = null;
-    const markers = markersRef.current;
 
     const fail = () => {
       if (cancelled) return;
@@ -259,6 +324,17 @@ export function TerrainMap({
           }
           m.setSky(SKY);
           m.setTerrain(showcase || modeRef.current === "3d" ? { source: TERRAIN_SOURCE, exaggeration: EXAGGERATION } : null);
+          // The guide's places, drawn by the map; labels use the page's font once it has loaded.
+          if (!showcase) {
+            const add = () => {
+              if (cancelled || !m.getStyle()) return;
+              setLabelFont(host);
+              addPlaceLayers(m);
+              if (dataRef.current) setPlaceData(m, dataRef.current);
+            };
+            if (document.fonts?.status === "loaded") add();
+            else void document.fonts?.ready.then(add);
+          }
           // Markers and controls need the style, not the tiles: with no signal the tiles may never come.
           if (!cancelled) setStatus("ready");
           // Phones: the credits start folded behind their (i) button.
@@ -277,6 +353,9 @@ export function TerrainMap({
           if ((e as { tile?: unknown }).tile) setTilesFailed(false);
         });
         m.on("webglcontextlost", fail);
+        m.on("styleimagemissing", (e) => addMissingImage(m, e.id));
+        // Automated tests reach the map to find where a place is drawn.
+        if (navigator.webdriver) (window as unknown as { __valleyMap?: MLMap }).__valleyMap = m;
 
         if (!showcase) {
           // Ctrl/⌘ + wheel (and trackpad pinch) zooms; a plain wheel scrolls the page.
@@ -289,50 +368,6 @@ export function TerrainMap({
             },
             { capture: true, passive: true },
           );
-          m.on("zoom", () => {
-            detailRef.current = m.getZoom() >= 12.8;
-            setDetail(detailRef.current);
-          });
-          // Labels never pile up: the selected place first, then towns and
-          // villages, then the rest; a label that would overlap one already
-          // shown waits for hover or focus. Checked a few times a second while
-          // the camera moves, and when it stops.
-          let last = 0;
-          const widths = new WeakMap<HTMLElement, number>();
-          const declutter = () => {
-            const shown: [number, number, number, number][] = [];
-            const entries = [...markersRef.current.entries()].map(([key, value]) => ({ key, ...value }));
-            const rank = (e: (typeof entries)[number]) =>
-              e.key === selectedRef.current ? 0 : e.el.dataset.group === "villages" ? 1 : e.el.dataset.precision === "area" ? 2 : 3;
-            entries.sort((a, b) => rank(a) - rank(b));
-            for (const { el, marker, key } of entries) {
-              const candidate = key === selectedRef.current || detailRef.current || el.dataset.group === "villages";
-              if (!candidate) {
-                el.classList.remove(styles.crowded, styles.labelled);
-                continue;
-              }
-              const label = el.querySelector<HTMLElement>('[data-part="label"]');
-              let w = widths.get(el);
-              if (w === undefined) {
-                w = label?.offsetWidth || 110;
-                widths.set(el, w);
-              }
-              const { x, y } = m.project(marker.getLngLat());
-              const rect: [number, number, number, number] = [x - w / 2 - 4, y - 50, x + w / 2 + 4, y - 16];
-              const clash = shown.some((r) => r[0] < rect[2] && rect[0] < r[2] && r[1] < rect[3] && rect[1] < r[3]);
-              el.classList.toggle(styles.crowded, clash);
-              // A marker with its label showing sits above its neighbours' dots.
-              el.classList.toggle(styles.labelled, !clash);
-              if (!clash) shown.push(rect);
-            }
-          };
-          m.on("render", () => {
-            const now = performance.now();
-            if (now - last < 120) return;
-            last = now;
-            declutter();
-          });
-          m.on("moveend", declutter);
           // The visitor takes the controls: stop any flight or orbit.
           for (const type of ["mousedown", "touchstart", "wheel"] as const) {
             m.on(type, () => {
@@ -343,6 +378,7 @@ export function TerrainMap({
                 setOrbiting(false);
               }
               setHint(false);
+              onInteractRef.current?.();
             });
           }
           // The compass needle follows the bearing.
@@ -353,8 +389,36 @@ export function TerrainMap({
           m.on("moveend", () => {
             if (orbitingRef.current) m.rotateTo(m.getBearing() - 60, { duration: 20000, easing: (x) => x });
           });
-          // Tap the ground in 3D: its height, from the elevation data.
+          // A tap picks the nearest place within a finger's width; a bubble opens up; elsewhere in 3D,
+          // the ground's height from the elevation data.
+          const near = (point: { x: number; y: number }, layers: string[]) => {
+            const box: [PointLike, PointLike] = [
+              [point.x - 14, point.y - 14],
+              [point.x + 14, point.y + 14],
+            ];
+            const hits = m.queryRenderedFeatures(box, { layers: layers.filter((id) => m.getLayer(id)) });
+            const dist = (f: MapGeoJSONFeature) => {
+              const [lng, lat] = (f.geometry as GeoJSON.Point).coordinates;
+              const p = m.project([lng, lat]);
+              return Math.hypot(p.x - point.x, p.y - point.y);
+            };
+            return hits.sort((a, b) => dist(a) - dist(b))[0];
+          };
           m.on("click", (e) => {
+            const hit = near(e.point, PICKABLE);
+            if (hit) {
+              previewRef.current?.remove();
+              onSelectRef.current?.(String(hit.properties.key));
+              return;
+            }
+            const bubble = near(e.point, [LAYER_CLUSTERS]);
+            if (bubble) {
+              const [lng, lat] = (bubble.geometry as GeoJSON.Point).coordinates;
+              void (m.getSource(SOURCE_BUSINESSES) as GeoJSONSource)
+                .getClusterExpansionZoom(Number(bubble.properties.cluster_id))
+                .then((zoom) => m.easeTo({ center: [lng, lat], zoom: Math.min(16, zoom + 0.4), duration: reducedMotion() ? 0 : 900 }));
+              return;
+            }
             if (modeRef.current !== "3d") return;
             const raw = m.queryTerrainElevation(e.lngLat);
             if (raw === null || raw === undefined) return;
@@ -372,6 +436,48 @@ export function TerrainMap({
               .setDOMContent(box)
               .addTo(m);
             setHint(false);
+          });
+          // Mouse over a place: pointer cursor and a small photo card.
+          let hoverFrame = 0;
+          let hovered: string | null = null;
+          m.on("mousemove", (e) => {
+            if (hoverFrame) return;
+            hoverFrame = requestAnimationFrame(() => {
+              hoverFrame = 0;
+              const hit = near(e.point, PICKABLE);
+              const key = hit ? String(hit.properties.key) : near(e.point, [LAYER_CLUSTERS]) ? "cluster" : null;
+              m.getCanvas().style.cursor = key ? "pointer" : "";
+              if (key === hovered) return;
+              hovered = key;
+              previewRef.current?.remove();
+              previewRef.current = null;
+              const item = key ? itemsRef.current.find((i) => i.key === key) : undefined;
+              if (!item?.location || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+              const card = document.createElement("div");
+              card.className = styles.previewCard;
+              card.dataset.part = "preview";
+              if (item.photo) {
+                const img = document.createElement("img");
+                img.alt = "";
+                img.decoding = "async";
+                img.src = imageLoader({ src: item.photo.src, width: 330 });
+                card.append(img);
+              }
+              const name = document.createElement("strong");
+              name.textContent = item.name;
+              const meta = document.createElement("span");
+              meta.textContent = item.categoryLabel;
+              card.append(name, meta);
+              previewRef.current = new lib.Popup({ closeButton: false, closeOnClick: false, className: styles.preview, offset: 22, maxWidth: "220px" })
+                .setLngLat([item.location.lng, item.location.lat])
+                .setDOMContent(card)
+                .addTo(m);
+            });
+          });
+          m.getCanvas().addEventListener("mouseleave", () => {
+            hovered = null;
+            previewRef.current?.remove();
+            previewRef.current = null;
           });
         } else if (!reducedMotion()) {
           // A slow turn around the valley while it's on screen.
@@ -400,8 +506,7 @@ export function TerrainMap({
     return () => {
       cancelled = true;
       observer?.disconnect();
-      for (const { marker } of markers.values()) marker.remove();
-      markers.clear();
+      flightRef.current?.();
       map?.remove();
       mapRef.current = null;
     };
@@ -470,9 +575,15 @@ export function TerrainMap({
     return () => document.removeEventListener("fullscreenchange", sync);
   }, [showcase]);
 
-  // A short tip on what the map can do, until the visitor touches it.
+  // A short tip on what the map can do: once per browser, until the visitor touches the map.
   useEffect(() => {
     if (showcase || status !== "ready" || mode !== "3d") return;
+    try {
+      if (localStorage.getItem(HINT_SEEN)) return;
+      localStorage.setItem(HINT_SEEN, "1");
+    } catch {
+      // Storage blocked: show it each visit.
+    }
     // Shown once the map is ready.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setHint(true);
@@ -492,90 +603,15 @@ export function TerrainMap({
     else if (mode === "2d" && (shot.pitch > 0 || shot.bearing !== 0)) moveCamera(map, { ...shot, pitch: 0, bearing: 0 }, 900);
   }, [mode, status, showcase]);
 
-  // Markers follow the (filtered) items. Listings inside another listing share its marker.
+  // The places follow the (filtered) items and the selection (a hosted listing highlights its host).
+  const selectedItem = selectedKey ? items.find((i) => i.key === selectedKey) : undefined;
+  const highlight = selectedItem?.hostKey ?? selectedKey;
   useEffect(() => {
-    const lib = libRef.current;
+    if (showcase) return;
+    dataRef.current = placeData(items, highlight);
     const map = mapRef.current;
-    if (!lib || !map || status !== "ready" || showcase) return;
-    const markers = markersRef.current;
-    const wanted = new Map(items.filter((i) => i.location && !i.hostKey).map((i) => [i.key, i]));
-    for (const [key, { marker }] of markers) {
-      if (!wanted.has(key)) {
-        marker.remove();
-        markers.delete(key);
-      }
-    }
-    for (const item of wanted.values()) {
-      if (markers.has(item.key)) continue;
-      const el = document.createElement("button");
-      el.type = "button";
-      el.className = styles.marker;
-      el.dataset.key = item.key;
-      el.dataset.group = item.group;
-      el.dataset.precision = item.location!.precision;
-      if (item.openData) el.dataset.open = "true";
-      el.setAttribute("aria-label", `${item.name} — ${item.categoryLabel}`);
-      el.setAttribute("aria-pressed", "false");
-      const dot = document.createElement("span");
-      dot.className = styles.dot;
-      dot.dataset.part = "dot";
-      dot.setAttribute("aria-hidden", "true");
-      if (item.icon) dot.innerHTML = iconSvg(item.icon);
-      const label = document.createElement("span");
-      label.className = styles.label;
-      label.dataset.part = "label";
-      label.textContent = item.name;
-      label.setAttribute("aria-hidden", "true");
-      el.append(dot, label);
-      // A photo card on hover (mouse only); the photo loads on the first hover.
-      if (item.photo) {
-        const photo = item.photo;
-        el.classList.add(styles.hasPreview);
-        const preview = document.createElement("span");
-        preview.className = styles.preview;
-        preview.dataset.part = "preview";
-        preview.setAttribute("aria-hidden", "true");
-        const img = document.createElement("img");
-        img.alt = "";
-        img.decoding = "async";
-        const name = document.createElement("span");
-        name.className = styles.previewName;
-        name.textContent = item.name;
-        const meta = document.createElement("span");
-        meta.className = styles.previewMeta;
-        meta.textContent = item.categoryLabel;
-        preview.append(img, name, meta);
-        el.append(preview);
-        el.addEventListener("pointerenter", (e) => {
-          if (e.pointerType === "mouse" && !img.src) img.src = imageLoader({ src: photo.src, width: 330 });
-        });
-      }
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        onSelectRef.current?.(item.key);
-      });
-      // Close to the ground the terrain test fades markers that are in plain view; keep them clear.
-      const marker = new lib.Marker({ element: el, anchor: "center", opacityWhenCovered: "0.85" })
-        .setLngLat([item.location!.lng, item.location!.lat])
-        .addTo(map);
-      markers.set(item.key, { marker, el });
-    }
-  }, [items, status, showcase]);
-
-  // The selection is highlighted (a hosted listing highlights its host); tours take markers out of the tab order.
-  useEffect(() => {
-    const selected = selectedKey ? items.find((i) => i.key === selectedKey) : undefined;
-    const highlight = selected?.hostKey ?? selectedKey;
-    selectedRef.current = highlight;
-    for (const [key, { el }] of markersRef.current) {
-      const on = key === highlight;
-      el.classList.toggle(styles.selected, on);
-      el.setAttribute("aria-pressed", on ? "true" : "false");
-      el.setAttribute("tabindex", touring ? "-1" : "0");
-    }
-    // Re-rank the labels around the new selection.
-    mapRef.current?.triggerRepaint();
-  }, [selectedKey, items, status, touring]);
+    if (map && status === "ready") setPlaceData(map, dataRef.current);
+  }, [items, highlight, status, showcase]);
 
   // Fly to the requested place, tour camera or the whole valley.
   useEffect(() => {
@@ -600,7 +636,7 @@ export function TerrainMap({
         camera.zoom -= Math.min(1.6, Math.max(0, (ground - 1200) / 800));
       }
       const { left = 0, right = 0, bottom = 0 } = insetsRef.current ?? {};
-      moveCamera(map, { ...camera, padding: { left, right, bottom, top: 0 } }, 2600);
+      moveCamera(map, { ...camera, padding: { left, right, bottom, top: 0 } }, 2000);
     }, 80);
     return () => window.clearTimeout(timer);
     // Only an explicit request moves the camera.
@@ -619,7 +655,7 @@ export function TerrainMap({
   }, [left, right, bottom, status, showcase]);
 
   return (
-    <div className={cx(styles.wrap, showcase && styles.showcase, detail && styles.detail, status === "ready" && styles.ready, className)}>
+    <div className={cx(styles.wrap, showcase && styles.showcase, status === "ready" && styles.ready, className)}>
       <div
         ref={hostRef}
         className={styles.map}
@@ -627,6 +663,26 @@ export function TerrainMap({
         aria-label={showcase ? undefined : t.explore.mapLabel}
         aria-hidden={showcase || undefined}
       />
+      {/* Every mapped place as a button, for keyboards and screen readers (the map draws them as pictures). */}
+      {!showcase && status === "ready" && (
+        <ul className={styles.keyList} aria-label={t.explore.mapPlaces}>
+          {items
+            .filter((i) => i.location && !i.hostKey)
+            .map((i) => (
+              <li key={i.key}>
+                <button
+                  type="button"
+                  data-key={i.key}
+                  aria-pressed={i.key === highlight}
+                  tabIndex={touring ? -1 : 0}
+                  onClick={() => onSelectRef.current?.(i.key)}
+                >
+                  {i.name} — {i.categoryLabel}
+                </button>
+              </li>
+            ))}
+        </ul>
+      )}
       {!showcase && status === "ready" && (
         <div className={styles.controls}>
           <button type="button" className={styles.control} aria-label={t.explore.zoomIn} onClick={() => mapRef.current?.zoomIn()}>

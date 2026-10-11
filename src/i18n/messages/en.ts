@@ -261,6 +261,10 @@ export const en = {
     photoOf: "Photo {i} of {n}",
     quickFilters: "Show on the map",
     allGroups: "Everything",
+    mapPlaces: "Places on the map",
+    nextUp: "Next:",
+    autoplay: "Play the tour",
+    autoplayOff: "Stop playing",
   },
   place: {
     alsoKnownAs: "Also known as",
