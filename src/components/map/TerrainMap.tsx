@@ -695,10 +695,11 @@ export function TerrainMap({
       { enableHighAccuracy: true, maximumAge: 10_000, timeout: 20_000 },
     );
   };
-  // Notes fade after a few seconds.
+  // "Shown on this screen only" / "outside the valley" stay while the position is shown; the
+  // problems ("turned off", "couldn't be found") fade after a few seconds.
   useEffect(() => {
-    if (!locationNote) return;
-    const timer = window.setTimeout(() => setLocationNote(null), locationNote === "denied" ? 9000 : 6000);
+    if (locationNote !== "denied" && locationNote !== "unavailable") return;
+    const timer = window.setTimeout(() => setLocationNote(null), 9000);
     return () => window.clearTimeout(timer);
   }, [locationNote]);
 

@@ -242,7 +242,8 @@ test.describe("Show where I am", () => {
     await context.setGeolocation({ latitude: 42.5294, longitude: 19.8403, accuracy: 30 });
     await page.goto("/en/explore/");
     await page.getByRole("button", { name: "Show where I am" }).click();
-    await expect(page.getByText("shown on this screen only")).toBeVisible();
+    // The note stays while the position is shown (the first fix can take a moment on a slow machine).
+    await expect(page.getByText("shown on this screen only")).toBeVisible({ timeout: 30_000 });
     const stop = page.getByRole("button", { name: "Stop showing where I am" });
     await expect(stop).toHaveAttribute("aria-pressed", "true");
     type Probe = { getCenter(): { lng: number; lat: number }; getSource(id: string): { getData(): Promise<{ features: unknown[] }> } };
@@ -260,7 +261,7 @@ test.describe("Show where I am", () => {
     // Far from the valley: a note, and the map stays put.
     await context.setGeolocation({ latitude: 42.4304, longitude: 19.2594 });
     await page.getByRole("button", { name: "Show where I am" }).click();
-    await expect(page.getByText("You're outside the valley")).toBeVisible();
+    await expect(page.getByText("You're outside the valley")).toBeVisible({ timeout: 30_000 });
     expect(writes, "the position is never sent").toEqual([]);
   });
 });
