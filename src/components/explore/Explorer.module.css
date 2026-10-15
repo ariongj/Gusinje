@@ -795,6 +795,39 @@
   box-shadow: 0 0 0 1px var(--teal);
 }
 
+/* What the map itself draws: paths and tracks, contour lines and peaks. */
+.mapKey {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font: 500 12px/1.35 var(--font-text);
+  color: var(--text-soft);
+}
+
+.mapKey li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.keyTrail,
+.keyContour {
+  flex: none;
+  width: 22px;
+  height: 0;
+  margin-top: 7px;
+}
+
+.keyTrail {
+  border-top: 2px dashed #b5412a;
+}
+
+.keyContour {
+  border-top: 1.5px solid rgba(110, 85, 56, 0.8);
+}
+
 .counts,
 .mapNote {
   margin: 10px 0 0;

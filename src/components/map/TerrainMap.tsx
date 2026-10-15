@@ -11,8 +11,23 @@ import { fill } from "@/i18n/localize";
 import { cx } from "@/lib/cx";
 import imageLoader from "@/lib/image-loader";
 
-import { addMissingImage, addPlaceLayers, LAYER_CLUSTERS, type MyPosition, PICKABLE, placeData, setLabelFont, setMyPosition, setPlaceData, SOURCE_BUSINESSES } from "./placeLayers";
-import { BASE_STYLE_URL, demSources, EXAGGERATION, HILLSHADE_LAYER, hillshadeLayer, MAX_BOUNDS, reliefStyle, SKY, TERRAIN_SOURCE } from "./mapStyle";
+import { contourTiles } from "./contours";
+import { BASE_STYLE_URL, decorateBaseStyle, demSources, EXAGGERATION, HILLSHADE_LAYER, hillshadeLayer, MAX_BOUNDS, reliefStyle, SKY, TERRAIN_SOURCE } from "./mapStyle";
+import {
+  addMissingImage,
+  addPlaceLayers,
+  LAYER_CLUSTERS,
+  loadPhotoPins,
+  type MyPosition,
+  PHOTO_ZOOM,
+  PICKABLE,
+  placeData,
+  setLabelFont,
+  setMyPosition,
+  setPlaceData,
+  SOURCE_BUSINESSES,
+  SOURCE_PLACES,
+} from "./placeLayers";
 import styles from "./TerrainMap.module.css";
 
 export type MapMode = "3d" | "2d";
@@ -49,9 +64,12 @@ const OVERVIEW: Camera = { center: [19.826, 42.512], zoom: 11.75, bearing: 198, 
 const OVERVIEW_FLAT: Camera = { center: [19.83, 42.52], zoom: 11.7, bearing: 0, pitch: 0 };
 /** Low over Gusinje, up the valley towards Vusanje and the peaks. */
 const VALLEY: Camera = { center: [19.836, 42.538], zoom: 12.7, bearing: 190, pitch: 72 };
+/** High above the Prokletije: where the first visit begins before descending into the valley. */
+const ABOVE: Camera = { center: [19.83, 42.53], zoom: 10.2, bearing: OVERVIEW.bearing, pitch: 28 };
 
 const NO_ITEMS: ExploreItem[] = [];
 const HINT_SEEN = "gusinje:map-tip-seen";
+const INTRO_SEEN = "gusinje:map-intro-seen";
 const NO_FOCUS: MapFocus = { key: null, nonce: 0 };
 
 /** Kilometres east/north between two points (good enough at this scale). */
@@ -242,6 +260,10 @@ export function TerrainMap({
   /** What the place layers show now (read when the layers are (re)added). */
   const dataRef = useRef<ReturnType<typeof placeData> | null>(null);
   const itemsRef = useRef(items);
+  const highlightRef = useRef<string | null>(null);
+  /** Items whose photo pin the map has. */
+  const photosRef = useRef(new Set<string>());
+  const photoLoadRef = useRef<(() => void) | null>(null);
   /** Stops the camera flight in progress, if any. */
   const flightRef = useRef<(() => void) | null>(null);
   const modeRef = useRef(mode);
@@ -289,15 +311,26 @@ export function TerrainMap({
     };
 
     Promise.all([import("maplibre-gl"), fetchBaseStyle()])
-      .then(([lib, base]) => {
+      .then(async ([lib, base]) => [lib, base, showcase ? null : await contourTiles(lib)] as const)
+      .then(([lib, base, contours]) => {
         const host = hostRef.current;
         if (cancelled || !host) return;
         libRef.current = lib;
-        const start = showcase ? VALLEY : modeRef.current === "3d" ? OVERVIEW : OVERVIEW_FLAT;
+        // The first visit (per tab) begins high above the mountains and descends into the valley.
+        let intro = false;
+        if (!showcase && modeRef.current === "3d" && !reducedMotion()) {
+          try {
+            intro = !sessionStorage.getItem(INTRO_SEEN);
+            sessionStorage.setItem(INTRO_SEEN, "1");
+          } catch {
+            intro = true;
+          }
+        }
+        const start = showcase ? VALLEY : intro ? ABOVE : modeRef.current === "3d" ? OVERVIEW : OVERVIEW_FLAT;
         try {
           map = new lib.Map({
             container: host,
-            style: base ?? reliefStyle(),
+            style: base ? decorateBaseStyle(base, contours) : reliefStyle(contours),
             center: start.center,
             zoom: start.zoom,
             bearing: start.bearing,
@@ -329,11 +362,6 @@ export function TerrainMap({
             const before = m.getStyle().layers.find((l) => l.type === "symbol" || /^(tunnel|road|bridge|highway|building|aeroway)/.test(l.id));
             m.addLayer(hillshadeLayer, before?.id);
           }
-          // The base map's own points of interest (shops, cafés, bus stops…) would crowd the
-          // guide's places with a second, unchecked set of icons: only the guide's are shown.
-          for (const layer of m.getStyle().layers) {
-            if (layer.type === "symbol" && "source-layer" in layer && layer["source-layer"] === "poi") m.setLayoutProperty(layer.id, "visibility", "none");
-          }
           m.setSky(SKY);
           m.setTerrain(showcase || modeRef.current === "3d" ? { source: TERRAIN_SOURCE, exaggeration: EXAGGERATION } : null);
           // The guide's places, drawn by the map; labels use the page's font once it has loaded.
@@ -350,6 +378,20 @@ export function TerrainMap({
           }
           // Markers and controls need the style, not the tiles: with no signal the tiles may never come.
           if (!cancelled) setStatus("ready");
+          if (intro && !cancelled) {
+            intro = false;
+            // Once the first tiles are drawn (or soon anyway), descend — unless something else has moved the camera.
+            let started = false;
+            const descend = () => {
+              if (started || cancelled || flightRef.current) return;
+              started = true;
+              flightRef.current = fly(m, { ...OVERVIEW, padding: paddingOf(m) }, 3200, () => {
+                flightRef.current = null;
+              });
+            };
+            m.once("idle", descend);
+            window.setTimeout(descend, 2500);
+          }
           // Phones: the credits start folded behind their (i) button.
           if (window.innerWidth < 600) host.querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show");
         });
@@ -369,6 +411,29 @@ export function TerrainMap({
         m.on("styleimagemissing", (e) => addMissingImage(m, e.id));
         // Automated tests reach the map to find where a place is drawn.
         if (navigator.webdriver) (window as unknown as { __valleyMap?: MLMap }).__valleyMap = m;
+        if (!showcase) {
+          m.addControl(new lib.ScaleControl({ maxWidth: 120, unit: "metric" }), "bottom-left");
+          // Close up, pins show the place's photo: loaded once the visitor comes near
+          // (and again for new items after a filter or a search).
+          const loadPhotos = () => {
+            if (m.getZoom() < PHOTO_ZOOM - 0.6) return;
+            const stop = loadPhotoPins(m, itemsRef.current, photosRef.current, () => {
+              if (cancelled) return;
+              dataRef.current = placeData(itemsRef.current, highlightRef.current, photosRef.current);
+              setPlaceData(m, dataRef.current);
+            });
+            if (!stop) return;
+            const before = photoLoadRef.current;
+            photoLoadRef.current = () => {
+              before?.();
+              stop();
+            };
+          };
+          m.on("zoomend", loadPhotos);
+          m.on("sourcedata", (e) => {
+            if (e.sourceId === SOURCE_PLACES && e.dataType === "source") loadPhotos();
+          });
+        }
 
         if (!showcase) {
           // Ctrl/⌘ + wheel (and trackpad pinch) zooms; a plain wheel scrolls the page.
@@ -520,6 +585,7 @@ export function TerrainMap({
       cancelled = true;
       observer?.disconnect();
       flightRef.current?.();
+      photoLoadRef.current?.();
       if (watchRef.current !== null) navigator.geolocation.clearWatch(watchRef.current);
       map?.remove();
       mapRef.current = null;
@@ -680,7 +746,8 @@ export function TerrainMap({
   const highlight = selectedItem?.hostKey ?? selectedKey;
   useEffect(() => {
     if (showcase) return;
-    dataRef.current = placeData(items, highlight);
+    highlightRef.current = highlight;
+    dataRef.current = placeData(items, highlight, photosRef.current);
     const map = mapRef.current;
     if (map && status === "ready") setPlaceData(map, dataRef.current);
   }, [items, highlight, status, showcase]);

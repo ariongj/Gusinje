@@ -272,6 +272,8 @@ export const sq: Messages = {
     locationOutside: "Jeni jashtë luginës, ndaj harta mbetet ku është.",
     locationDenied: "Vendndodhja është e çaktivizuar për këtë faqe. Mund ta lejoni te cilësimet e shfletuesit.",
     locationUnavailable: "Pozicioni juaj nuk u gjet për momentin.",
+    legendTrails: "Shtigje dhe rrugë fshati nga OpenStreetMap — të pakontrolluara në terren",
+    legendContours: "Izohipse çdo 100 m (50 m nga afër); majat me lartësinë e tyre",
   },
   place: {
     alsoKnownAs: "I njohur edhe si",

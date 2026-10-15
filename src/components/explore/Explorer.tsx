@@ -425,6 +425,18 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
           <span className={styles.shapePoint} aria-hidden="true" /> {t.explore.legendPoint}
         </p>
       )}
+      {view !== "list" && webgl === "ok" && (
+        <ul className={styles.mapKey}>
+          <li>
+            <span className={styles.keyTrail} aria-hidden="true" />
+            {t.explore.legendTrails}
+          </li>
+          <li>
+            <span className={styles.keyContour} aria-hidden="true" />
+            {t.explore.legendContours}
+          </li>
+        </ul>
+      )}
       <p className={styles.counts} aria-live="polite">
         {plural(lang, filtered.length, t.common.results)}
         {view !== "list" && notOnMap > 0 && <> · {plural(lang, notOnMap, t.explore.notOnMap)}</>}

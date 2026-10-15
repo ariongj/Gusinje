@@ -7,6 +7,10 @@ import { expect, test } from "@playwright/test";
 
 import { existsSync } from "node:fs";
 
+import { validateStyleMin } from "@maplibre/maplibre-gl-style-spec";
+import type { StyleSpecification } from "maplibre-gl";
+
+import { decorateBaseStyle, reliefStyle } from "../src/components/map/mapStyle";
 import { businesses, guides, itineraries, places, routes, tours } from "../src/content";
 import { demoBusinesses, demoEvents } from "../src/content/demo";
 import { aboutPlatform, aboutRegion, partners } from "../src/content/pages";
@@ -268,4 +272,42 @@ test("history and culture: every entry is sourced and in all three languages", (
 test("journeys and tours share the ?tour= link: slugs never collide", () => {
   const slugs = [...tours.map((t) => t.slug), ...itineraries.map((i) => i.slug)];
   expect(new Set(slugs).size).toBe(slugs.length);
+});
+
+test("the map's own layers (height tint, contours, paths, peaks) make a valid style over the base map and on their own", () => {
+  const layer = (id: string, type: "background" | "fill" | "line" | "symbol", sourceLayer?: string) =>
+    ({ id, type, ...(sourceLayer ? { source: "openmaptiles", "source-layer": sourceLayer } : {}) }) as StyleSpecification["layers"][number];
+  const base: StyleSpecification = {
+    version: 8,
+    glyphs: "https://example.test/fonts/{fontstack}/{range}.pbf",
+    sources: { openmaptiles: { type: "vector", url: "https://example.test/tiles.json" } },
+    layers: [
+      layer("background", "background"),
+      layer("landcover_wood", "fill", "landcover"),
+      layer("water", "fill", "water"),
+      layer("road_minor", "line", "transportation"),
+      layer("road_one_way_arrow", "symbol", "transportation"),
+      layer("poi_r1", "symbol", "poi"),
+      layer("poi_transit", "symbol", "poi"),
+      layer("label_village", "symbol", "place"),
+    ],
+  };
+  const contours = "contour://valley/{z}/{x}/{y}";
+  const decorated = decorateBaseStyle(base, contours);
+  for (const style of [decorated, decorateBaseStyle(base, null), reliefStyle(contours), reliefStyle(null)]) {
+    expect(validateStyleMin(style).map((e) => e.message)).toEqual([]);
+  }
+  const ids = decorated.layers.map((l) => l.id);
+  // Tint and contours under the water; paths over the roads and under the names; peaks on top.
+  expect(ids.indexOf("valley-relief")).toBeLessThan(ids.indexOf("water"));
+  expect(ids.indexOf("valley-contour-lines")).toBeLessThan(ids.indexOf("water"));
+  expect(ids.indexOf("valley-trails")).toBeGreaterThan(ids.indexOf("road_minor"));
+  expect(ids.indexOf("valley-trails")).toBeLessThan(ids.indexOf("road_one_way_arrow"));
+  expect(ids.at(-1)).toBe("valley-peaks");
+  // Shops and cafés from the base map stay hidden; bus and train stops stay.
+  const find = (id: string) => decorated.layers.find((l) => l.id === id)!;
+  expect(find("poi_r1").layout).toMatchObject({ visibility: "none" });
+  expect(find("poi_transit").layout?.visibility).toBeUndefined();
+  // The style passed in is left alone.
+  expect(base.layers.find((l) => l.id === "poi_r1")).not.toHaveProperty("layout");
 });

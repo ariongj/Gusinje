@@ -271,6 +271,8 @@ export const en = {
     locationOutside: "You're outside the valley, so the map stays where it is.",
     locationDenied: "Location is turned off for this site. You can allow it in your browser's settings.",
     locationUnavailable: "Your position couldn't be found just now.",
+    legendTrails: "Paths and tracks from OpenStreetMap — not checked on the ground",
+    legendContours: "Contour lines every 100 m (50 m close up); peaks with their height",
   },
   place: {
     alsoKnownAs: "Also known as",

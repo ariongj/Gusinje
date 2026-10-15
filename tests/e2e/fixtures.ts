@@ -50,7 +50,7 @@ export async function pinPoint(page: Page, key: string): Promise<{ x: number; y:
       const m = (window as unknown as { __valleyMap?: MapHandle }).__valleyMap;
       if (!m?.getLayer("guide-place-pins")) return null;
       const hit = m
-        .queryRenderedFeatures({ layers: ["guide-selected-pin", "guide-place-pins", "guide-business-pins"] })
+        .queryRenderedFeatures({ layers: ["guide-selected-pin", "guide-place-pins", "guide-place-pins-near", "guide-business-pins", "guide-business-pins-near"] })
         .find((f) => f.properties.key === k && f.geometry.type === "Point");
       if (!hit) return null;
       const p = m.project(hit.geometry.coordinates as [number, number]);

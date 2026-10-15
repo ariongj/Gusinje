@@ -276,6 +276,8 @@ export const cnr: Messages = {
     locationOutside: "Van doline ste, pa karta ostaje gdje jeste.",
     locationDenied: "Lokacija je isključena za ovaj sajt. Možete je dozvoliti u podešavanjima pretraživača.",
     locationUnavailable: "Vaša pozicija trenutno ne može da se pronađe.",
+    legendTrails: "Staze i putevi iz OpenStreetMap-a — neprovjereni na terenu",
+    legendContours: "Izohipse na svakih 100 m (50 m izbliza); vrhovi s visinom",
   },
   place: {
     alsoKnownAs: "Poznato i kao",

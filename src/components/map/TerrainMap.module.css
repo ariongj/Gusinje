@@ -32,6 +32,18 @@
   right: var(--inset-right, 0px);
 }
 
+/* Distance scale, bottom left. */
+.map :global(.maplibregl-ctrl-scale) {
+  margin: 0 0 8px 10px;
+  padding: 0 6px 1px;
+  border: 1px solid rgba(15, 59, 63, 0.5);
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  background: rgba(251, 250, 247, 0.72);
+  color: var(--text);
+  font: 600 10.5px/1.5 var(--font-text);
+}
+
 .map :global(.maplibregl-ctrl-attrib) {
   font-size: 11px;
   background: rgba(251, 250, 247, 0.88);

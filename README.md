@@ -168,6 +168,18 @@ ridge. Panels over the map are solid rather than blurred (a blur is redrawn ever
 tip on how to move the map shows once, the legend starts closed (the chips filter), and "Show
 the whole valley" appears once there is something to reset.
 
+**A mountain map**: the base map (OpenFreeMap's "liberty" style) is turned into a hiking map on
+the way in (`decorateBaseStyle` in `src/components/map/mapStyle.ts`, pure and unit-tested): a
+height tint from the elevation tiles under the water and roads, contour lines (worked out in the
+browser by `maplibre-contour`, in a web worker, from the same tiles — every 100 m, 50 m close
+up, with heights on the stronger lines), footpaths and farm tracks from OpenStreetMap drawn
+red-brown and brown from zoom 11.5 as hiking maps do (the legend says they are map data, not
+checked on the ground), summits with their height, and the base map's own shops and cafés
+hidden (bus and train stops stay). The fallback relief style gets the contours too. Close up
+(zoom 13.5+), a place's pin shows its photo in a round frame; photos load only once the visitor
+comes near. A distance scale sits bottom left. The first visit in a tab begins high above the
+Prokletije and descends into the valley (not with reduced motion).
+
 **Show where I am**: a button on the map asks the browser for the visitor's position and draws
 it as a blue dot with its accuracy ring (a map layer, like the places). In the valley the map
 flies there; elsewhere it says so and stays put. The position never leaves the device — no
