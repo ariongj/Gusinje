@@ -2,9 +2,10 @@ import type { Locator } from "@playwright/test";
 
 import { expect, pinPoint, test, trackWrites } from "./fixtures";
 
-// The 3D map draws with software WebGL on CI runners, where one of these tests
-// can take 40 seconds; they get twice the usual time.
-test.describe.configure({ timeout: 90_000 });
+// The 3D map draws with software WebGL on CI runners, where a test that walks
+// through several views can take a minute and a half; these get four times the
+// usual time.
+test.describe.configure({ timeout: 180_000 });
 
 /** Tours go one stop at a time until the visitor presses play: the first stop, waiting. */
 async function atFirstStop(card: Locator) {
