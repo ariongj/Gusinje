@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { TripButton } from "@/components/content/TripButton";
+import { StampButton } from "@/components/hunt/StampButton";
 import { Photo } from "@/components/ui/Photo";
 import { useI18n } from "@/i18n/client";
 import { fill } from "@/i18n/localize";
+import { km } from "@/lib/geo";
 
 import type { ExploreView } from "./Explorer";
 import styles from "./InfoPanel.module.css";
@@ -29,12 +31,7 @@ type Props = {
 
 const GUSINJE = { lat: 42.56194, lng: 19.83389 };
 
-/** Straight-line distance in km. */
-export function km(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
-  const r = Math.PI / 180;
-  const h = Math.sin(((b.lat - a.lat) * r) / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(((b.lng - a.lng) * r) / 2) ** 2;
-  return 2 * 6371 * Math.asin(Math.sqrt(h));
-}
+export { km };
 
 /** What the visitor picked — the same panel for the 3D view, the map and the list. */
 export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, nearby = [], onPick, autoFocus = true }: Props) {
@@ -155,6 +152,12 @@ export function InfoPanel({ item, view, webgl, onClose, onShowIn, step, nearby =
         )}
         <TripButton kind={item.kind} slug={item.slug} compact />
       </div>
+      {item.kind === "place" && (
+        <div className={styles.treasure}>
+          <h3 className={styles.nearbyTitle}>{t.hunt.title}</h3>
+          <StampButton slug={item.slug} name={item.name} location={location ? { lat: location.lat, lng: location.lng } : null} compact />
+        </div>
+      )}
       {nearby.length > 0 && onPick && (
         <div className={styles.nearby}>
           <h3 className={styles.nearbyTitle}>{t.explore.nearbyTitle}</h3>

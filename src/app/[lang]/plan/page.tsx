@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { ItineraryCard } from "@/components/content/cards";
 import { PageIntro } from "@/components/content/PageIntro";
+import { HuntProgress } from "@/components/hunt/HuntProgress";
 import { TripPlanner } from "@/components/plan/TripPlanner";
-import { itineraries } from "@/content";
+import { itineraries, places } from "@/content";
 import { getMessages, resolveLocale } from "@/i18n";
 import { href } from "@/i18n/config";
 import { catalogue } from "@/lib/catalogue";
@@ -30,6 +32,21 @@ export default async function PlanPage({ params }: PageProps<"/[lang]/plan">) {
             {t.plan.myTrip}
           </h2>
           <TripPlanner catalogue={catalogue(lang)} />
+        </section>
+        <section className={`${ui.section} ${ui.noPrint}`} aria-labelledby="passport">
+          <h2 id="passport" className={ui.h2}>
+            {t.hunt.passport}
+          </h2>
+          <p className={ui.muted}>{t.hunt.passportIntro}</p>
+          <HuntProgress places={places.map((p) => p.slug)} large />
+          <div className={ui.actions}>
+            <Link href={href(lang, "/hunt/passport")} className={ui.button}>
+              {t.hunt.myPassport}
+            </Link>
+            <Link href={href(lang, "/hunt")} className={ui.textLink}>
+              {t.hunt.hunts}
+            </Link>
+          </div>
         </section>
         <section className={`${ui.section} ${ui.noPrint}`} aria-labelledby="templates">
           <h2 id="templates" className={ui.h2}>

@@ -59,6 +59,7 @@ it has not been announced or submitted anywhere.
 - [ ] **Public launch**: domain, and when to drop `noindex` (remove `NEXT_PUBLIC_NOINDEX` from `pages.yml`).
 - [ ] **Map services**: the 3D map uses free, keyless public services — OpenFreeMap (base map, OpenStreetMap data) and Mapzen terrain tiles on AWS Open Data. Both are fine for a pilot; for heavy public traffic, review their terms or pick a provider (`NEXT_PUBLIC_MAP_STYLE`, `NEXT_PUBLIC_MAP_TERRAIN`). The no-WebGL fallback still uses OpenStreetMap's tile servers (`NEXT_PUBLIC_MAP_TILES`).
 - [ ] **Backend** for reviews, submissions and enquiries (see `backend/README.md`): approve a provider, create the account, appoint moderators.
+- [ ] **Treasure hunt**: have a native speaker review the clues in Albanian and Montenegrin (`src/content/hunts.ts`); decide whether the hidden-gem lakes get verified positions so they can be stamped on site.
 - [ ] **Privacy notice and moderation policy**: publish final versions with a named data controller.
 - [ ] **Analytics**: none today. If wanted, a cookie-free, aggregate tool — only with a published notice.
 - [ ] **Partnership**: any approach to the Gusinje Tourism Organisation or the national park, any use of their logos, sponsorship or data sharing — all still proposals.

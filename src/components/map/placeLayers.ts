@@ -62,10 +62,10 @@ function styleOf(item: ExploreItem): Exclude<Style, "selected"> {
 
 const photoId = (key: string) => `photo|${key}`;
 
-function feature(item: ExploreItem, selected: boolean, photos: ReadonlySet<string>) {
+function feature(item: ExploreItem, selected: boolean, photos: ReadonlySet<string>, found: ReadonlySet<string>) {
   const style: Style = selected ? "selected" : styleOf(item);
   const icon = item.icon ?? "info";
-  const pin = `pin|${icon}|${item.group}|${style}`;
+  const pin = `pin|${icon}|${item.group}|${style}${!selected && found.has(item.key) ? "|found" : ""}`;
   const photoPin = !selected && photos.has(item.key);
   return {
     type: "Feature" as const,
@@ -87,14 +87,17 @@ const collection = (features: ReturnType<typeof feature>[]) => ({ type: "Feature
 
 const NO_PHOTOS: ReadonlySet<string> = new Set();
 
-/** Mapped items as the three sources' data (`photos`: keys whose photo pin the map already has). */
-export function placeData(items: readonly ExploreItem[], selectedKey: string | null, photos: ReadonlySet<string> = NO_PHOTOS) {
+/**
+ * Mapped items as the three sources' data. `photos`: keys whose photo pin the
+ * map already has; `found`: keys stamped in the explorer's passport.
+ */
+export function placeData(items: readonly ExploreItem[], selectedKey: string | null, photos: ReadonlySet<string> = NO_PHOTOS, found: ReadonlySet<string> = NO_PHOTOS) {
   const mapped = items.filter((i) => i.location && !i.hostKey);
   const selected = mapped.find((i) => i.key === selectedKey);
   return {
-    places: collection(mapped.filter((i) => i.kind === "place").map((i) => feature(i, false, photos))),
-    businesses: collection(mapped.filter((i) => i.kind === "business").map((i) => feature(i, false, photos))),
-    selected: collection(selected ? [feature(selected, true, photos)] : []),
+    places: collection(mapped.filter((i) => i.kind === "place").map((i) => feature(i, false, photos, found))),
+    businesses: collection(mapped.filter((i) => i.kind === "business").map((i) => feature(i, false, photos, found))),
+    selected: collection(selected ? [feature(selected, true, photos, found)] : []),
   };
 }
 
@@ -223,10 +226,10 @@ function icon(ctx: CanvasRenderingContext2D, name: MapIcon, cx: number, cy: numb
   ctx.restore();
 }
 
-function pin(name: MapIcon, group: LegendGroup, style: Style) {
+function pin(name: MapIcon, group: LegendGroup, style: Style, found = false) {
   const color = groupColor[group] ?? "#0f3b3f";
   const r = style === "open" ? 11 : style === "selected" ? 17 : 14;
-  const pad = style === "selected" ? 6 : 4;
+  const pad = style === "selected" ? 6 : found ? 7 : 4;
   const size = (r + pad) * 2;
   const { c, ctx } = canvas(size, size);
   const cx = size / 2;
@@ -249,6 +252,25 @@ function pin(name: MapIcon, group: LegendGroup, style: Style) {
   ctx.strokeStyle = hollow ? color : "#ffffff";
   ctx.stroke();
   icon(ctx, name, cx, cx, style === "open" ? 12 : 15, hollow ? color : "#ffffff");
+  if (found) {
+    // A gold tick at the top right: stamped in the passport.
+    const bx = cx + r * 0.72;
+    const by = cx - r * 0.72;
+    ctx.beginPath();
+    ctx.arc(bx, by, 7, 0, Math.PI * 2);
+    ctx.fillStyle = "#b8894a";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#ffffff";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(bx - 3.2, by + 0.2);
+    ctx.lineTo(bx - 0.8, by + 2.6);
+    ctx.lineTo(bx + 3.4, by - 2.4);
+    ctx.lineWidth = 1.9;
+    ctx.strokeStyle = "#ffffff";
+    ctx.stroke();
+  }
   return c;
 }
 
@@ -418,9 +440,9 @@ const loading = new Set<string>();
 /** Draw a missing image by its id ("pin|…", "label|…", "cluster|…", "me", "peak") and add it to the map. */
 export function addMissingImage(map: MLMap, id: string) {
   if (map.hasImage(id)) return;
-  const [type, a, b, c] = id.split("|");
+  const [type, a, b, c, d] = id.split("|");
   let drawn: HTMLCanvasElement | null = null;
-  if (type === "pin") drawn = pin(a as MapIcon, b as LegendGroup, c as Style);
+  if (type === "pin") drawn = pin(a as MapIcon, b as LegendGroup, c as Style, d === "found");
   else if (type === "label") drawn = label(a, id.slice(`label|${a}|`.length));
   else if (type === "cluster") drawn = cluster(Number(a));
   else if (type === "me") drawn = meDot();

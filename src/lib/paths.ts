@@ -1,10 +1,13 @@
-import { businesses, guides, itineraries, places, routes, tours } from "@/content";
+import { businesses, guides, hunts, itineraries, places, routes, tours } from "@/content";
 
 /** Every indexable page, without the language prefix — for the sitemap and tests. */
 export function allPaths(): string[] {
   return [
     "/",
     "/explore",
+    "/hunt",
+    ...hunts.map((h) => `/hunt/${h.slug}`),
+    "/hunt/passport",
     "/places",
     ...places.map((p) => `/places/${p.slug}`),
     "/stay",

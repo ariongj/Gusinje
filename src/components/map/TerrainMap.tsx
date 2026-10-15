@@ -49,6 +49,8 @@ type Props = {
   touring?: boolean;
   /** Panels covering the edges (px): the focus is centred in the open area. */
   insets?: Insets;
+  /** Keys stamped in the explorer's passport: their pins carry a tick. */
+  found?: ReadonlySet<string>;
   /** WebGL could not start. */
   onFailed?: () => void;
   /** The visitor moved the map themselves. */
@@ -71,6 +73,7 @@ const NO_ITEMS: ExploreItem[] = [];
 const HINT_SEEN = "gusinje:map-tip-seen";
 const INTRO_SEEN = "gusinje:map-intro-seen";
 const NO_FOCUS: MapFocus = { key: null, nonce: 0 };
+const NO_FOUND: ReadonlySet<string> = new Set();
 
 /** Kilometres east/north between two points (good enough at this scale). */
 function offsetKm(from: [number, number], to: [number, number]): [number, number] {
@@ -249,6 +252,7 @@ export function TerrainMap({
   focus = NO_FOCUS,
   touring = false,
   insets,
+  found = NO_FOUND,
   onFailed,
   onInteract,
   className,
@@ -261,6 +265,7 @@ export function TerrainMap({
   const dataRef = useRef<ReturnType<typeof placeData> | null>(null);
   const itemsRef = useRef(items);
   const highlightRef = useRef<string | null>(null);
+  const foundRef = useRef(found);
   /** Items whose photo pin the map has. */
   const photosRef = useRef(new Set<string>());
   const photoLoadRef = useRef<(() => void) | null>(null);
@@ -419,7 +424,7 @@ export function TerrainMap({
             if (m.getZoom() < PHOTO_ZOOM - 0.6) return;
             const stop = loadPhotoPins(m, itemsRef.current, photosRef.current, () => {
               if (cancelled) return;
-              dataRef.current = placeData(itemsRef.current, highlightRef.current, photosRef.current);
+              dataRef.current = placeData(itemsRef.current, highlightRef.current, photosRef.current, foundRef.current);
               setPlaceData(m, dataRef.current);
             });
             if (!stop) return;
@@ -747,10 +752,11 @@ export function TerrainMap({
   useEffect(() => {
     if (showcase) return;
     highlightRef.current = highlight;
-    dataRef.current = placeData(items, highlight, photosRef.current);
+    foundRef.current = found;
+    dataRef.current = placeData(items, highlight, photosRef.current, found);
     const map = mapRef.current;
     if (map && status === "ready") setPlaceData(map, dataRef.current);
-  }, [items, highlight, status, showcase]);
+  }, [items, highlight, found, status, showcase]);
 
   // Fly to the requested place, tour camera or the whole valley.
   useEffect(() => {

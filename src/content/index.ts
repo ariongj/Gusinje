@@ -14,6 +14,7 @@ import { tours } from "./tours";
 import type { AnyRecord, Business, BusinessCategory, Guide, Itinerary, Place, PlaceCategory, RecordKind, Route, VirtualTour } from "./types";
 
 export { businesses, guides, itineraries, places, routes, tours };
+export { getHunt, hunts, huntsForPlace, type Hunt, type HuntClue } from "./hunts";
 
 function bySlug<T extends { slug: string }>(list: readonly T[], what: string) {
   const map = new Map(list.map((item) => [item.slug, item]));

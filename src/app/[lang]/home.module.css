@@ -966,3 +966,44 @@
     scroll-snap-align: start;
   }
 }
+
+/* ---------- treasure hunt ---------- */
+
+.huntBand {
+  padding: clamp(40px, 6vw, 80px) 0;
+  border-top: 1px solid rgba(184, 137, 74, 0.3);
+  border-bottom: 1px solid rgba(184, 137, 74, 0.3);
+  background: linear-gradient(180deg, #f7f1e4, var(--light));
+}
+
+.huntProgress {
+  width: min(100%, 420px);
+}
+
+.huntStamps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 200px;
+}
+
+.huntStamps > :nth-child(1) {
+  transform: rotate(-14deg) translateY(10px);
+}
+
+.huntStamps > :nth-child(2) {
+  transform: rotate(9deg) translateY(-18px);
+}
+
+.huntStamps > :nth-child(3) {
+  transform: rotate(-4deg) translateY(14px);
+}
+
+@media (max-width: 899.98px) {
+  .huntStamps {
+    min-height: 0;
+    margin-top: 8px;
+  }
+}

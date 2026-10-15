@@ -5,6 +5,8 @@ import { BusinessCard, PlaceCard } from "@/components/content/cards";
 import { HeroSlides, type HeroSlide } from "@/components/home/HeroSlides";
 import { Ridgeline } from "@/components/home/Ridgeline";
 import { ValleyShowcase } from "@/components/home/ValleyShowcase";
+import { HuntProgress } from "@/components/hunt/HuntProgress";
+import { Stamp } from "@/components/hunt/Stamp";
 import { Photo } from "@/components/ui/Photo";
 import { photoAlt } from "@/components/ui/PhotoFigure";
 import { PhotoCredit } from "@/components/ui/PhotoCredit";
@@ -117,6 +119,33 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       </section>
 
       <div className={styles.motif} aria-hidden="true" />
+
+      {/* ------------------------------------------------- treasure hunt */}
+      <section className={styles.huntBand} aria-labelledby="hunt">
+        <div className={`${styles.blockInner} ${styles.split}`}>
+          <div className={styles.plan}>
+            <p className={ui.kicker}>{t.hunt.kicker}</p>
+            <h2 id="hunt" className={styles.h2}>
+              {t.hunt.homeTitle}
+            </h2>
+            <p className={styles.lede}>{t.hunt.homeText}</p>
+            <div className={ui.actions}>
+              <Link href={href(lang, "/hunt")} className={ui.button}>
+                {t.hunt.hunts}
+              </Link>
+              <Link href={href(lang, "/hunt/passport")} className={ui.textLink}>
+                {t.hunt.myPassport}
+              </Link>
+            </div>
+            <HuntProgress places={places.map((p) => p.slug)} large className={styles.huntProgress} />
+          </div>
+          <div className={styles.huntStamps} aria-hidden="true">
+            <Stamp icon="drop" how="here" label="Ali Pasha" size={118} />
+            <Stamp icon="waterfall" how="hand" label="Grlja" size={100} />
+            <Stamp icon="mountain" how="here" label="2534 m" size={132} />
+          </div>
+        </div>
+      </section>
 
       {/* ---------------------------------------------- how long do you have */}
       <section className={styles.block} aria-labelledby="time">

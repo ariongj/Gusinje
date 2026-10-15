@@ -11,15 +11,17 @@ import { ShareBox } from "@/components/content/ShareBox";
 import { SourceList } from "@/components/content/SourceList";
 import { TranslationNotice } from "@/components/content/TranslationNotice";
 import { TripButton } from "@/components/content/TripButton";
+import { StampButton } from "@/components/hunt/StampButton";
 import { VerificationPanel } from "@/components/content/VerificationPanel";
 import { Notice } from "@/components/ui/Notice";
 import { PhotoFigure } from "@/components/ui/PhotoFigure";
 import { absoluteUrl, brand } from "@/config/brand";
 import { placeholderPicture } from "@/content/demo";
-import { businessesNear, places, routesForPlace, toursForPlace } from "@/content";
+import { businessesNear, huntsForPlace, places, routesForPlace, toursForPlace } from "@/content";
 import { getMessages, resolveLocale } from "@/i18n";
 import { href, locales } from "@/i18n/config";
 import { isFallback, loc } from "@/i18n/localize";
+import { placeIcon } from "@/lib/explore-data";
 import { jsonLd, pageMetadata } from "@/lib/seo";
 import detail from "@/styles/detail.module.css";
 import ui from "@/styles/ui.module.css";
@@ -53,6 +55,7 @@ export default async function PlacePage({ params }: PageProps<"/[lang]/places/[s
   const nearby = businessesNear(slug);
   const placeRoutes = routesForPlace(slug);
   const placeTours = toursForPlace(slug);
+  const placeHunts = huntsForPlace(slug);
   const [lead = placeholderPicture(place.category), ...gallery] = place.photos;
 
   const structured = {
@@ -93,6 +96,20 @@ export default async function PlacePage({ params }: PageProps<"/[lang]/places/[s
         <TranslationNotice status={place.translations} lang={lang} t={t} fallback={isFallback(place.summary, lang)} />
         <div className={ui.actions}>
           <TripButton kind="place" slug={place.slug} />
+        </div>
+        <div className={detail.treasure}>
+          <StampButton slug={place.slug} name={name} icon={placeIcon[place.category]} location={place.location ? { lat: place.location.lat, lng: place.location.lng } : null} />
+          {placeHunts.length > 0 && (
+            <p className={detail.partOf}>
+              {t.hunt.partOf}:{" "}
+              {placeHunts.map((h, i) => (
+                <span key={h.slug}>
+                  {i > 0 && " · "}
+                  <Link href={href(lang, `/hunt/${h.slug}`)}>{loc(h.title, lang)}</Link>
+                </span>
+              ))}
+            </p>
+          )}
         </div>
       </PageIntro>
 

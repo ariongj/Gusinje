@@ -10,6 +10,7 @@ import { useGuidedTour } from "@/components/tour/useGuidedTour";
 import { useI18n } from "@/i18n/client";
 import { fill, fold, plural } from "@/i18n/localize";
 import { cx } from "@/lib/cx";
+import { usePassport } from "@/lib/passport";
 import ui from "@/styles/ui.module.css";
 
 import styles from "./Explorer.module.css";
@@ -82,6 +83,9 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
   const [mapFocus, setMapFocus] = useState<MapFocus>({ key: null, nonce: 0 });
   /** The visitor moved the 3D map themselves (the reset button only shows once there is something to reset). */
   const [moved, setMoved] = useState(false);
+  /** Places stamped in the explorer's passport: a tick on their pins. */
+  const passport = usePassport();
+  const found = useMemo(() => new Set(Object.keys(passport.stamps).map((slug) => `place:${slug}`)), [passport]);
   const [notice, setNotice] = useState<string | null>(null);
   const [tour, setTour] = useState<{
     data: ExploreTour;
@@ -600,6 +604,7 @@ export function Explorer({ title, lead, items, tours, journeys = [] }: Props) {
                   focus={mapFocus}
                   touring={touring}
                   insets={view !== "list" ? insets : undefined}
+                  found={found}
                   onSelect={(key) => {
                     if (touring) guide.pause();
                     select(key);

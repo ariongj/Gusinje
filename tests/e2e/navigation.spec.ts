@@ -10,20 +10,20 @@ test("home page: nav, independent-guide disclosure, no rating data", async ({ pa
   for (const json of ld) expect(json).not.toContain("aggregateRating");
 });
 
-test("main navigation has the eight sections, search and a language switcher", async ({ page, errors, isMobile }) => {
+test("main navigation has the nine sections, search and a language switcher", async ({ page, errors, isMobile }) => {
   void errors;
   await page.goto("/en/");
   if (isMobile) {
     await page.getByRole("button", { name: "Menu" }).click();
     const menu = page.getByRole("dialog", { name: "Menu" });
-    for (const label of ["Explore in 3D", "Places", "Stay", "Eat & Drink", "Guides & Experiences", "Travel Tips", "Plan Your Trip", "About the Region"]) {
+    for (const label of ["Explore in 3D", "Treasure Hunt", "Places", "Stay", "Eat & Drink", "Guides & Experiences", "Travel Tips", "Plan Your Trip", "About the Region"]) {
       await expect(menu.getByRole("link", { name: label, exact: true })).toBeVisible();
     }
     await page.keyboard.press("Escape");
     await expect(menu).toBeHidden();
   } else {
     const nav = page.getByRole("navigation", { name: "Main" }).first();
-    for (const label of ["Explore in 3D", "Places", "Stay", "Eat & Drink", "Guides & Experiences", "Travel Tips", "Plan Your Trip", "About the Region"]) {
+    for (const label of ["Explore in 3D", "Treasure Hunt", "Places", "Stay", "Eat & Drink", "Guides & Experiences", "Travel Tips", "Plan Your Trip", "About the Region"]) {
       await expect(nav.getByRole("link", { name: label, exact: true })).toBeVisible();
     }
   }

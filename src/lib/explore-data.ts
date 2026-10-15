@@ -9,7 +9,7 @@ import { businesses, businessLegendGroup, getBusiness, getPlace, getRoute, itine
 import type { MapIcon } from "@/components/map/icons";
 import type { Business, BusinessCategory, MapCamera, Photo, Place, PlaceCategory } from "@/content/types";
 
-const placeIcon: Record<PlaceCategory, MapIcon> = {
+export const placeIcon: Record<PlaceCategory, MapIcon> = {
   town: "town",
   village: "house",
   waterfall: "waterfall",

@@ -11,7 +11,7 @@ import { validateStyleMin } from "@maplibre/maplibre-gl-style-spec";
 import type { StyleSpecification } from "maplibre-gl";
 
 import { decorateBaseStyle, reliefStyle } from "../src/components/map/mapStyle";
-import { businesses, guides, itineraries, places, routes, tours } from "../src/content";
+import { businesses, guides, hunts, itineraries, places, routes, tours } from "../src/content";
 import { demoBusinesses, demoEvents } from "../src/content/demo";
 import { aboutPlatform, aboutRegion, partners } from "../src/content/pages";
 import { culture, timeline } from "../src/content/history";
@@ -310,4 +310,30 @@ test("the map's own layers (height tint, contours, paths, peaks) make a valid st
   expect(find("poi_transit").layout?.visibility).toBeUndefined();
   // The style passed in is left alone.
   expect(base.layers.find((l) => l.id === "poi_r1")).not.toHaveProperty("layout");
+});
+
+test("treasure hunts: every clue points to a real place, in all three languages, and no place is a clue twice in one hunt", () => {
+  expect(hunts.length).toBeGreaterThanOrEqual(3);
+  const slugs = new Set(hunts.map((h) => h.slug));
+  expect(slugs.size).toBe(hunts.length);
+  expect(slugs.has("passport")).toBe(false);
+  for (const hunt of hunts) {
+    expect(hunt.clues.length, hunt.slug).toBeGreaterThanOrEqual(3);
+    const seen = new Set<string>();
+    for (const clue of hunt.clues) {
+      expect(places.some((p) => p.slug === clue.place), `${hunt.slug}: ${clue.place}`).toBe(true);
+      expect(seen.has(clue.place), `${hunt.slug}: ${clue.place} twice`).toBe(false);
+      seen.add(clue.place);
+      for (const lang of ["en", "sq", "cnr"] as const) {
+        expect(clue.clue[lang]?.length ?? 0, `${hunt.slug}: ${clue.place} ${lang}`).toBeGreaterThan(40);
+        // A clue never gives the answer away by name.
+        const place = places.find((p) => p.slug === clue.place)!;
+        expect(clue.clue[lang]!.toLowerCase(), `${hunt.slug}: ${clue.place} ${lang} names the place`).not.toContain(place.name[lang]!.toLowerCase());
+      }
+    }
+    for (const lang of ["en", "sq", "cnr"] as const) {
+      expect(hunt.title[lang]).toBeTruthy();
+      expect(hunt.intro[lang]).toBeTruthy();
+    }
+  }
 });

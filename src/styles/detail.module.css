@@ -104,3 +104,26 @@
   color: var(--bronze);
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- treasure hunt ---------- */
+
+.treasure {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(184, 137, 74, 0.4);
+  border-radius: 18px;
+  background: rgba(184, 137, 74, 0.07);
+}
+
+.partOf {
+  margin: 0;
+  font: 500 13.5px/1.4 var(--font-text);
+  color: var(--text-soft);
+}
+
+.partOf a {
+  font-weight: 700;
+  color: var(--teal-2);
+}

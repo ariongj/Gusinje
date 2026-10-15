@@ -188,6 +188,20 @@ hidden so only the guide's places show; roads, trails, rivers, village names and
 map draws at most at twice the screen's resolution, which is what keeps 3D smooth on very sharp
 phone screens.
 
+**Treasure hunt** (`/hunt`): the whole guide framed as explore → plan → hunt. Four hunts
+(`src/content/hunts.ts`) give clues to real places, each written only from facts on that
+place's page — a content test checks every clue points to a real place, exists in all three
+languages and never names the answer. A clue stays hidden until the visitor reveals it (then
+the place, its photo, "Show on map" and "Open page" appear) or finds the place. Finding means
+pressing "I'm here" on site — the browser's position is compared with the place on the device
+(within 300 m, plus the position's own accuracy) — or marking it by hand; each gives a stamp in
+the **explorer's passport** (`/hunt/passport`: progress ring, badges for the first find, each
+hunt and the whole valley, a stamp slot for every place). Stamps, badges and revealed clues
+live in localStorage only (`src/lib/passport.ts`); nothing is sent (tested). Stamped places
+carry a gold tick on the 3D map, the explore card and every place page offer the stamp, hunts
+link from the main navigation, the phone tab bar, the home page and My Trip. Hunt texts in
+Albanian and Montenegrin are marked unreviewed.
+
 **Guided tours** go one stop at a time: a big "Next stop" button names the next place, with
 "Play the tour", restart and voice as small extras; on phones a swipe on the card moves on or back. On wide screens the tour takes the whole
 screen; on phones the card docks under the model and both fit above the tab bar.
