@@ -533,3 +533,461 @@
     justify-items: start;
   }
 }
+
+/* ---------- expedition theme: parchment with contour lines ---------- */
+
+.expedition {
+  background-color: #f6f0e4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none' stroke='%238d6a3f' stroke-opacity='0.14' stroke-width='1.1'%3E%3Cpath d='M0 40c45-28 75-28 120 0s75 28 120 0 75-28 120 0'/%3E%3Cpath d='M0 100c45-22 75-22 120 0s75 22 120 0 75-22 120 0'/%3E%3Cpath d='M0 160c45-30 75-30 120 0s75 30 120 0 75-30 120 0'/%3E%3Cpath d='M0 220c45-18 75-18 120 0s75 18 120 0 75-18 120 0'/%3E%3Cpath d='M0 280c45-26 75-26 120 0s75 26 120 0 75-26 120 0'/%3E%3Cpath d='M0 340c45-20 75-20 120 0s75 20 120 0 75-20 120 0'/%3E%3Cellipse cx='250' cy='70' rx='46' ry='18'/%3E%3Cellipse cx='250' cy='70' rx='28' ry='10'/%3E%3Cellipse cx='90' cy='250' rx='40' ry='16'/%3E%3Cellipse cx='90' cy='250' rx='22' ry='8'/%3E%3C/svg%3E");
+  background-size: 360px 360px;
+  border-top: 1px solid rgba(168, 119, 58, 0.25);
+}
+
+/* ---------- the trail of clues ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+
+.main {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+}
+
+.trail {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 0 58px;
+  list-style: none;
+}
+
+.trail::before {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: 30px;
+  bottom: 30px;
+  border-left: 2px dashed rgba(168, 119, 58, 0.55);
+}
+
+.clue {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.medallion {
+  position: absolute;
+  left: -58px;
+  top: 16px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: var(--light);
+  color: var(--gold-hover);
+  font: 800 16px/1 var(--font-text);
+  box-shadow: 0 6px 16px rgba(10, 42, 45, 0.12);
+  transition:
+    transform 0.3s var(--ease-soft, ease),
+    background-color 0.3s;
+}
+
+.clueFound .medallion {
+  background: var(--gold);
+  color: var(--on-gold);
+  transform: scale(1.1);
+}
+
+.card {
+  position: relative;
+  padding: 22px 24px 20px;
+  border: 1px solid rgba(168, 119, 58, 0.35);
+  border-radius: 22px;
+  background: var(--light);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+    0 10px 30px rgba(10, 42, 45, 0.06);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(168, 119, 58, 0.22);
+  border-radius: 17px;
+  pointer-events: none;
+}
+
+.clueFound .card {
+  border-color: rgba(168, 119, 58, 0.6);
+  background: linear-gradient(180deg, rgba(184, 137, 74, 0.1), transparent 55%), var(--light);
+}
+
+.clueOpen .card {
+  animation: unseal 0.5s var(--ease-soft, ease);
+}
+
+@keyframes unseal {
+  0% {
+    transform: scale(0.985);
+  }
+  45% {
+    transform: scale(1.012);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.tag {
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  font: 700 11px/1 var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tag-hidden {
+  background: rgba(15, 59, 63, 0.08);
+  color: var(--text-soft);
+}
+
+.tag-revealed {
+  background: var(--mist);
+  color: var(--teal-2);
+}
+
+.tag-found {
+  background: var(--gold);
+  color: var(--on-gold);
+}
+
+.answer {
+  transform-origin: top;
+  animation: open 0.55s var(--ease-soft, ease);
+}
+
+@keyframes open {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+.answerPhoto {
+  animation: photoIn 0.7s 0.15s both;
+}
+
+@keyframes photoIn {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- hot or cold ---------- */
+
+.hotCold {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--mist);
+  color: var(--teal);
+}
+
+.hotColdText {
+  display: grid;
+  gap: 2px;
+  font: 500 13px/1.3 var(--font-text);
+}
+
+.hotColdText strong {
+  font: 800 14px/1.2 var(--font-text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.compass {
+  flex: none;
+}
+
+.needle {
+  transition: transform 0.4s var(--ease-soft, ease);
+}
+
+.level-cold {
+  background: #e4eef5;
+  color: #3a6b8f;
+}
+
+.level-warm {
+  background: #f7ecd7;
+  color: #a8773a;
+}
+
+.level-hot {
+  background: #fbe3dc;
+  color: #b03a2e;
+}
+
+.level-here {
+  background: var(--gold);
+  color: var(--on-gold);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 8px rgba(184, 137, 74, 0.25);
+  }
+}
+
+/* ---------- side panel ---------- */
+
+.side {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid rgba(168, 119, 58, 0.35);
+  border-radius: 22px;
+  background: var(--light);
+}
+
+.sideHead {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.sideHead .progress {
+  width: 100%;
+}
+
+.guide {
+  display: grid;
+  gap: 10px;
+}
+
+.guideButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--gold);
+  color: var(--on-gold);
+  font: 700 14px/1 var(--font-text);
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(184, 137, 74, 0.25);
+  transition: background-color 0.2s;
+}
+
+.guideButton:hover {
+  background: var(--gold-hover);
+}
+
+.guideButtonOn,
+.guideButtonOn:hover {
+  background: var(--teal);
+  color: #fff;
+  box-shadow: none;
+}
+
+.sideActions {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+@media (min-width: 1000px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+  }
+
+  .side {
+    position: sticky;
+    top: calc(var(--header-h, 64px) + 16px);
+  }
+}
+
+/* ---------- sparks and slams ---------- */
+
+.stampWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.burst i {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  transform: rotate(var(--a)) translateY(0);
+  animation: spark 0.85s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.burst i:nth-child(odd) {
+  width: 5px;
+  height: 5px;
+  background: #e2b063;
+}
+
+@keyframes spark {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateY(-58px) scale(0.2);
+  }
+}
+
+.stampIn {
+  animation: stampIn 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+}
+
+@keyframes stampIn {
+  0% {
+    opacity: 0;
+    transform: scale(2.2) rotate(-25deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.94) rotate(-6deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.celebrate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px;
+  border: 1px solid var(--gold);
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f3e3c3, #fbf6ec);
+  animation: unseal 0.6s var(--ease-soft, ease);
+}
+
+.celebrate span:not(.stampWrap):not(.burst) {
+  font: 500 15px/1.4 var(--font-text);
+  color: var(--text);
+}
+
+.celebrateTitle {
+  display: block;
+  font: 500 24px/1.2 var(--font-display);
+  color: var(--ink);
+}
+
+/* ---------- hub: sketch maps and tilting cards ---------- */
+
+.sketch {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  background: #f6f0e4;
+  color: var(--teal);
+}
+
+.huntCard:hover .mark {
+  animation: wobble 0.6s ease;
+}
+
+.markFound {
+  filter: drop-shadow(0 0 4px rgba(184, 137, 74, 0.6));
+}
+
+@keyframes wobble {
+  30% {
+    transform: scale(1.25) rotate(-8deg);
+  }
+  60% {
+    transform: scale(0.95) rotate(6deg);
+  }
+}
+
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.25s;
+  will-change: transform;
+}
+
+.tilt:hover {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px);
+  box-shadow: var(--shadow-lift);
+}
+
+.ringFill {
+  transition: stroke-dasharray 0.6s var(--ease-soft, ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stampIn,
+  .answer,
+  .answerPhoto,
+  .clueOpen .card,
+  .celebrate,
+  .burst i,
+  .huntCard:hover .mark,
+  .level-here {
+    animation: none;
+  }
+
+  .needle,
+  .tilt,
+  .ringFill {
+    transition: none;
+  }
+
+  .tilt,
+  .tilt:hover {
+    transform: none;
+  }
+}

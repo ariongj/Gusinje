@@ -56,6 +56,30 @@ test.describe("Treasure hunt", () => {
     }, null, { timeout: 45_000 });
   });
 
+  test("“Guide me” shows how far and which way a sealed clue is, without naming the place", async ({ page, context, errors }) => {
+    void errors;
+    await context.grantPermissions(["geolocation"]);
+    // Standing at the Grlja waterfall.
+    await context.setGeolocation({ latitude: 42.52283, longitude: 19.84138, accuracy: 15 });
+    await page.goto("/en/hunt/waters-of-the-valley/");
+    await page.getByRole("button", { name: /Guide me/ }).click();
+    const clues = page.getByTestId("clue");
+    // Clue 2 is the waterfall: we're there, but it stays sealed until stamped.
+    await expect(clues.nth(1).getByTestId("hot-cold")).toHaveAttribute("data-level", "here");
+    await expect(clues.nth(1)).toContainText("You're here");
+    await expect(clues.nth(1)).toHaveAttribute("data-state", "hidden");
+    await expect(clues.nth(1)).not.toContainText("Grlja waterfall");
+    // Clue 1 (the springs) is about 3 km away: warm, with the distance.
+    await expect(clues.first().getByTestId("hot-cold")).toHaveAttribute("data-level", "warm");
+    await expect(clues.first()).toContainText(/km away/);
+    // Standing there, the stamp is offered straight away; the clue opens as found.
+    await clues.nth(1).getByRole("button", { name: /I'm here/ }).click();
+    await expect(clues.nth(1)).toHaveAttribute("data-state", "found");
+    await expect(clues.nth(1).getByRole("heading", { name: "Grlja waterfall" })).toBeVisible();
+    await page.getByRole("button", { name: "Stop guiding" }).click();
+    await expect(page.getByTestId("hot-cold")).toHaveCount(0);
+  });
+
   test("the explore card offers the stamp for places only", async ({ page, errors }) => {
     void errors;
     await page.goto("/en/explore/?view=list");

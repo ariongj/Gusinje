@@ -10,6 +10,7 @@ import { cx } from "@/lib/cx";
 import { passportActions, usePassport } from "@/lib/passport";
 
 import styles from "./Hunt.module.css";
+import { Ring } from "./Ring";
 import { Stamp, StampSlot } from "./Stamp";
 
 /** A short date that fits inside the stamp ("15 Oct 2026"). */
@@ -29,9 +30,6 @@ export function PassportView({ places, hunts, huntsHref }: { places: PassportPla
   const passport = usePassport();
   const found = places.filter((p) => passport.stamps[p.slug]).length;
   const total = places.length;
-  const ratio = total ? found / total : 0;
-  const r = 52;
-  const circumference = 2 * Math.PI * r;
 
   const badges = [
     { key: "first", title: t.hunt.badgeFirst, text: t.hunt.badgeFirstText, icon: "compass" as MapIcon, earned: found >= 1 },
@@ -42,26 +40,7 @@ export function PassportView({ places, hunts, huntsHref }: { places: PassportPla
   return (
     <div className={styles.passport}>
       <div className={styles.passportHead}>
-        <svg className={styles.ring} width="140" height="140" viewBox="0 0 140 140" role="img" aria-label={fill(t.hunt.passportProgress, { found, total })}>
-          <circle cx="70" cy="70" r={r} fill="none" stroke="currentColor" strokeWidth="9" opacity="0.14" />
-          <circle
-            cx="70"
-            cy="70"
-            r={r}
-            fill="none"
-            stroke="var(--gold)"
-            strokeWidth="9"
-            strokeLinecap="round"
-            strokeDasharray={`${circumference * ratio} ${circumference}`}
-            transform="rotate(-90 70 70)"
-          />
-          <text x="70" y="66" textAnchor="middle" fontSize="30" fontWeight="500" fontFamily="var(--font-display), serif" fill="currentColor">
-            {found}
-          </text>
-          <text x="70" y="88" textAnchor="middle" fontSize="12" fontWeight="600" fontFamily="var(--font-text), system-ui" fill="currentColor" opacity="0.7">
-            / {total}
-          </text>
-        </svg>
+        <Ring found={found} total={total} size={140} label={fill(t.hunt.passportProgress, { found, total })} />
         <div>
           <p className={styles.passportProgress} data-testid="passport-progress">
             {fill(t.hunt.passportProgress, { found, total })}

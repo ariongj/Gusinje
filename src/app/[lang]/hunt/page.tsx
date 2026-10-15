@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { PageIntro } from "@/components/content/PageIntro";
 import styles from "@/components/hunt/Hunt.module.css";
+import { HuntCard } from "@/components/hunt/HuntCard";
 import { HuntProgress } from "@/components/hunt/HuntProgress";
+import { HuntSketch } from "@/components/hunt/HuntSketch";
 import { MAP_ICONS } from "@/components/map/icons";
 import { hunts, places } from "@/content";
 import { getMessages, resolveLocale } from "@/i18n";
@@ -26,7 +28,8 @@ export default async function HuntPage({ params }: PageProps<"/[lang]/hunt">) {
   return (
     <>
       <PageIntro lang={lang} t={t} kicker={t.hunt.kicker} title={t.hunt.title} lead={t.hunt.intro} crumbs={[[t.nav.home, href(lang)]]} />
-      <div className={ui.wrap}>
+      <div className={styles.expedition}>
+        <div className={ui.wrap}>
         <section className={ui.section} aria-labelledby="how">
           <h2 id="how" className={ui.h2}>
             {t.hunt.howTitle}
@@ -46,7 +49,8 @@ export default async function HuntPage({ params }: PageProps<"/[lang]/hunt">) {
           </h2>
           <div className={styles.huntCards}>
             {hunts.map((hunt) => (
-              <Link key={hunt.slug} href={href(lang, `/hunt/${hunt.slug}`)} className={styles.huntCard} data-hunt={hunt.slug}>
+              <HuntCard key={hunt.slug} href={href(lang, `/hunt/${hunt.slug}`)} slug={hunt.slug}>
+                <HuntSketch places={hunt.clues.map((c) => c.place)} />
                 <div className={styles.huntCardHead}>
                   <span className={styles.huntIcon} aria-hidden="true">
                     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -61,7 +65,7 @@ export default async function HuntPage({ params }: PageProps<"/[lang]/hunt">) {
                 <span className={styles.huntMeta}>{fill(t.hunt.clues, { n: hunt.clues.length })}</span>
                 <HuntProgress places={hunt.clues.map((c) => c.place)} />
                 <span className={styles.huntCta}>{t.hunt.openHunt} →</span>
-              </Link>
+              </HuntCard>
             ))}
           </div>
         </section>
@@ -78,6 +82,7 @@ export default async function HuntPage({ params }: PageProps<"/[lang]/hunt">) {
             </Link>
           </div>
         </section>
+        </div>
       </div>
     </>
   );

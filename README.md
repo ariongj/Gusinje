@@ -200,7 +200,11 @@ hunt and the whole valley, a stamp slot for every place). Stamps, badges and rev
 live in localStorage only (`src/lib/passport.ts`); nothing is sent (tested). Stamped places
 carry a gold tick on the 3D map, the explore card and every place page offer the stamp, hunts
 link from the main navigation, the phone tab bar, the home page and My Trip. Hunt texts in
-Albanian and Montenegrin are marked unreviewed.
+Albanian and Montenegrin are marked unreviewed. On a hunt page, **"Guide me — hot or cold"**
+turns on the device's position (and compass, where the phone has one) and every sealed clue
+shows a compass arrow towards its place and how far it is — cold, warm, hot, or "you're here",
+which offers the stamp straight away — without naming the place. Opening a clue, stamping and
+finishing a hunt are animated (none of it with reduced motion).
 
 **Guided tours** go one stop at a time: a big "Next stop" button names the next place, with
 "Play the tour", restart and voice as small extras; on phones a swipe on the card moves on or back. On wide screens the tour takes the whole

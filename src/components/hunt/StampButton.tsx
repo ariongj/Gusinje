@@ -10,6 +10,7 @@ import { cx } from "@/lib/cx";
 import { km } from "@/lib/geo";
 import { ON_SITE_METRES, passportActions, usePassport } from "@/lib/passport";
 
+import { Burst } from "./Burst";
 import styles from "./Hunt.module.css";
 import { Stamp } from "./Stamp";
 
@@ -42,6 +43,8 @@ export function StampButton({ slug, name, icon = "info", location, compact = fal
   const passport = usePassport();
   const stamp = passport.stamps[slug];
   const [note, setNote] = useState<Note>(null);
+  /** Stamped just now (on this screen): it slams in with sparks. */
+  const [fresh, setFresh] = useState(false);
 
   useEffect(() => {
     if (!note || note.kind === "checking") return;
@@ -61,6 +64,7 @@ export function StampButton({ slug, name, icon = "info", location, compact = fal
         const distance = km({ lat: pos.coords.latitude, lng: pos.coords.longitude }, location);
         if (distance * 1000 <= ON_SITE_METRES + Math.min(pos.coords.accuracy || 0, 100)) {
           passportActions.stamp(slug, "here");
+          setFresh(true);
           setNote({ kind: "ok" });
         } else {
           setNote({ kind: "far", km: distance });
@@ -87,7 +91,10 @@ export function StampButton({ slug, name, icon = "info", location, compact = fal
   if (stamp) {
     return (
       <div className={cx(styles.stampBox, compact && styles.stampBoxCompact)} data-testid="stamp" data-how={stamp.how}>
-        <Stamp icon={icon} how={stamp.how} label={stampLabel(stamp.at, lang)} size={compact ? 72 : 96} />
+        <span className={styles.stampWrap}>
+          {fresh && <Burst />}
+          <Stamp icon={icon} how={stamp.how} label={stampLabel(stamp.at, lang)} size={compact ? 72 : 96} className={fresh ? styles.stampIn : undefined} />
+        </span>
         <div className={styles.stampText}>
           <strong>{t.hunt.foundBadge}</strong>
           <span>
@@ -121,7 +128,15 @@ export function StampButton({ slug, name, icon = "info", location, compact = fal
         ) : (
           <p className={styles.muted}>{t.hunt.noLocation}</p>
         )}
-        <button type="button" className={styles.markHand} onClick={() => passportActions.stamp(slug, "hand")} aria-label={`${t.hunt.markHand}: ${name}`}>
+        <button
+          type="button"
+          className={styles.markHand}
+          onClick={() => {
+            passportActions.stamp(slug, "hand");
+            setFresh(true);
+          }}
+          aria-label={`${t.hunt.markHand}: ${name}`}
+        >
           {t.hunt.markHand}
         </button>
       </div>

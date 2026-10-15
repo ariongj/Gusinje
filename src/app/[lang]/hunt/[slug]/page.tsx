@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { PageIntro } from "@/components/content/PageIntro";
 import { TranslationNotice } from "@/components/content/TranslationNotice";
+import styles from "@/components/hunt/Hunt.module.css";
 import { HuntClues, type ClueCard } from "@/components/hunt/HuntClues";
 import { getPlace, hunts } from "@/content";
 import { getMessages, resolveLocale } from "@/i18n";
@@ -68,11 +69,13 @@ export default async function HuntDetailPage({ params }: PageProps<"/[lang]/hunt
       >
         <TranslationNotice status={hunt.translations} lang={lang} t={t} fallback={false} />
       </PageIntro>
-      <div className={ui.wrap}>
-        <section className={ui.section} aria-label={t.hunt.clues.replace("{n}", String(clues.length))}>
-          <HuntClues hunt={hunt.slug} clues={clues} />
-        </section>
-        <p className={ui.muted}>{t.hunt.passportIntro}</p>
+      <div className={styles.expedition}>
+        <div className={ui.wrap}>
+          <section className={ui.section} aria-label={t.hunt.clues.replace("{n}", String(clues.length))}>
+            <HuntClues hunt={hunt.slug} clues={clues} planHref={href(lang, "/plan")} />
+          </section>
+          <p className={ui.muted}>{t.hunt.passportIntro}</p>
+        </div>
       </div>
     </>
   );
