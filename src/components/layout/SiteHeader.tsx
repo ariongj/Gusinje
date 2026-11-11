@@ -9,6 +9,7 @@ import { mainNav } from "@/config/nav";
 import { useI18n } from "@/i18n/client";
 import { href, locales, localeNames, localeShort, switchLocalePath, type Locale } from "@/i18n/config";
 import { cx } from "@/lib/cx";
+import { usePassport } from "@/lib/passport";
 import { useTrip } from "@/lib/trip";
 
 import styles from "./SiteHeader.module.css";
@@ -27,6 +28,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
   const count = trip.items.length;
+  const stamps = Object.keys(usePassport().stamps).length;
 
   return (
     <header className={styles.header}>
@@ -50,6 +52,11 @@ export function SiteHeader() {
                 aria-current={active ? "page" : undefined}
               >
                 {t.nav[item.key]}
+                {item.key === "hunt" && stamps > 0 && (
+                  <span className={styles.navCount} title={t.hunt.passport}>
+                    {stamps}
+                  </span>
+                )}
               </Link>
             );
           })}

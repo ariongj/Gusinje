@@ -94,6 +94,8 @@ test("search finds places by any of their names", async ({ page, errors }) => {
 test("travel tips: searchable, with section status and sources", async ({ page, errors }) => {
   void errors;
   await page.goto("/en/travel-tips/");
+  // No photo, no empty box: each guide's card carries its own drawn tile.
+  await expect(page.locator("article").first().locator("svg").first()).toBeVisible();
   await page.getByLabel("Search travel tips").fill("euro");
   await expect(page.getByRole("link", { name: "Money, connectivity and visitor services" })).toBeVisible();
   await page.goto("/en/travel-tips/safety-and-emergencies/");

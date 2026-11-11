@@ -21,6 +21,9 @@ export default defineConfig({
     launchOptions: {
       // Software WebGL so the 3D view can be tested headless.
       args: ["--enable-unsafe-swiftshader", "--use-angle=swiftshader"],
+      // A machine with its own Chromium (a different build from the one this
+      // Playwright version downloads) can point at it.
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
     },
   },
   webServer: {

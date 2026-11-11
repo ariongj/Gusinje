@@ -59,6 +59,7 @@ export default async function HuntDetailPage({ params }: PageProps<"/[lang]/hunt
       <PageIntro
         lang={lang}
         t={t}
+        ground="#f6f0e4"
         kicker={t.hunt.title}
         title={loc(hunt.title, lang)}
         lead={loc(hunt.intro, lang)}

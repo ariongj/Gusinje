@@ -9,8 +9,48 @@
   border-bottom: 1px solid var(--line);
 }
 
+/* How far down the page you are: a gold line along the header's foot, drawn
+   by the scroll position itself (browsers without scroll timelines skip it). */
+@supports (animation-timeline: scroll()) {
+  .header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background: var(--gold);
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: read linear both;
+    animation-timeline: scroll(root block);
+    pointer-events: none;
+  }
+}
+
+@keyframes read {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Stamps in the explorer's passport, beside "Treasure Hunt". */
+.navCount {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--on-gold);
+  font: 800 11px/1 var(--font-text);
+  vertical-align: 1px;
+}
+
 .bar {
-  max-width: 1440px;
+  max-width: 1680px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -196,7 +236,40 @@
   }
 }
 
-/* Below this width the eight sections move into the menu. */
+/* Laptops: the nine sections fit by drawing closer together (measured in all
+   three languages; Albanian is the widest). */
+@media (min-width: 1280px) and (max-width: 1639.98px) {
+  .bar {
+    gap: 10px;
+    padding-inline: 16px;
+  }
+
+  .region {
+    display: none;
+  }
+
+  .nav {
+    gap: 0;
+  }
+
+  .link {
+    padding: 9px 7px;
+    font-size: 13px;
+  }
+}
+
+/* Small laptops: the last two sections wait in the menu. */
+@media (min-width: 1280px) and (max-width: 1359.98px) {
+  .nav > :nth-last-child(-n + 2) {
+    display: none;
+  }
+
+  .burger {
+    display: inline-flex;
+  }
+}
+
+/* Below this width all nine sections move into the menu. */
 @media (max-width: 1279.98px) {
   .nav {
     display: none;

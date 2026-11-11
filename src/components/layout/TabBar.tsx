@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useI18n } from "@/i18n/client";
 import { href } from "@/i18n/config";
 import { cx } from "@/lib/cx";
+import { usePassport } from "@/lib/passport";
 import { useTrip } from "@/lib/trip";
 
 import styles from "./TabBar.module.css";
@@ -24,6 +25,7 @@ export function TabBar() {
   const pathname = usePathname() ?? "/";
   const rest = "/" + pathname.split("/").slice(2).join("/").replace(/\/$/, "");
   const count = useTrip().items.length;
+  const stamps = Object.keys(usePassport().stamps).length;
   const tabs = [
     { key: "home", path: "", label: t.nav.home, icon: ICONS.home },
     { key: "map", path: "/explore", label: t.nav.tabMap, icon: ICONS.map },
@@ -42,6 +44,7 @@ export function TabBar() {
                 <path d={tab.icon} />
               </svg>
               {tab.key === "trip" && count > 0 && <span className={styles.count}>{count}</span>}
+              {tab.key === "hunt" && stamps > 0 && <span className={styles.count}>{stamps}</span>}
             </span>
             <span className={styles.label}>{tab.label}</span>
           </Link>

@@ -1,0 +1,115 @@
+/* The 404: a compass that has lost north, on the contour-lined paper. */
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 22px;
+  padding: 40px 16px;
+  text-align: center;
+  background-color: #f6f0e4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none' stroke='%238d6a3f' stroke-opacity='0.14' stroke-width='1.1'%3E%3Cpath d='M0 40c45-28 75-28 120 0s75 28 120 0 75-28 120 0'/%3E%3Cpath d='M0 100c45-22 75-22 120 0s75 22 120 0 75-22 120 0'/%3E%3Cpath d='M0 160c45-30 75-30 120 0s75 30 120 0 75-30 120 0'/%3E%3Cpath d='M0 220c45-18 75-18 120 0s75 18 120 0 75-18 120 0'/%3E%3Cpath d='M0 280c45-26 75-26 120 0s75 26 120 0 75-26 120 0'/%3E%3Cpath d='M0 340c45-20 75-20 120 0s75 20 120 0 75-20 120 0'/%3E%3C/svg%3E");
+  font-family: system-ui, sans-serif;
+  color: #33474a;
+}
+
+.compass {
+  width: 150px;
+  height: 150px;
+}
+
+.needle {
+  transform-origin: 100px 100px;
+  transform-box: view-box;
+  animation: lost 5s ease-in-out infinite;
+}
+
+@keyframes lost {
+  0% {
+    transform: rotate(-28deg);
+  }
+  35% {
+    transform: rotate(64deg);
+  }
+  60% {
+    transform: rotate(18deg);
+  }
+  100% {
+    transform: rotate(-28deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .needle {
+    animation: none;
+    transform: rotate(32deg);
+  }
+}
+
+.code {
+  margin: 0;
+  font: 700 12px/1 system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #5f7071;
+}
+
+.languages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 16px;
+  width: min(100%, 940px);
+}
+
+.card {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 22px 20px;
+  border: 1px solid rgba(168, 119, 58, 0.4);
+  border-radius: 22px;
+  background: #fbfaf7;
+}
+
+.kicker {
+  margin: 0;
+  font: 700 11.5px/1.2 system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a0733a;
+}
+
+.title {
+  margin: 0;
+  font: 600 26px/1.2 Georgia, serif;
+  color: #152a2c;
+}
+
+.text {
+  margin: 0;
+}
+
+.links {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+
+.links a {
+  font-weight: 700;
+  color: #17565b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.links .primary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #0f3b3f;
+  color: #fff;
+  text-decoration: none;
+}

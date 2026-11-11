@@ -540,7 +540,6 @@
   background-color: #f6f0e4;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none' stroke='%238d6a3f' stroke-opacity='0.14' stroke-width='1.1'%3E%3Cpath d='M0 40c45-28 75-28 120 0s75 28 120 0 75-28 120 0'/%3E%3Cpath d='M0 100c45-22 75-22 120 0s75 22 120 0 75-22 120 0'/%3E%3Cpath d='M0 160c45-30 75-30 120 0s75 30 120 0 75-30 120 0'/%3E%3Cpath d='M0 220c45-18 75-18 120 0s75 18 120 0 75-18 120 0'/%3E%3Cpath d='M0 280c45-26 75-26 120 0s75 26 120 0 75-26 120 0'/%3E%3Cpath d='M0 340c45-20 75-20 120 0s75 20 120 0 75-20 120 0'/%3E%3Cellipse cx='250' cy='70' rx='46' ry='18'/%3E%3Cellipse cx='250' cy='70' rx='28' ry='10'/%3E%3Cellipse cx='90' cy='250' rx='40' ry='16'/%3E%3Cellipse cx='90' cy='250' rx='22' ry='8'/%3E%3C/svg%3E");
   background-size: 360px 360px;
-  border-top: 1px solid rgba(168, 119, 58, 0.25);
 }
 
 /* ---------- the trail of clues ---------- */
@@ -990,4 +989,26 @@
   .tilt:hover {
     transform: none;
   }
+}
+
+/* ---------- "found" mark on place cards ---------- */
+
+.foundBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 11px 6px 9px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--on-gold);
+  font: 800 11.5px/1 var(--font-text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 16px rgba(10, 42, 45, 0.25);
+}
+
+/* The compass picker on the hunt page: no wider than it reads well. */
+.pickerWide {
+  max-width: 820px;
 }

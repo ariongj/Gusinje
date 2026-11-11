@@ -688,6 +688,7 @@ export const cnr: Messages = {
     title: "Stranica nije pronađena",
     text: "Ova stranica ne postoji — možda je premještena.",
     home: "Idi na početnu stranicu",
+    kicker: "Izašli ste s karte",
   },
   chooseLanguage: "Izaberite jezik",
   hunt: {
@@ -752,5 +753,11 @@ export const cnr: Messages = {
     revealedTag: "Otkriveno",
     northNote: "Strelice se mjere od sjevera; na telefonu s kompasom okreću se s vama.",
     celebrateTitle: "Lovac na blago!",
+    pickTitle: "Ne znate kuda?",
+    pickText: "Zavrtite kompas i pustite dolinu da odluči. Igla se zaustavlja u stvarnom pravcu mjesta, gledano iz Gusinja.",
+    spin: "Zavrti kompas",
+    spinAgain: "Zavrti ponovo",
+    spinning: "Vrti se…",
+    pointsTo: "Kompas pokazuje ka",
   },
 };

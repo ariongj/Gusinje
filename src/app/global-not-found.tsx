@@ -7,12 +7,14 @@ import { cnr } from "@/i18n/messages/cnr";
 import { en } from "@/i18n/messages/en";
 import { sq } from "@/i18n/messages/sq";
 
+import styles from "./not-found.module.css";
+
 export const metadata: Metadata = {
   title: `${en.notFound.title} · ${brand.name.en}`,
   robots: { index: false },
 };
 
-/** One 404 for the whole static site, in all three languages. */
+/** One 404 for the whole static site, in all three languages: off the map, with the way back. */
 export default function GlobalNotFound() {
   const items = [
     { lang: "en", t: en },
@@ -22,19 +24,38 @@ export default function GlobalNotFound() {
   return (
     <html lang="en">
       <body>
-        <main style={{ minHeight: "100vh", display: "grid", placeContent: "center", gap: 28, padding: "32px 16px", textAlign: "center" }}>
-          <p style={{ margin: 0, font: "700 12px/1 system-ui, sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--muted)" }}>
-            404 · {brand.region}
-          </p>
-          {items.map(({ lang, t }) => (
-            <section key={lang} lang={lang}>
-              <h1 style={{ margin: "0 0 6px", font: "600 26px/1.2 Georgia, serif" }}>{t.notFound.title}</h1>
-              <p style={{ margin: "0 0 8px", color: "var(--text)" }}>{t.notFound.text}</p>
-              <a href={`${brand.basePath}/${lang}/`} style={{ fontWeight: 700, color: "var(--teal-2)", textDecoration: "underline" }}>
-                {t.notFound.home}
-              </a>
-            </section>
-          ))}
+        <main className={styles.page}>
+          <svg className={styles.compass} viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="96" fill="#fbf6ec" stroke="#b8894a" strokeWidth="2.5" />
+            <circle cx="100" cy="100" r="82" fill="none" stroke="rgba(168,119,58,0.45)" strokeDasharray="2 4" />
+            {["N", "E", "S", "W"].map((letter, i) => (
+              <text key={letter} x="100" y="42" textAnchor="middle" transform={`rotate(${i * 90} 100 100)`} fill="#0f3b3f" fontSize="15" fontWeight="700" fontFamily="Georgia, serif">
+                {letter}
+              </text>
+            ))}
+            <g className={styles.needle}>
+              <path d="M100 30l11 70H89z" fill="#b03a2e" />
+              <path d="M100 170l-11-70h22z" fill="#8fa3a2" />
+            </g>
+            <circle cx="100" cy="100" r="7" fill="#fbfaf7" stroke="#0f3b3f" strokeWidth="2.5" />
+          </svg>
+          <p className={styles.code}>404 · {brand.region}</p>
+          <div className={styles.languages}>
+            {items.map(({ lang, t }) => (
+              <section key={lang} lang={lang} className={styles.card}>
+                <p className={styles.kicker}>{t.notFound.kicker}</p>
+                <h1 className={styles.title}>{t.notFound.title}</h1>
+                <p className={styles.text}>{t.notFound.text}</p>
+                <p className={styles.links}>
+                  <a href={`${brand.basePath}/${lang}/`} className={styles.primary}>
+                    {t.notFound.home}
+                  </a>
+                  <a href={`${brand.basePath}/${lang}/explore/`}>{t.nav.explore}</a>
+                  <a href={`${brand.basePath}/${lang}/hunt/`}>{t.nav.hunt}</a>
+                </p>
+              </section>
+            ))}
+          </div>
         </main>
       </body>
     </html>

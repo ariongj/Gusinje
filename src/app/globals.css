@@ -237,8 +237,8 @@ input[type="range"]:focus-visible::-moz-range-thumb {
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
   [data-reveal] {
     transition:
-      opacity 1.2s var(--ease-soft),
-      transform 1.2s var(--ease-soft);
+      opacity 0.75s var(--ease-soft),
+      transform 0.75s var(--ease-soft);
   }
 
   [data-reveal]:not([data-revealed]) {
@@ -246,7 +246,16 @@ input[type="range"]:focus-visible::-moz-range-thumb {
   }
 
   [data-reveal="up"]:not([data-revealed]) {
-    transform: translateY(40px);
+    transform: translateY(26px);
+  }
+
+  /* Cards in a row arrive one after the other. */
+  [data-reveal]:nth-child(3n + 2) {
+    transition-delay: 90ms;
+  }
+
+  [data-reveal]:nth-child(3n + 3) {
+    transition-delay: 180ms;
   }
 
   [data-reveal="left"]:not([data-revealed]) {
@@ -279,6 +288,14 @@ input[type="range"]:focus-visible::-moz-range-thumb {
   [data-delay="240"] { transition-delay: 240ms; }
   [data-delay="280"] { transition-delay: 280ms; }
   [data-delay="320"] { transition-delay: 320ms; }
+}
+
+/* On paper everything is there. */
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 @keyframes reveal-fallback {

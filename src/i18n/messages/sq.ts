@@ -683,6 +683,7 @@ export const sq: Messages = {
     title: "Faqja nuk u gjet",
     text: "Kjo faqe nuk ekziston — mund të jetë zhvendosur.",
     home: "Shko te ballina",
+    kicker: "Keni dalë jashtë hartës",
   },
   chooseLanguage: "Zgjidhni gjuhën tuaj",
   hunt: {
@@ -747,5 +748,11 @@ export const sq: Messages = {
     revealedTag: "E zbuluar",
     northNote: "Shigjetat maten nga veriu; në një telefon me busull rrotullohen bashkë me ju.",
     celebrateTitle: "Gjurmues thesari!",
+    pickTitle: "Nuk e dini ku të shkoni?",
+    pickText: "Rrotulloni busullën dhe lëreni luginën të vendosë. Shigjeta ndalet në drejtimin e vërtetë të vendit, parë nga Gucia.",
+    spin: "Rrotullo busullën",
+    spinAgain: "Rrotullo përsëri",
+    spinning: "Po rrotullohet…",
+    pointsTo: "Busulla tregon drejt",
   },
 };

@@ -980,30 +980,3 @@
   width: min(100%, 420px);
 }
 
-.huntStamps {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-height: 200px;
-}
-
-.huntStamps > :nth-child(1) {
-  transform: rotate(-14deg) translateY(10px);
-}
-
-.huntStamps > :nth-child(2) {
-  transform: rotate(9deg) translateY(-18px);
-}
-
-.huntStamps > :nth-child(3) {
-  transform: rotate(-4deg) translateY(14px);
-}
-
-@media (max-width: 899.98px) {
-  .huntStamps {
-    min-height: 0;
-    margin-top: 8px;
-  }
-}

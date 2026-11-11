@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageIntro } from "@/components/content/PageIntro";
+import { CompassPicker } from "@/components/hunt/CompassPicker";
 import styles from "@/components/hunt/Hunt.module.css";
 import { HuntCard } from "@/components/hunt/HuntCard";
 import { HuntProgress } from "@/components/hunt/HuntProgress";
@@ -11,6 +12,7 @@ import { hunts, places } from "@/content";
 import { getMessages, resolveLocale } from "@/i18n";
 import { href } from "@/i18n/config";
 import { fill, loc } from "@/i18n/localize";
+import { pickPlaces } from "@/lib/picks";
 import { pageMetadata } from "@/lib/seo";
 import ui from "@/styles/ui.module.css";
 
@@ -27,7 +29,7 @@ export default async function HuntPage({ params }: PageProps<"/[lang]/hunt">) {
   const all = places.map((p) => p.slug);
   return (
     <>
-      <PageIntro lang={lang} t={t} kicker={t.hunt.kicker} title={t.hunt.title} lead={t.hunt.intro} crumbs={[[t.nav.home, href(lang)]]} />
+      <PageIntro lang={lang} t={t} ground="#f6f0e4" kicker={t.hunt.kicker} title={t.hunt.title} lead={t.hunt.intro} crumbs={[[t.nav.home, href(lang)]]} />
       <div className={styles.expedition}>
         <div className={ui.wrap}>
         <section className={ui.section} aria-labelledby="how">
@@ -68,6 +70,10 @@ export default async function HuntPage({ params }: PageProps<"/[lang]/hunt">) {
               </HuntCard>
             ))}
           </div>
+        </section>
+
+        <section className={ui.sectionTight} aria-label={t.hunt.pickTitle}>
+          <CompassPicker places={pickPlaces(lang, t)} className={styles.pickerWide} />
         </section>
 
         <section className={ui.section} aria-labelledby="passport">

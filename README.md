@@ -206,6 +206,24 @@ shows a compass arrow towards its place and how far it is — cold, warm, hot, o
 which offers the stamp straight away — without naming the place. Opening a clue, stamping and
 finishing a hunt are animated (none of it with reduced motion).
 
+**One look across the site**: every inner page's header (`PageIntro`) has a pale sky with
+contour lines and ends in a slice of the real skyline around Vusanje (`src/lib/ridge.ts`, from
+`src/content/skyline.ts` — each page its own slice). A record without a photo never shows an
+empty box: its card carries a drawn tile (`ArtTile`) — the record's icon in a medallion over
+the skyline, in the colour of its kind (travel tips, walks, itineraries, tours, places and
+listings). Cards rise into view as you scroll (`data-reveal`, off with reduced motion, without
+JavaScript and in print), and a gold line along the header's foot shows how far down the page
+you are (CSS scroll timeline, where the browser has one). The header fits laptops in all three
+languages: between 1280 and 1640 px the nine sections draw closer together, below 1360 px the
+last two wait in the menu (a test checks six widths × three languages for sideways scrolling).
+
+**The hunt follows you**: a place stamped in the passport carries a gold "Found" mark on its
+card everywhere, and the stamp count shows beside "Treasure Hunt" in the menu and on the
+phone's Hunt tab. **"Spin the compass"** (home page and hunt page) picks a place for the
+visitor — one not yet found, while there are any — and stops the needle in its real direction
+from Gusinje, with the distance; only places with a verified position take part. The 404 page
+is a compass that has lost north, with the way back in all three languages.
+
 **Guided tours** go one stop at a time: a big "Next stop" button names the next place, with
 "Play the tour", restart and voice as small extras; on phones a swipe on the card moves on or back. On wide screens the tour takes the whole
 screen; on phones the card docks under the model and both fit above the tab bar.

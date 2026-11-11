@@ -37,6 +37,15 @@
   }
 }
 
+/* A mark over the picture's corner (the "found" stamp); the card's link stays on top. */
+.corner {
+  position: absolute;
+  inset: 10px 10px auto auto !important;
+  z-index: 1;
+  pointer-events: none;
+  transform: none !important;
+}
+
 .card:focus-within .media {
   box-shadow: 0 0 0 3px var(--focus-ring);
 }

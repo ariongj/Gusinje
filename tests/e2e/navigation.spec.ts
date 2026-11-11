@@ -31,6 +31,28 @@ test("main navigation has the nine sections, search and a language switcher", as
   await expect(page.getByRole("button", { name: /Language/ })).toBeVisible();
 });
 
+test("the header fits laptop screens in every language, with the passport count showing", async ({ page, errors, isMobile }) => {
+  void errors;
+  test.skip(isMobile, "desktop header");
+  // A well-used passport: the count beside "Treasure Hunt" takes room too.
+  await page.addInitScript(() => {
+    const slugs = ["grlja", "gusinje", "vusanje", "karanfili", "ropojana", "grbaja", "zla-kolata", "oko-skakavice", "ali-pashas-springs", "viziers-mosque"];
+    localStorage.setItem("valley-guide:passport", JSON.stringify({ version: 1, stamps: Object.fromEntries(slugs.map((slug) => [slug, { at: "2026-10-15T10:00:00.000Z", how: "hand" }])), revealed: [] }));
+  });
+  for (const width of [1280, 1360, 1366, 1440, 1640, 1920]) {
+    await page.setViewportSize({ width, height: 800 });
+    for (const lang of ["en", "sq", "cnr"]) {
+      await page.goto(`/${lang}/about/`);
+      const fit = await page.evaluate(() => {
+        const tools = document.querySelector("header > div")!.lastElementChild!.getBoundingClientRect();
+        return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, right: Math.round(tools.right) };
+      });
+      expect(fit.overflow, `${lang} at ${width}px scrolls sideways`).toBeLessThanOrEqual(0);
+      expect(fit.right, `${lang} at ${width}px: header tools run off the edge`).toBeLessThanOrEqual(width);
+    }
+  }
+});
+
 test("language switch keeps the page and updates lang", async ({ page, errors }) => {
   void errors;
   await page.goto("/en/places/grlja/");

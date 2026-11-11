@@ -682,6 +682,7 @@ export const en = {
     title: "Page not found",
     text: "This page doesn't exist — it may have moved.",
     home: "Go to the home page",
+    kicker: "You've walked off the map",
   },
   chooseLanguage: "Choose your language",
   hunt: {
@@ -746,6 +747,12 @@ export const en = {
     revealedTag: "Revealed",
     northNote: "Arrows are measured from north; on a phone with a compass they turn with you.",
     celebrateTitle: "Treasure hunter!",
+    pickTitle: "Not sure where to go?",
+    pickText: "Spin the compass and let the valley decide. The needle stops in the place's real direction, seen from Gusinje.",
+    spin: "Spin the compass",
+    spinAgain: "Spin again",
+    spinning: "Spinning…",
+    pointsTo: "The compass points to",
   },
 };
 

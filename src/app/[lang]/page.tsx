@@ -5,8 +5,8 @@ import { BusinessCard, PlaceCard } from "@/components/content/cards";
 import { HeroSlides, type HeroSlide } from "@/components/home/HeroSlides";
 import { Ridgeline } from "@/components/home/Ridgeline";
 import { ValleyShowcase } from "@/components/home/ValleyShowcase";
+import { CompassPicker } from "@/components/hunt/CompassPicker";
 import { HuntProgress } from "@/components/hunt/HuntProgress";
-import { Stamp } from "@/components/hunt/Stamp";
 import { Photo } from "@/components/ui/Photo";
 import { photoAlt } from "@/components/ui/PhotoFigure";
 import { PhotoCredit } from "@/components/ui/PhotoCredit";
@@ -18,6 +18,7 @@ import type { Photo as PhotoRecord, Place } from "@/content/types";
 import { getMessages, resolveLocale } from "@/i18n";
 import { href } from "@/i18n/config";
 import { loc, plural } from "@/i18n/localize";
+import { pickPlaces } from "@/lib/picks";
 import { jsonLd, pageMetadata } from "@/lib/seo";
 import ui from "@/styles/ui.module.css";
 
@@ -139,11 +140,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             </div>
             <HuntProgress places={places.map((p) => p.slug)} large className={styles.huntProgress} />
           </div>
-          <div className={styles.huntStamps} aria-hidden="true">
-            <Stamp icon="drop" how="here" label="Ali Pasha" size={118} />
-            <Stamp icon="waterfall" how="hand" label="Grlja" size={100} />
-            <Stamp icon="mountain" how="here" label="2534 m" size={132} />
-          </div>
+          <CompassPicker places={pickPlaces(lang, t)} />
         </div>
       </section>
 

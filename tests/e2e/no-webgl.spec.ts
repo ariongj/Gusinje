@@ -1,7 +1,7 @@
 import { expect, test } from "./fixtures";
 
 // A browser with WebGL switched off.
-test.use({ launchOptions: { args: ["--disable-webgl", "--disable-3d-apis", "--disable-gpu"] } });
+test.use({ launchOptions: { args: ["--disable-webgl", "--disable-3d-apis", "--disable-gpu"], executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined } });
 
 test("explorer falls back to the map with the same places, and tours run on the map with photos", async ({ page, errors }) => {
   void errors;

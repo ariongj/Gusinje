@@ -1,7 +1,7 @@
 import { expect, test, trackWrites } from "./fixtures";
 
 test.describe("Treasure hunt", () => {
-  test("clues reveal places, stamps by hand fill the passport, and nothing leaves the device", async ({ page, errors }) => {
+  test("clues reveal places, stamps by hand fill the passport, and nothing leaves the device", async ({ page, errors, isMobile }) => {
     void errors;
     const writes = trackWrites(page);
     await page.goto("/en/hunt/");
@@ -28,6 +28,13 @@ test.describe("Treasure hunt", () => {
     const first = page.getByTestId("badge").filter({ hasText: "First find" });
     await expect(first).toHaveAttribute("data-earned", "true");
     await expect(page.getByTestId("badge").filter({ hasText: "Whole valley" })).toHaveAttribute("data-earned", "false");
+
+    // The find follows the visitor through the site: a mark on the place's card, a count in the menu.
+    await page.goto("/en/places/");
+    const card = page.locator("article").filter({ has: page.getByRole("heading", { name: "Ali Pasha's Springs" }) });
+    await expect(card.getByTestId("found-badge")).toBeVisible();
+    await expect(page.getByTestId("found-badge")).toHaveCount(1);
+    if (!isMobile) await expect(page.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: /Treasure Hunt/ })).toContainText("1");
     expect(writes, "the passport is never sent").toEqual([]);
   });
 
@@ -78,6 +85,30 @@ test.describe("Treasure hunt", () => {
     await expect(clues.nth(1).getByRole("heading", { name: "Grlja waterfall" })).toBeVisible();
     await page.getByRole("button", { name: "Stop guiding" }).click();
     await expect(page.getByTestId("hot-cold")).toHaveCount(0);
+  });
+
+  test("“Spin the compass” picks a place not yet found and offers its page and the map", async ({ page, errors }) => {
+    void errors;
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    // Everything with a mapped position is found except the Grlja waterfall: the compass must choose it.
+    await page.addInitScript(() => {
+      const found = ["gusinje", "vusanje", "ali-pashas-springs", "oko-skakavice", "ropojana", "grbaja", "karanfili", "zla-kolata", "viziers-mosque"];
+      if (!localStorage.getItem("valley-guide:passport")) {
+        localStorage.setItem("valley-guide:passport", JSON.stringify({ version: 1, stamps: Object.fromEntries(found.map((slug) => [slug, { at: "2026-10-15T10:00:00.000Z", how: "hand" }])), revealed: [] }));
+      }
+    });
+    await page.goto("/en/");
+    const picker = page.getByTestId("compass-picker");
+    await expect(picker.getByRole("heading", { name: "Not sure where to go?" })).toBeVisible();
+    await picker.getByRole("button", { name: "Spin the compass" }).click();
+    await expect(picker.getByText("The compass points to")).toBeVisible();
+    await expect(picker.getByRole("heading", { name: "Grlja waterfall" })).toBeVisible();
+    await expect(picker.getByText(/km from Gusinje/)).toBeVisible();
+    await expect(picker.getByRole("link", { name: "Show on map" })).toHaveAttribute("href", /explore\/\?place=grlja/);
+    // Again: another place (never the same one twice in a row).
+    await picker.getByRole("button", { name: "Spin again" }).click();
+    await expect(picker.getByRole("heading", { name: "Grlja waterfall" })).toHaveCount(0);
+    await expect(picker.getByText("The compass points to")).toBeVisible();
   });
 
   test("the explore card offers the stamp for places only", async ({ page, errors }) => {

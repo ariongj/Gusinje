@@ -21,7 +21,7 @@ export const placeIcon: Record<PlaceCategory, MapIcon> = {
   culture: "landmark",
 };
 
-const businessIcon: Record<BusinessCategory, MapIcon> = {
+export const businessIcon: Record<BusinessCategory, MapIcon> = {
   hotel: "bed",
   guesthouse: "bed",
   cabin: "cabin",
