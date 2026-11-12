@@ -258,13 +258,17 @@
   }
 }
 
-/* Small laptops: the last two sections wait in the menu. */
-@media (min-width: 1280px) and (max-width: 1359.98px) {
-  .nav > :nth-last-child(-n + 2) {
+/* Albanian and Montenegrin names are longer (measured: 1361 and 1318 px for the
+   whole bar, against 1202 in English), and browsers differ by a few pixels:
+   on smaller laptops their last two sections wait in the menu, with room to spare. */
+@media (min-width: 1280px) and (max-width: 1419.98px) {
+  .nav:lang(sq) > :nth-last-child(-n + 2),
+  .nav:lang(cnr) > :nth-last-child(-n + 2) {
     display: none;
   }
 
-  .burger {
+  .burger:lang(sq),
+  .burger:lang(cnr) {
     display: inline-flex;
   }
 }

@@ -214,8 +214,10 @@ the skyline, in the colour of its kind (travel tips, walks, itineraries, tours, 
 listings). Cards rise into view as you scroll (`data-reveal`, off with reduced motion, without
 JavaScript and in print), and a gold line along the header's foot shows how far down the page
 you are (CSS scroll timeline, where the browser has one). The header fits laptops in all three
-languages: between 1280 and 1640 px the nine sections draw closer together, below 1360 px the
-last two wait in the menu (a test checks six widths × three languages for sideways scrolling).
+languages: between 1280 and 1640 px the nine sections draw closer together; Albanian and Montenegrin
+names are longer, so below 1420 px their last two sections wait in the menu (a test checks
+eight widths × three languages for sideways scrolling, with room to spare for browsers that
+draw text a little wider).
 
 **The hunt follows you**: a place stamped in the passport carries a gold "Found" mark on its
 card everywhere, and the stamp count shows beside "Treasure Hunt" in the menu and on the

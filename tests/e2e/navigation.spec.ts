@@ -39,18 +39,30 @@ test("the header fits laptop screens in every language, with the passport count 
     const slugs = ["grlja", "gusinje", "vusanje", "karanfili", "ropojana", "grbaja", "zla-kolata", "oko-skakavice", "ali-pashas-springs", "viziers-mosque"];
     localStorage.setItem("valley-guide:passport", JSON.stringify({ version: 1, stamps: Object.fromEntries(slugs.map((slug) => [slug, { at: "2026-10-15T10:00:00.000Z", how: "hand" }])), revealed: [] }));
   });
-  for (const width of [1280, 1360, 1366, 1440, 1640, 1920]) {
+  for (const width of [1280, 1366, 1419, 1420, 1440, 1639, 1640, 1920]) {
     await page.setViewportSize({ width, height: 800 });
     for (const lang of ["en", "sq", "cnr"]) {
       await page.goto(`/${lang}/about/`);
       const fit = await page.evaluate(() => {
-        const tools = document.querySelector("header > div")!.lastElementChild!.getBoundingClientRect();
-        return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, right: Math.round(tools.right) };
+        const bar = document.querySelector("header > div")!;
+        const logo = bar.firstElementChild!.getBoundingClientRect();
+        const nav = bar.querySelector("nav")!.getBoundingClientRect();
+        // The sections sit against the tools; what is left between them and the logo is the room to spare.
+        return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, spare: Math.round(nav.left - logo.right) };
       });
       expect(fit.overflow, `${lang} at ${width}px scrolls sideways`).toBeLessThanOrEqual(0);
-      expect(fit.right, `${lang} at ${width}px: header tools run off the edge`).toBeLessThanOrEqual(width);
+      // Enough room that a browser which draws text a little wider still fits.
+      expect(fit.spare, `${lang} at ${width}px: only ${fit.spare}px to spare in the header`).toBeGreaterThanOrEqual(40);
     }
   }
+  // Where the longer languages keep two sections back, the menu button brings all nine.
+  await page.setViewportSize({ width: 1300, height: 800 });
+  await page.goto("/sq/about/");
+  const nav = page.getByRole("navigation", { name: "Kryesore" }).first();
+  await expect(nav.getByRole("link").filter({ visible: true })).toHaveCount(7);
+  await page.getByRole("button", { name: "Menyja" }).click();
+  await expect(page.getByRole("dialog").getByRole("link", { name: "Gjueti thesari" })).toBeVisible();
+  await expect(page.getByRole("dialog").getByRole("link", { name: "Për rajonin" })).toBeVisible();
 });
 
 test("language switch keeps the page and updates lang", async ({ page, errors }) => {
